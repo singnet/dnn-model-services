@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+message Numbers {
+    float a = 1;
+    float b = 2;
+}
+
+message Result {
+    float value = 1;
+}
+
+service Addition {
+    rpc add(Numbers) returns (Result) {}
+}
+
+service Subtraction {
+    rpc sub(Numbers) returns (Result) {}
+}
+
+service Multiplication {
+    rpc mul(Numbers) returns (Result) {}
+}
+
+service Division {
+    rpc div(Numbers) returns (Result) {}
+}
