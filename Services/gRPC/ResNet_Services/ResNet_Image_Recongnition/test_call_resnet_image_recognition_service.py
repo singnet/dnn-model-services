@@ -1,0 +1,71 @@
+import grpc
+
+# import the generated classes
+import service.model.resnet_img_recon_pb2_grpc as grpc_bt_grpc
+import service.model.resnet_img_recon_pb2 as grpc_bt_pb2
+
+from service import registry
+
+if __name__ == '__main__':
+
+    try:
+        # Service ONE - Arithmetics
+        endpoint = input('Endpoint (localhost:{}): '.format(
+            registry['resnet_image_recognition_service']['grpc']))
+        if endpoint == '':
+            endpoint = 'localhost:{}'.format(
+                registry['resnet_image_recognition_service']['grpc'])
+
+        # open a gRPC channel
+        channel = grpc.insecure_channel('{}'.format(
+            endpoint))
+
+        grpc_method = input('Method (flowers|dogs|cars): ')
+
+        model = input('Model (ResNet18): ')
+        if model == '':
+            model = 'ResNet18'
+
+        img_path = input('Image (Path or Link): ')
+
+        if grpc_method == 'flowers':
+            # create a stub (client)
+            stub = grpc_bt_grpc.FlowersStub(channel)
+            # create a valid request message
+            number = grpc_bt_pb2.ImageReconRequest(
+                model=model, img_path=img_path)
+            # make the call
+            response = stub.flowers(number)
+            # et voilà
+            print(response.delta_time)
+            print(response.top_5)
+
+        elif grpc_method == 'dogs':
+            # create a stub (client)
+            stub = grpc_bt_grpc.DogsStub(channel)
+            # create a valid request message
+            number = grpc_bt_pb2.ImageReconRequest(
+                model=model, img_path=img_path)
+            # make the call
+            response = stub.dogs(number)
+            # et voilà
+            print(response.delta_time)
+            print(response.top_5)
+
+        elif grpc_method == 'cars':
+            # create a stub (client)
+            stub = grpc_bt_grpc.CarsStub(channel)
+            # create a valid request message
+            number = grpc_bt_pb2.ImageReconRequest(
+                model=model, img_path=img_path)
+            # make the call
+            response = stub.cars(number)
+            # et voilà
+            print(response.delta_time)
+            print(response.top_5)
+
+        else:
+            print('Invalid method!')
+
+    except Exception as e:
+        print(e)
