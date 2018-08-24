@@ -13,6 +13,7 @@ import cntk as C
 import os
 import time
 import requests
+import base64
 
 
 # Evaluates a single image using the re-trained model
@@ -49,24 +50,35 @@ def image_recognition(method, model, map_names, img_path, image_dims):
                 my_f.write(r.content)
                 img_path = 'temp_img.jpg'
 
+        # Base64
+        elif len(img_path) > 500:
+            imgdata = base64.b64decode(img_path)
+            filename = 'temp_img.jpg'
+            with open(filename, 'wb') as f:
+                f.write(imgdata)
+                img_path = 'temp_img.jpg'
+
         model_file = './Models/{0}_{1}.model'.format(method, model)
         start_time = time.time()
         trained_model = C.load_model(model_file)
         probs = eval_single_image(trained_model,
                                   img_path,
                                   image_dims)
-        top_5_predictions = ''
+        top_5_dict = {}
         p_array = probs.argsort()[-5:][::-1]
         for i, prob in enumerate(p_array):
             perc = probs[prob]*100
-            top_5_predictions += '{0}:{1:05.2f}% '.format(
-                map_names[int(prob)], perc)
+            top_5_dict[i+1] = '{0:05.2f}%: {1}'.format(
+                perc, map_names[int(prob)])
 
         delta_time = time.time() - start_time
         os.remove('temp_img.jpg')
         return {
-            'delta_time: ': '{:.4f}'.format(delta_time),
-            'top_5': top_5_predictions
+            'delta_time': '{:.4f}'.format(delta_time),
+            'top_5': top_5_dict
         }
     except Exception as e:
-        return {'error: ': -1}
+        return {
+            'delta_time': 'Fail',
+            'top_5': 'Fail'
+        }
