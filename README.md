@@ -21,7 +21,7 @@ $ apt install -y git
 
 ### 5. SNET DAEMON: Installation
 ```
-$ mkdir /opt/snet_bh; cd /opt/snet_bh
+$ mkdir /opt/snet; cd /opt/snet
 ```
 
 - **PYTHON 3.6: Installation**
@@ -37,7 +37,7 @@ $ mkdir /opt/snet_bh; cd /opt/snet_bh
 	$ cd..; rm -rf Python-3.6.5/; rm -f Python-3.6.5.tar.xz
 ```
 
-- **NODEJS 10.x: Installation**
+- **NODEJS 8.x: Installation**
 ```
 	$ curl -sL https://deb.nodesource.com/setup_8.x | sh
 	$ apt install -y nodejs
@@ -47,10 +47,10 @@ $ mkdir /opt/snet_bh; cd /opt/snet_bh
 - **GO: Installation**
 ```
 	$ apt install -y golang-1.10
-	$ mkdir /opt/snet_bh/go
+	$ mkdir /opt/snet/go
 	$ echo 'PS1="$PS1\n"' >> /root/.bashrc
-	$ echo 'export GOPATH="/opt/snet_bh/go"' >> /root/.bashrc
-	$ echo 'export PATH="$PATH:/opt/snet_bh/go/bin:/usr/lib/go-1.10/bin"' >> /root/.bashrc
+	$ echo 'export GOPATH="/opt/snet/go"' >> /root/.bashrc
+	$ echo 'export PATH="$PATH:/opt/snet/go/bin:/usr/lib/go-1.10/bin"' >> /root/.bashrc
 	$ source /root/.bashrc
 ```
 
@@ -62,14 +62,14 @@ $ mkdir /opt/snet_bh; cd /opt/snet_bh
 ```
 - **Proto3: Installation**
 ```
-	$ cd /opt/snet_bh
+	$ cd /opt/snet
 	$ curl -OL https://github.com/google/protobuf/releases/download/v3.4.0/protoc-3.4.0-linux-x86_64.zip
 	$ unzip protoc-3.4.0-linux-x86_64.zip -d protoc3
 	$ mv protoc3/bin/* /usr/local/bin/
 	$ mv protoc3/include/* /usr/local/include/
 ```
 ```
-$ cd /opt/snet_bh/go/src
+$ cd /opt/snet/go/src
 $ git clone https://github.com/singnet/snet-daemon.git
 $ cd snet-daemon
 $ ./scripts/install
@@ -87,7 +87,7 @@ ERRO[0000] Unable to initialize daemon 	...
 
 ### 7. SNET-CLI: Installation (v0.1.5)
 ```
-$ cd /opt/snet_bh
+$ cd /opt/snet
 $ apt install libusb-1.0-0-dev libudev1 libudev-dev
 $ pip3.6 install --upgrade pip
 $ pip3.6 install snet_cli
@@ -156,7 +156,7 @@ $ pip3.6 install snet_cli
 ```
 - 	0xE0Ca10C9747426d18C46891eF51c578139D066fD is your agent's address.
 
-- **SNET-CLI: Publishing the Service (from your Agent)**
+- **SNET-CLI: Publishing the Service (of your Agent)**
 
 -	snet service init
 ```	
@@ -325,7 +325,7 @@ $ pip3.6 install snet_cli
 		identity_name: ARTUR_ID
 ```
 - **SNET-CLI: SET and UNSET**
--	If you need to change some keys from your session.
+-	If you need to change keys from your session.
 ```
 	$ snet unset current_agent_at
 	$ snet set current_agent_at 0x1591F7ecB3C4Fb2E57a2679c30aC8D9b4EC65248
