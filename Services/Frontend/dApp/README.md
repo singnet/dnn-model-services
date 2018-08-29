@@ -34,7 +34,7 @@ You can use some of these available services to help you understand how to build
 
 Once your service .js file is ready, just copy and paste it inside `service/`
 ```
-$ mv ~/resnet_img_recon.js .
+$ mv ~/cnn_image_recon.js .
 $ ls -la
 total 72
 drwxrwxr-x 2 artur artur 4096 Ago 23 09:07 .
@@ -48,7 +48,7 @@ drwxrwxr-x 3 artur artur 4096 Ago 23 09:06 ..
 -rw-rw-r-- 1 artur artur  468 Ago 23 09:06 face_landmarks.css.js
 -rw-rw-r-- 1 artur artur 6562 Ago 23 09:06 face_landmarks.js
 -rw-rw-r-- 1 artur artur 4543 Ago 23 09:06 face_recognition.js
--rw-rw-r-- 1 artur artur 7359 Ago 23 17:41 resnet_img_recon.js
+-rw-rw-r-- 1 artur artur 7359 Ago 23 17:41 cnn_image_recon.js
 ```
 
 ### 5. Making your frontend file visible for dApp
@@ -78,7 +78,7 @@ import FaceAlignmentService from './components/service/face_alignment';
 import FaceRecognitionService from './components/service/face_recognition';
 import ExchangeService from './components/service/exchange';
 // Fist addition
-import ResNetImageRecon from './components/service/resnet_img_recon';
+import CNN_ImageRecon from './components/service/cnn_image_recon';
 
 ...
 
@@ -90,10 +90,10 @@ import ResNetImageRecon from './components/service/resnet_img_recon';
       'face_recognition': FaceRecognitionService,
       'Exchange AGI for BTC': ExchangeService,
       // Second Addition
-      'SNET_BH/ResNetService': ResNetImageRecon
+      'SNET_BH/CNN_ImageRecon': CNN_ImageRecon
     };
 ```
-In this example the service was created with the name "ResNetService" under the organization "SNET_BH".
+In this example the service was created with the name "CNN_ImageRecon" under the organization "SNET_BH".
 
 ### 6. Testing:
 

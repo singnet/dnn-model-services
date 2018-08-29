@@ -1,7 +1,7 @@
 import React from 'react';
 import { Icon, Button, Upload } from 'antd';
 
-class ResNetImageRecon extends React.Component {
+class CNN_ImageRecon extends React.Component {
 
     constructor(props) {
         super(props);
@@ -44,6 +44,22 @@ class ResNetImageRecon extends React.Component {
                 {
                     name: 'ResNet18',
                     value: 'ResNet18',
+                },
+                {
+                    name: 'AlexNet',
+                    value: 'AlexNet',
+                },
+                {
+                    name: 'InceptionV3',
+                    value: 'InceptionV3',
+                },
+                {
+                    name: 'VGG16',
+                    value: 'VGG16',
+                },
+                {
+                    name: 'VGG19',
+                    value: 'VGG19',
                 },
             ],
             model_value: 'ResNet152',
@@ -188,7 +204,7 @@ class ResNetImageRecon extends React.Component {
         return (
             <div>
                 <p>
-                    A service that uses Residual Networks to classify images of flowers, dogs or cars.
+                    A service that uses CNN to recognize images of flowers, dogs or cars.
                 </p>
             </div>
         )
@@ -218,4 +234,4 @@ class Json2List extends React.Component {
     }
 }
 
-export default ResNetImageRecon;
+export default CNN_ImageRecon;
