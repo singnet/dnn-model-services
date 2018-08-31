@@ -283,7 +283,7 @@ $ pip3.6 install snet_cli
 - **SNET-CLI: Removing an Agent (Set your service unavailable)**
 
 -	snet contract Registry deleteServiceRegistration [organization] [name] --transact
-	 - `organization` of the Organization.
+	 - `organization` name of the Organization.
 	 - `name` of the Agent.
 ```
 	$ snet contract Registry deleteServiceRegistration SNET_BH BASIC_gRPC_ARITHMETIC_015 --transact

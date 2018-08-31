@@ -1,6 +1,6 @@
 registry = {
-    'resnet_image_recognition_service': {
-        'jsonrpc': 7000,
+    'image_recon_service': {
+        'grpc': 7000,
         'snetd': 7007,
     },
 }
