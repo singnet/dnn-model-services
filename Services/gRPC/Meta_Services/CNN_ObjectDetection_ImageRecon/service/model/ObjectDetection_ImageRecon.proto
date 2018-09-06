@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+message ObjDetImgReconRequest {
+    string model_objDet = 1;
+    string model_imgRecon = 2;
+    string img_path = 3;
+    string confidence = 4;
+}
+
+message Result {
+    string delta_time = 1;
+    string boxes = 2;
+    string confidences = 3;
+    string img_base64 = 4;
+}
+
+service DetectRecon {
+    rpc detect_recon(ObjDetImgReconRequest) returns (Result) {}
+}

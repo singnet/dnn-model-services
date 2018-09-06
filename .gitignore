@@ -1,6 +1,10 @@
 *.pyc
 *.db
 *.model
+*.jpg
+*.jpeg
+*.png
+*.bmp
 Examples/
 temp/
 Models/

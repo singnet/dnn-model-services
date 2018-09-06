@@ -12,7 +12,7 @@ from service import registry
 logging.basicConfig(
     level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s"
 )
-log = logging.getLogger("run_image_recon_service")
+log = logging.getLogger("run_obj_d_service")
 
 
 def main():
@@ -25,7 +25,7 @@ def main():
     root_path = pathlib.Path(__file__).absolute().parent
 
     # All services modules go here
-    service_modules = ["service.image_recon_service"]
+    service_modules = ["service.object_detection_service"]
 
     # Removing all previous snetd .db file
     os.system("rm *.db")
@@ -80,13 +80,13 @@ def start_service(cwd, service_module, daemon_config_file=None):
     Starts the python module of the service at the passed JSON-RPC port and
     an instance of 'snetd' for the service.
     """
-    service_name = service_module.split(".")[-1]
-    grpc_port = registry[service_name]["grpc"]
+    server_name = service_module.split(".")[-1]
+    jsonrpc_port = registry[server_name]["jsonrpc"]
     subprocess.Popen(
-        [sys.executable, "-m", service_module, "--grpc-port", str(grpc_port)],
+        [sys.executable, "-m", service_module, "--json-rpc-port", str(jsonrpc_port)],
         cwd=str(cwd),
     )
-    db_file = "db_" + service_name + ".db"
+    db_file = "db_" + server_name + ".db"
     start_snetd(str(cwd), daemon_config_file, db_file)
 
 

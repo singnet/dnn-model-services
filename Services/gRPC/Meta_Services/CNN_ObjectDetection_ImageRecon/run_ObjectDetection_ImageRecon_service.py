@@ -12,7 +12,7 @@ from service import registry
 logging.basicConfig(
     level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s"
 )
-log = logging.getLogger("run_image_recon_service")
+log = logging.getLogger("run_obj_d_service")
 
 
 def main():
@@ -25,7 +25,7 @@ def main():
     root_path = pathlib.Path(__file__).absolute().parent
 
     # All services modules go here
-    service_modules = ["service.image_recon_service"]
+    service_modules = ["service.object_detection_service"]
 
     # Removing all previous snetd .db file
     os.system("rm *.db")
