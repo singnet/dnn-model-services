@@ -31,6 +31,8 @@ class SnetInstance:
         self.snet_exited = False
         self.snet_pid = 0
         self.snet_error = 0
+        self.snet_waiting_response = 100
+        self.snet_waiting_busy = 30
         self.snet_response = ""
 
     def snet_reset_flags(self):
@@ -71,7 +73,7 @@ class SnetInstance:
                             )
                         )
                     count += 1
-                    if count > 100:
+                    if count > self.snet_waiting_response:
                         break
 
                 if self.snet_response:
@@ -81,7 +83,7 @@ class SnetInstance:
                         log.info(
                             "Waiting 30s for the previous transaction be completed..."
                         )
-                        time.sleep(30)
+                        time.sleep(self.snet_waiting_busy)
                     log.info(
                         "Trying to call snet service {} again [Attempt {}]".format(
                             name, num_attempt + 1
@@ -196,10 +198,28 @@ class DetectRecon(SnetInstance):
                     f.write(imgdata)
                     self.img_path = "temp_img.jpg"
 
-            # Loop throught Services
-            for name, call_params in self.snet_call_params.items():
-                self.snet_reset_flags()
+            name = "objDetect"
+            if name in self.snet_call_params:
                 log.info("Calling {}...".format(name))
+                self.snet_reset_flags()
+                call_params = self.snet_call_params["objDetect"]
+                if self.snet_call_service(name, call_params):
+                    self.snet_call_res_json[name] = self.snet_response
+                else:
+                    self.snet_call_res_json[name] = {""}
+
+            ###########
+            #
+            # Crop all the bbox received from the ObjectDetection Service
+            # and then send each one for the Image Recognition Service
+            #
+            ###########
+
+            name = "imgRecon"
+            if name in self.snet_call_params:
+                log.info("Calling {}...".format(name))
+                self.snet_reset_flags()
+                call_params = self.snet_call_params["imgRecon"]
                 if self.snet_call_service(name, call_params):
                     self.snet_call_res_json[name] = self.snet_response
                 else:
