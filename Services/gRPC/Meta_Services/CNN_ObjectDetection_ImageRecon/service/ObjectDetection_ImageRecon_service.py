@@ -43,14 +43,18 @@ class DetectReconServicer(grpc_bt_grpc.DetectReconServicer):
         name = "objDetect"
         agent_addr = "0x1E89D9ed5bCC22F934AF631CdA771019081E57B2"
         method = "detect"
-        json_txt = '{"model": "yolov3", "img_path": "https://www.thetraveltart.com/wp-content/uploads/2010/12/Las-Vegas-Traffic.jpg", "confidence": "0.9"}'
+        json_txt = '{"model": "{}", "img_path": "{}", "confidence": "{}"}'.format(
+            self.model_objDet, self.img_path, self.confidence
+        )
         obj_service.snet_set_params(name, agent_addr, method, json_txt)
 
-        # Setting Imagerecon Service params
+        # Setting ImageRecon Service params
         name = "imgRecon"
         agent_addr = "0x9211Ca9A96063401BaAC5cafE85efC4024325279"
         method = "dogs"
-        json_txt = '{"model": "ResNet152", "img_path": "https://d17fnq9dkz9hgj.cloudfront.net/uploads/2018/03/Pomeranian_01-390x203.jpeg"}'
+        json_txt = '{"model": "{}", "img_path": "{}"}'.format(
+            self.model_imgRecon, self.img_path
+        )
         obj_service.snet_set_params(name, agent_addr, method, json_txt)
 
         json_result = obj_service.detect_recon()

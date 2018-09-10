@@ -7,6 +7,7 @@ import os
 import time
 import requests
 import base64
+import traceback
 
 resources_root = os.path.join("..", "..", "..", "CNTK", "Resources")
 
@@ -75,5 +76,7 @@ def image_recognition(method, model, map_names, img_path, image_dims):
         delta_time = time.time() - start_time
         os.remove("temp_img.jpg")
         return {"delta_time": "{:.4f}".format(delta_time), "top_5": top_5_dict}
+
     except Exception as e:
+        traceback.print_exc()
         return {"delta_time": "Fail", "top_5": "Fail"}
