@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='service/model/ObjectDetection_ImageRecon.proto',
   package='',
   syntax='proto3',
-  serialized_pb=_b('\n.service/model/ObjectDetection_ImageRecon.proto\"k\n\x15ObjDetImgReconRequest\x12\x14\n\x0cmodel_objDet\x18\x01 \x01(\t\x12\x16\n\x0emodel_imgRecon\x18\x02 \x01(\t\x12\x10\n\x08img_path\x18\x03 \x01(\t\x12\x12\n\nconfidence\x18\x04 \x01(\t\"g\n\x06Result\x12\x12\n\ndelta_time\x18\x01 \x01(\t\x12\r\n\x05\x62oxes\x18\x02 \x01(\t\x12\x13\n\x0b\x63onfidences\x18\x03 \x01(\t\x12\x11\n\tclass_ids\x18\x04 \x01(\t\x12\x12\n\ntop_1_list\x18\x05 \x01(\t2@\n\x0b\x44\x65tectRecon\x12\x31\n\x0c\x64\x65tect_recon\x12\x16.ObjDetImgReconRequest\x1a\x07.Result\"\x00\x62\x06proto3')
+  serialized_pb=_b('\n.service/model/ObjectDetection_ImageRecon.proto\"h\n\x15ObjDetImgReconRequest\x12\x14\n\x0cmodel_detect\x18\x01 \x01(\t\x12\x13\n\x0bmodel_recon\x18\x02 \x01(\t\x12\x10\n\x08img_path\x18\x03 \x01(\t\x12\x12\n\nconfidence\x18\x04 \x01(\t\"g\n\x06Result\x12\x12\n\ndelta_time\x18\x01 \x01(\t\x12\r\n\x05\x62oxes\x18\x02 \x01(\t\x12\x13\n\x0b\x63onfidences\x18\x03 \x01(\t\x12\x11\n\tclass_ids\x18\x04 \x01(\t\x12\x12\n\ntop_1_list\x18\x05 \x01(\t2@\n\x0b\x44\x65tectRecon\x12\x31\n\x0c\x64\x65tect_recon\x12\x16.ObjDetImgReconRequest\x1a\x07.Result\"\x00\x62\x06proto3')
 )
 
 
@@ -33,14 +33,14 @@ _OBJDETIMGRECONREQUEST = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='model_objDet', full_name='ObjDetImgReconRequest.model_objDet', index=0,
+      name='model_detect', full_name='ObjDetImgReconRequest.model_detect', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='model_imgRecon', full_name='ObjDetImgReconRequest.model_imgRecon', index=1,
+      name='model_recon', full_name='ObjDetImgReconRequest.model_recon', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -73,7 +73,7 @@ _OBJDETIMGRECONREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=50,
-  serialized_end=157,
+  serialized_end=154,
 )
 
 
@@ -131,8 +131,8 @@ _RESULT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=159,
-  serialized_end=262,
+  serialized_start=156,
+  serialized_end=259,
 )
 
 DESCRIPTOR.message_types_by_name['ObjDetImgReconRequest'] = _OBJDETIMGRECONREQUEST
@@ -161,8 +161,8 @@ _DETECTRECON = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   options=None,
-  serialized_start=264,
-  serialized_end=328,
+  serialized_start=261,
+  serialized_end=325,
   methods=[
   _descriptor.MethodDescriptor(
     name='detect_recon',

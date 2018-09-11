@@ -35,12 +35,18 @@ class SnetInstance:
         self.snet_response = ""
 
     def snet_reset_flags(self):
+        """
+        Reset all the execution flags of 'snet client call'.
+        """
         self.snet_exited = False
         self.snet_pid = 0
         self.snet_error = 0
         self.snet_response = ""
 
     def snet_set_params(self, name, agent_addr, method, method_params):
+        """
+        Set the params of 'snet client call'.
+        """
         log.info("Setting {} params...".format(name))
         self.snet_call_params[name] = {
             "agent_addr": agent_addr,
@@ -49,6 +55,9 @@ class SnetInstance:
         }
 
     def snet_call_service(self, name, call_params):
+        """
+        Starts a Thread with 'snet client call' and keeps traking of its output.
+        """
         try:
             agent_addr = call_params["agent_addr"]
             method = call_params["method"]
@@ -100,6 +109,9 @@ class SnetInstance:
             return False
 
     def snet_client_call(self, agent_addr, method, method_params):
+        """
+        Makes the "snet client call' with passing params
+        """
         try:
             cwd = pathlib.Path("./service/model").absolute()
             cmd_list = [

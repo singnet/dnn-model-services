@@ -23,9 +23,10 @@ class DetectRecon(SnetInstance):
     of each one.
     """
 
-    def __init__(self, map_names, img_path):
+    def __init__(self, model_detect, model_recon, img_path):
         super(DetectRecon, self).__init__()
-        self.map_names = map_names
+        self.model_detect = model_detect
+        self.model_recon = model_recon
         self.img_path = img_path
         log.info("DetectRecon created!")
 
@@ -41,21 +42,23 @@ class DetectRecon(SnetInstance):
 
             start_time = time.time()
 
-            if not os.path.exists("temp"):
-                os.makedirs("temp")
+            # [DEBUG] Checking if the Service is working as expected.
+            # if not os.path.exists("temp"):
+            #     os.makedirs("temp")
 
             # Link
             if "http://" in self.img_path or "https://" in self.img_path:
                 r = requests.get(self.img_path, allow_redirects=True)
-                with open("./temp/temp_img.jpg", "wb") as my_f:
+                with open("temp_img.jpg", "wb") as my_f:
                     my_f.write(r.content)
-                    self.img_path = "./temp/temp_img.jpg"
+                    self.img_path = "temp_img.jpg"
 
             # Base64
             elif len(self.img_path) > 500:
                 imgutils.save64(self.img_path)
-                self.img_path = "./temp/temp_img.jpg"
+                self.img_path = "temp_img.jpg"
 
+            # The ObjectDetection params are already set into snet_call_params
             name = "objDetect"
             if name in self.snet_call_params:
                 log.info("Calling {}...".format(name))
@@ -66,6 +69,7 @@ class DetectRecon(SnetInstance):
                 else:
                     self.snet_call_res_json[name] = {""}
 
+            # Preparing the response
             result = {}
             result["boxes"] = "Fail"
             result["class_ids"] = "Fail"
@@ -75,7 +79,7 @@ class DetectRecon(SnetInstance):
             ###########
             #
             # Crop all bboxes received from the ObjectDetection Service
-            # and then send each one for the Image Recognition Service
+            # and then send each one to the Image Recognition Service
             #
             ###########
             if self.snet_call_res_json[name] != {""}:
@@ -105,6 +109,7 @@ class DetectRecon(SnetInstance):
                         log.info("Cropping bbox {}/{}...".format(idx + 1, len(bboxes)))
                         coords = (box[0], box[1], box[0] + box[2], box[1] + box[3])
 
+                        # Get the base64 crop image
                         base64_bbox = imgutils.crop_image(
                             self.img_path, coords, "base64"
                         )
@@ -114,7 +119,7 @@ class DetectRecon(SnetInstance):
                         agent_addr = "0x9211Ca9A96063401BaAC5cafE85efC4024325279"
                         method = "dogs"
                         json_txt = '{"model": "%s", "img_path": "%s"}' % (
-                            "ResNet152",
+                            self.model_recon,
                             base64_bbox,
                         )
                         self.snet_set_params(name, agent_addr, method, json_txt)
@@ -124,7 +129,7 @@ class DetectRecon(SnetInstance):
                         call_params = self.snet_call_params["imgRecon"]
                         if self.snet_call_service(name, call_params):
                             self.snet_call_res_json[name] = self.snet_response
-                            top_5 = self.snet_call_res_json[name]
+                            top_5 = self.snet_call_res_json[name]["response"]["top_5"]
                             if top_5 != "Fail":
                                 d_tmp = ast.literal_eval(
                                     self.snet_call_res_json[name]["response"]["top_5"]
@@ -136,12 +141,14 @@ class DetectRecon(SnetInstance):
                                     .replace(":", "_")
                                 )
 
-                                log.info("Saving image...".format(name))
-                                imgutils.save64(
-                                    base64_bbox,
-                                    "./temp/{}.jpg".format(crop_class_filename),
-                                )
                                 result["top_1_list"].append(top_1)
+
+                                # [DEBUG] Checking if the Service is working as expected.
+                                # log.info("Saving image...".format(name))
+                                # imgutils.save64(
+                                #     base64_bbox,
+                                #     "./temp/{}.jpg".format(crop_class_filename),
+                                # )
                             else:
                                 log.error("ImageRecon failed!")
                         else:

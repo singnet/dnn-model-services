@@ -18,27 +18,29 @@ class ObjectDetector:
         self.colors = []
         self.classes = []
 
+    # Get the names of the output layers
     def get_output_layers(self, net):
         layer_names = net.getLayerNames()
         output_layers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
         return output_layers
 
+    # Draw the predicted bounding box
     def drawPred(self, image, classId, conf, left, top, right, bottom):
         label = "%.2f" % conf
         if self.map_names:
             assert classId < len(self.map_names)
             label = "%s:%s" % (self.map_names[classId], label)
-
         cv2.rectangle(image, (left, top), (right, bottom), self.colors[classId], 2)
-        y = top - 15 if top - 15 > 15 else top + 15
+        cv2.rectangle(
+            image, (left, top), (right, top + 15), self.colors[classId], cv2.FILLED
+        )
         cv2.putText(
             image,
             label,
-            (left, y),
+            (left, top + 10),
             cv2.FONT_HERSHEY_SIMPLEX,
             0.5,
-            self.colors[classId],
-            2,
+            (255, 255, 255),
         )
 
     def detect(self):
@@ -85,8 +87,8 @@ class ObjectDetector:
                 class_ids = []
                 confidences = []
                 boxes = []
-                conf_threshold = 0.5
-                nms_threshold = 0.3
+                conf_threshold = 0.4
+                nms_threshold = 0.4
 
                 for out in outs:
                     for detection in out:

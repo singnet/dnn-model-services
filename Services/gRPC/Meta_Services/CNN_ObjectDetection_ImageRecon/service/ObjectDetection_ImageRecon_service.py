@@ -25,8 +25,8 @@ class DetectReconServicer(grpc_bt_grpc.DetectReconServicer):
 
     def __init__(self):
         self.flag_start_th = False
-        self.model_objDet = "yolov3"
-        self.model_imgRecon = "ResNet152"
+        self.model_detect = "yolov3"
+        self.model_recon = "ResNet152"
         self.img_path = ""
         self.result = "Fail"
         self.confidence = "0.7"
@@ -34,19 +34,19 @@ class DetectReconServicer(grpc_bt_grpc.DetectReconServicer):
 
     def detect_recon(self, request, context):
         self.img_path = request.img_path
-        self.model_objDet = request.model_objDet
-        self.model_imgRecon = request.model_imgRecon
+        self.model_detect = request.model_detect
+        self.model_recon = request.model_recon
         self.confidence = request.confidence
 
         # Instanciate an object of the Service.
-        obj_service = DetectRecon(map_names, self.img_path)
+        obj_service = DetectRecon(self.model_detect, self.model_recon, self.img_path)
 
         # Setting ObjectDetection Service params
         name = "objDetect"
         agent_addr = "0x1E89D9ed5bCC22F934AF631CdA771019081E57B2"
         method = "detect"
         json_txt = '{"model": "%s", "img_path": "%s", "confidence": "%s"}' % (
-            self.model_objDet,
+            self.model_detect,
             self.img_path,
             self.confidence,
         )
@@ -62,8 +62,8 @@ class DetectReconServicer(grpc_bt_grpc.DetectReconServicer):
 
         log.debug(
             "detect_recon({},{},{},{})={}".format(
-                self.model_objDet,
-                self.model_imgRecon,
+                self.model_detect,
+                self.model_recon,
                 self.confidence,
                 self.img_path,
                 str(self.result)[:500],
