@@ -6,6 +6,7 @@ import logging
 import traceback
 import ast
 
+from service import map_names
 from service.snet_control import SnetInstance
 import service.image_utils as imgutils
 
@@ -27,6 +28,7 @@ class DetectRecon(SnetInstance):
         super(DetectRecon, self).__init__()
         self.model_detect = model_detect
         self.model_recon = model_recon
+        self.recon_map_names = map_names
         self.img_path = img_path
         log.info("DetectRecon created!")
 
@@ -102,7 +104,7 @@ class DetectRecon(SnetInstance):
                         if class_id not in [15, 16, 17, 18, 19]:
                             log.info(
                                 "Class '{}' not in classification range!".format(
-                                    self.map_names[class_id]
+                                    self.recon_map_names[class_id]
                                 )
                             )
                             continue
