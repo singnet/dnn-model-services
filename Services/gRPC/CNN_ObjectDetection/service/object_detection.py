@@ -18,6 +18,29 @@ class ObjectDetector:
         self.colors = []
         self.classes = []
 
+    def get_output_layers(self, net):
+        layer_names = net.getLayerNames()
+        output_layers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
+        return output_layers
+
+    def drawPred(self, image, classId, conf, left, top, right, bottom):
+        label = "%.2f" % conf
+        if self.map_names:
+            assert classId < len(self.map_names)
+            label = "%s:%s" % (self.map_names[classId], label)
+
+        cv2.rectangle(image, (left, top), (right, bottom), self.colors[classId], 2)
+        y = top - 15 if top - 15 > 15 else top + 15
+        cv2.putText(
+            image,
+            label,
+            (left, y),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.5,
+            self.colors[classId],
+            2,
+        )
+
     def detect(self):
         try:
             start_time = time.time()
@@ -62,8 +85,8 @@ class ObjectDetector:
                 class_ids = []
                 confidences = []
                 boxes = []
-                conf_threshold = 0.1
-                nms_threshold = 0.4
+                conf_threshold = 0.5
+                nms_threshold = 0.3
 
                 for out in outs:
                     for detection in out:
@@ -85,6 +108,10 @@ class ObjectDetector:
                     boxes, confidences, conf_threshold, nms_threshold
                 )
 
+                ret_boxes = []
+                ret_class_ids = []
+                ret_confidences = []
+
                 for i in indices:
                     i = i[0]
                     box = boxes[i]
@@ -101,6 +128,9 @@ class ObjectDetector:
                         round(x + w),
                         round(y + h),
                     )
+                    ret_boxes.append(boxes[i])
+                    ret_class_ids.append(class_ids[i])
+                    ret_confidences.append(confidences[i])
 
                 retval, buffer = cv2.imencode(".jpg", image)
                 img_base64 = base64.b64encode(buffer)
@@ -112,18 +142,18 @@ class ObjectDetector:
 
                 return {
                     "delta_time": "{:.4f}".format(delta_time),
-                    "boxes": boxes,
-                    "class_ids": class_ids,
-                    "confidences": confidences,
+                    "boxes": ret_boxes,
+                    "class_ids": ret_class_ids,
+                    "confidences": ret_confidences,
                     "img_base64": img_base64.decode("utf-8"),
                 }
 
             else:
                 return {
                     "delta_time": "ModelError",
-                    "boxes": "ModelError",
-                    "class_ids": "ModelError",
-                    "confidences": "ModelError",
+                    "boxes": [],
+                    "class_ids": [],
+                    "confidences": [],
                     "img_base64": "ModelError",
                 }
 
@@ -131,31 +161,8 @@ class ObjectDetector:
             traceback.print_exc()
             return {
                 "delta_time": "Fail",
-                "boxes": "Fail",
-                "class_ids": "Fail",
-                "confidences": "Fail",
+                "boxes": [],
+                "class_ids": [],
+                "confidences": [],
                 "img_base64": "Fail",
             }
-
-    def get_output_layers(self, net):
-        layer_names = net.getLayerNames()
-        output_layers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
-        return output_layers
-
-    def drawPred(self, image, classId, conf, left, top, right, bottom):
-        label = "%.2f" % conf
-        if self.map_names:
-            assert classId < len(self.map_names)
-            label = "%s:%s" % (self.map_names[classId], label)
-
-        cv2.rectangle(image, (left, top), (right, bottom), self.colors[classId], 2)
-        y = top - 15 if top - 15 > 15 else top + 15
-        cv2.putText(
-            image,
-            label,
-            (left, y),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            0.5,
-            self.colors[classId],
-            2,
-        )

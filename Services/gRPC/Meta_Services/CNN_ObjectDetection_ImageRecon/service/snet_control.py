@@ -22,7 +22,7 @@ class SnetInstance:
 
     def __init__(self):
         # Control variables
-        self.snet_attempts = 3
+        self.snet_attempts = 5
         self.snet_call_params = {}
         self.snet_call_res_json = {}
 
@@ -41,6 +41,7 @@ class SnetInstance:
         self.snet_response = ""
 
     def snet_set_params(self, name, agent_addr, method, method_params):
+        log.info("Setting {} params...".format(name))
         self.snet_call_params[name] = {
             "agent_addr": agent_addr,
             "method": method,
@@ -73,6 +74,8 @@ class SnetInstance:
                         )
                     count += 1
                     if count > self.snet_waiting_response:
+                        if self.snet_pid:
+                            self.snet_pid.kill()
                         break
 
                 if self.snet_response:
@@ -113,7 +116,9 @@ class SnetInstance:
             ]
 
             log.info(
-                "Running 'snet client call {}' with args:\n{}".format(method, cmd_list)
+                "Running 'snet client call {}' with args:\n{}".format(
+                    method, str(cmd_list)[:500]
+                )
             )
 
             self.snet_pid = subprocess.Popen(
@@ -122,7 +127,6 @@ class SnetInstance:
                 stdin=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 bufsize=1,
-                preexec_fn=os.setsid,
                 cwd=str(cwd),
             )
 
@@ -130,6 +134,7 @@ class SnetInstance:
                 outs, errs = self.snet_pid.communicate(timeout=90)
                 if self.snet_pid.returncode == 0:
                     self.snet_response = yaml.load(outs)
+                    return True
                 else:
                     log.error(
                         "Snet client call returned an error: {}!".format(
@@ -144,13 +149,12 @@ class SnetInstance:
                             "There is another transaction with same nonce in the queue."
                         )
                         self.snet_error = 1
-                    self.snet_exited = True
-                    return False
+
             except subprocess.TimeoutExpired:
                 self.snet_pid.kill()
 
             self.snet_exited = True
-            return True
+            return False
 
         except Exception as e:
             traceback.print_exc()

@@ -2,7 +2,7 @@ import sys
 import logging
 
 import service.common
-from service.ObjectDetection_ImageRecon_service import DetectRecon
+from service.ObjectDetection_ImageRecon import DetectRecon
 from service import map_names
 
 import grpc
@@ -24,6 +24,7 @@ class DetectReconServicer(grpc_bt_grpc.DetectReconServicer):
     """
 
     def __init__(self):
+        self.flag_start_th = False
         self.model_objDet = "yolov3"
         self.model_imgRecon = "ResNet152"
         self.img_path = ""
@@ -33,7 +34,8 @@ class DetectReconServicer(grpc_bt_grpc.DetectReconServicer):
 
     def detect_recon(self, request, context):
         self.img_path = request.img_path
-        self.model = request.model
+        self.model_objDet = request.model_objDet
+        self.model_imgRecon = request.model_imgRecon
         self.confidence = request.confidence
 
         # Instanciate an object of the Service.
@@ -43,31 +45,31 @@ class DetectReconServicer(grpc_bt_grpc.DetectReconServicer):
         name = "objDetect"
         agent_addr = "0x1E89D9ed5bCC22F934AF631CdA771019081E57B2"
         method = "detect"
-        json_txt = '{"model": "{}", "img_path": "{}", "confidence": "{}"}'.format(
-            self.model_objDet, self.img_path, self.confidence
+        json_txt = '{"model": "%s", "img_path": "%s", "confidence": "%s"}' % (
+            self.model_objDet,
+            self.img_path,
+            self.confidence,
         )
         obj_service.snet_set_params(name, agent_addr, method, json_txt)
-
-        # Setting ImageRecon Service params
-        name = "imgRecon"
-        agent_addr = "0x9211Ca9A96063401BaAC5cafE85efC4024325279"
-        method = "dogs"
-        json_txt = '{"model": "{}", "img_path": "{}"}'.format(
-            self.model_imgRecon, self.img_path
-        )
-        obj_service.snet_set_params(name, agent_addr, method, json_txt)
-
         json_result = obj_service.detect_recon()
 
         self.result = Result()
         self.result.delta_time = str(json_result["delta_time"]).encode("utf-8")
         self.result.boxes = str(json_result["boxes"]).encode("utf-8")
         self.result.confidences = str(json_result["confidences"]).encode("utf-8")
-        self.result.img_base64 = str(json_result["img_base64"]).encode("utf-8")
-        log.debug("detect({},{})={}".format(self.model, self.img_path, self.result))
-        return self.result
+        self.result.class_ids = str(json_result["class_ids"]).encode("utf-8")
+        self.result.top_1_list = str(json_result["top_1_list"]).encode("utf-8")
 
-        return {"result": obj_service.detect()}
+        log.debug(
+            "detect_recon({},{},{},{})={}".format(
+                self.model_objDet,
+                self.model_imgRecon,
+                self.confidence,
+                self.img_path,
+                str(self.result)[:500],
+            )
+        )
+        return self.result
 
 
 # The gRPC serve function.
@@ -77,7 +79,7 @@ class DetectReconServicer(grpc_bt_grpc.DetectReconServicer):
 # port: gRPC server port
 #
 # Add all your classes to the server here.
-def serve(max_workers=10, port=7777):
+def grpc_server(max_workers=10, port=7777):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=max_workers))
     grpc_bt_grpc.add_DetectReconServicer_to_server(DetectReconServicer(), server)
     server.add_insecure_port("[::]:{}".format(port))
@@ -90,4 +92,4 @@ if __name__ == "__main__":
     """
     parser = service.common.common_parser(__file__)
     args = parser.parse_args(sys.argv[1:])
-    service.common.main_loop(serve, args)
+    service.common.main_loop(grpc_server, args)

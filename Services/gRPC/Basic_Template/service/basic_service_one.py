@@ -11,11 +11,12 @@ import service.model.basic_tamplate_rpc_pb2_grpc as grpc_bt_grpc
 from service.model.basic_tamplate_rpc_pb2 import Result
 
 logging.basicConfig(
-    level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s")
-log = logging.getLogger('basic_template')
+    level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s"
+)
+log = logging.getLogger("basic_template")
 
 
-'''
+"""
 Simple arithmetic service to test the Snet Daemon (gRPC), dApp and/or Snet-CLI.
 The user must provide the method (arithmetic operation) and
 two numeric inputs: "a" and "b".
@@ -40,13 +41,12 @@ Calling service...
 
     response:
         value: 924.0
-'''
+"""
 
 
 # Create a class to be added to the gRPC server
 # derived from the protobuf codes.
 class AdditionServicer(grpc_bt_grpc.AdditionServicer):
-
     def __init__(self):
         # Just for debugging purpose.
         log.debug("AdditionServicer created")
@@ -63,12 +63,11 @@ class AdditionServicer(grpc_bt_grpc.AdditionServicer):
         self.result = Result()
 
         self.result.value = self.a + self.b
-        log.debug('add({},{})={}'.format(self.a, self.b, self.result.value))
+        log.debug("add({},{})={}".format(self.a, self.b, self.result.value))
         return self.result
 
 
 class SubtractionServicer(grpc_bt_grpc.SubtractionServicer):
-
     def __init__(self):
         log.debug("SubtractionServicer created")
 
@@ -78,12 +77,11 @@ class SubtractionServicer(grpc_bt_grpc.SubtractionServicer):
 
         self.result = Result()
         self.result.value = self.a - self.b
-        log.debug('sub({},{})={}'.format(self.a, self.b, self.result.value))
+        log.debug("sub({},{})={}".format(self.a, self.b, self.result.value))
         return self.result
 
 
 class MultiplicationServicer(grpc_bt_grpc.MultiplicationServicer):
-
     def __init__(self):
         log.debug("MultiplicationServicer created")
 
@@ -93,12 +91,11 @@ class MultiplicationServicer(grpc_bt_grpc.MultiplicationServicer):
 
         self.result = Result()
         self.result.value = self.a * self.b
-        log.debug('mul({},{})={}'.format(self.a, self.b, self.result.value))
+        log.debug("mul({},{})={}".format(self.a, self.b, self.result.value))
         return self.result
 
 
 class DivisionServicer(grpc_bt_grpc.DivisionServicer):
-
     def __init__(self):
         log.debug("DivisionServicer created")
 
@@ -108,7 +105,7 @@ class DivisionServicer(grpc_bt_grpc.DivisionServicer):
 
         self.result = Result()
         self.result.value = self.a / self.b
-        log.debug('div({},{})={}'.format(self.a, self.b, self.result.value))
+        log.debug("div({},{})={}".format(self.a, self.b, self.result.value))
         return self.result
 
 
@@ -122,22 +119,18 @@ class DivisionServicer(grpc_bt_grpc.DivisionServicer):
 # (from generated .py files by protobuf compiler)
 def serve(max_workers=10, port=7777):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=max_workers))
-    grpc_bt_grpc.add_AdditionServicer_to_server(
-        AdditionServicer(), server)
-    grpc_bt_grpc.add_SubtractionServicer_to_server(
-        SubtractionServicer(), server)
-    grpc_bt_grpc.add_MultiplicationServicer_to_server(
-        MultiplicationServicer(), server)
-    grpc_bt_grpc.add_DivisionServicer_to_server(
-        DivisionServicer(), server)
-    server.add_insecure_port('[::]:{}'.format(port))
+    grpc_bt_grpc.add_AdditionServicer_to_server(AdditionServicer(), server)
+    grpc_bt_grpc.add_SubtractionServicer_to_server(SubtractionServicer(), server)
+    grpc_bt_grpc.add_MultiplicationServicer_to_server(MultiplicationServicer(), server)
+    grpc_bt_grpc.add_DivisionServicer_to_server(DivisionServicer(), server)
+    server.add_insecure_port("[::]:{}".format(port))
     return server
 
 
-if __name__ == '__main__':
-    '''
+if __name__ == "__main__":
+    """
     Runs the gRPC server to communicate with the Snet Daemon.
-    '''
+    """
     parser = service.common.common_parser(__file__)
     args = parser.parse_args(sys.argv[1:])
     service.common.main_loop(serve, args)

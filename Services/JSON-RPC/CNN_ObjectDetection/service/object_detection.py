@@ -18,6 +18,29 @@ class ObjectDetector:
         self.colors = []
         self.classes = []
 
+    def get_output_layers(self, net):
+        layer_names = net.getLayerNames()
+        output_layers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
+        return output_layers
+
+    def drawPred(self, image, classId, conf, left, top, right, bottom):
+        label = "%.2f" % conf
+        if self.map_names:
+            assert classId < len(self.map_names)
+            label = "%s:%s" % (self.map_names[classId], label)
+
+        cv2.rectangle(image, (left, top), (right, bottom), self.colors[classId], 2)
+        y = top - 15 if top - 15 > 15 else top + 15
+        cv2.putText(
+            image,
+            label,
+            (left, y),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.5,
+            self.colors[classId],
+            2,
+        )
+
     def detect(self):
         try:
             start_time = time.time()
@@ -62,8 +85,8 @@ class ObjectDetector:
             class_ids = []
             confidences = []
             boxes = []
-            conf_threshold = 0.1
-            nms_threshold = 0.4
+            conf_threshold = 0.5
+            nms_threshold = 0.3
 
             for out in outs:
                 for detection in out:
@@ -118,26 +141,3 @@ class ObjectDetector:
         except Exception as e:
             traceback.print_exc()
             return {"delta_time": "Fail", "img_base64": "Fail"}
-
-    def get_output_layers(self, net):
-        layer_names = net.getLayerNames()
-        output_layers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
-        return output_layers
-
-    def drawPred(self, image, classId, conf, left, top, right, bottom):
-        label = "%.2f" % conf
-        if self.map_names:
-            assert classId < len(self.map_names)
-            label = "%s:%s" % (self.map_names[classId], label)
-
-        cv2.rectangle(image, (left, top), (right, bottom), self.colors[classId], 2)
-        y = top - 15 if top - 15 > 15 else top + 15
-        cv2.putText(
-            image,
-            label,
-            (left, y),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            0.5,
-            self.colors[classId],
-            2,
-        )

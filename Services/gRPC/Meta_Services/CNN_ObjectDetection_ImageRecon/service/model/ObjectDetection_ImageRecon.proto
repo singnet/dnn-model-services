@@ -11,7 +11,8 @@ message Result {
     string delta_time = 1;
     string boxes = 2;
     string confidences = 3;
-    string img_base64 = 4;
+    string class_ids = 4;
+    string top_1_list = 5;
 }
 
 service DetectRecon {

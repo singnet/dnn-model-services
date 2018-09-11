@@ -27,5 +27,6 @@ def main_loop(grpc_handler, args):
     try:
         while True:
             time.sleep(0.1)
+
     except KeyboardInterrupt:
         server.stop(0)

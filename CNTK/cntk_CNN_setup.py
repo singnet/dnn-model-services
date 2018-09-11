@@ -86,6 +86,9 @@ def download_model(
             model_filename
         )
     if "yolo" in model_filename:
+        model_uri = "https://raw.githubusercontent.com/arunponnusamy/object-detection-opencv/master/yolov3.cfg"
+        model_local = os.path.join(model_root, "yolov3.cfg")
+        download_unless_exists(model_uri, model_local)
         model_uri = "https://pjreddie.com/media/files/{}".format(model_filename)
     model_local = os.path.join(model_root, model_filename)
     download_unless_exists(model_uri, model_local)
