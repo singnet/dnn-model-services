@@ -8,3 +8,4 @@
 Examples/
 temp/
 Models/
+model/*.py
