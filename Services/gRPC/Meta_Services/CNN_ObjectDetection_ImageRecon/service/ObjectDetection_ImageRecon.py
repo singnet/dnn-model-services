@@ -1,14 +1,13 @@
 import os
 import time
 import requests
-import base64
 import logging
 import traceback
 import ast
 
 from service import map_names
 from service.snet_control import SnetInstance
-import service.image_utils as imgutils
+import service.image_utils as img_utils
 
 logging.basicConfig(
     level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s"
@@ -44,10 +43,6 @@ class DetectRecon(SnetInstance):
 
             start_time = time.time()
 
-            # [DEBUG] Checking if the Service is working as expected.
-            # if not os.path.exists("temp"):
-            #     os.makedirs("temp")
-
             # Link
             if "http://" in self.img_path or "https://" in self.img_path:
                 r = requests.get(self.img_path, allow_redirects=True)
@@ -57,7 +52,7 @@ class DetectRecon(SnetInstance):
 
             # Base64
             elif len(self.img_path) > 500:
-                imgutils.save64(self.img_path)
+                img_utils.save64(self.img_path)
                 self.img_path = "temp_img.jpg"
 
             # The ObjectDetection params are already set into snet_call_params
@@ -72,11 +67,12 @@ class DetectRecon(SnetInstance):
                     self.snet_call_res_json[name] = {""}
 
             # Preparing the response
-            result = {}
-            result["boxes"] = "Fail"
-            result["class_ids"] = "Fail"
-            result["confidences"] = "Fail"
-            result["top_1_list"] = []
+            result = {
+                "boxes": "Fail",
+                "class_ids": "Fail",
+                "confidences": "Fail",
+                "top_1_list": [],
+            }
 
             ###########
             #
@@ -86,7 +82,7 @@ class DetectRecon(SnetInstance):
             ###########
             if self.snet_call_res_json[name] != {""}:
                 base64_img = self.snet_call_res_json[name]["response"]["img_base64"]
-                imgutils.save64(base64_img, "./temp/objdetect_output.jpg")
+                img_utils.save64(base64_img, "./temp/objdetect_output.jpg")
 
                 bboxes = self.snet_call_res_json[name]["response"]["boxes"]
                 class_ids = self.snet_call_res_json[name]["response"]["class_ids"]
@@ -112,7 +108,7 @@ class DetectRecon(SnetInstance):
                         coords = (box[0], box[1], box[0] + box[2], box[1] + box[3])
 
                         # Get the base64 crop image
-                        base64_bbox = imgutils.crop_image(
+                        base64_bbox = img_utils.crop_image(
                             self.img_path, coords, "base64"
                         )
 
@@ -137,17 +133,18 @@ class DetectRecon(SnetInstance):
                                     self.snet_call_res_json[name]["response"]["top_5"]
                                 )
                                 top_1 = d_tmp[1]
-                                crop_class_filename = (
-                                    top_1.replace(" ", "")
-                                    .replace("%", "")
-                                    .replace(":", "_")
-                                )
-
                                 result["top_1_list"].append(top_1)
 
-                                # [DEBUG] Checking if the Service is working as expected.
+                                # # [DEBUG] Checking if the Service is working as expected.
+                                # crop_class_filename = (
+                                #     top_1.replace(" ", "")
+                                #         .replace("%", "")
+                                #         .replace(":", "_")
+                                # )
                                 # log.info("Saving image...".format(name))
-                                # imgutils.save64(
+                                # if not os.path.exists("temp"):
+                                #     os.makedirs("temp")
+                                # img_utils.save64(
                                 #     base64_bbox,
                                 #     "./temp/{}.jpg".format(crop_class_filename),
                                 # )
@@ -170,4 +167,4 @@ class DetectRecon(SnetInstance):
 
         except Exception as e:
             traceback.print_exc()
-            return {"delta_time": "Fail"}
+            return {"delta_time": "Fail", "top_1_list": "Fail"}

@@ -93,236 +93,179 @@ $ pip3.6 install --upgrade pip
 $ pip3.6 install snet_cli
 ```
 
-- **SNET-CLI: Creating an Agent (The AI Service)**
-
--	snet agent-factory create-agent [price] [endpoint]
-	 - `price` is the desired price for interacting with your service
-		(a provided integer x is interpreted as x * 10^-8 AGI)
-	 - `endpoint` is the endpoint on which your daemon is listening for requests
-		(protocol and port are required)
+### 8. Cloning this repository:
 ```
-	$ snet agent-factory create-agent 100 http://54.203.198.53:7000
-	Create your first identity. This will be used to authenticate and sign requests pertaining
-	to the blockchain.
+$ git clone https://github.com/singnet/dnn-model-services.git
+``` 
 
-	The available identity types are:
-	    - 'rpc' (yields to a required ethereum json-rpc endpoint for signing using a given wallet
-		  index)
-	    - 'mnemonic' (uses a required bip39 mnemonic for HDWallet/account derivation and signing
-		  using a given wallet index)
-	    - 'key' (uses a required hex-encoded private key for signing)
-	    - 'ledger' (yields to a required ledger nano s device for signing using a given wallet
-		  index)
-	    - 'trezor' (yields to a required trezor device for signing using a given wallet index)
+- **SNET-CLI: Create an Identity**
 
-	Create additional identities by running 'snet identity create', and switch identities by 
-	running 'snet identity <identity_name>'.
-
-	Choose a name for your first identity: 
-	ARTUR_ID
-	Select an identity type for your first identity (choose from ['rpc', 'mnemonic', 'key', 'trezor', 'ledger']): 
-	key
-	Private key: 
-
-	set identity_name ARTUR_ID
-
-	Creating transaction to create agent...
-
-	    transaction:
-		chainId: 42
-		data: '...'
-		from: '0xFF2a327ed1Ca40CE93F116C5d6646b56991c0ddE'
-		gas: 1728995
-		gasPrice: 1000000000
-		nonce: 240
-		to: '0x1fAa8ec70aFe4f5ce904dA935A6ddF5f3482eEDb'
-		value: 0
-
-	Proceed? (y/n): y
-	Submitting transaction...
-
-	    event_summaries:
-	    -   args:
-		    agent: '0xE0Ca10C9747426d18C46891eF51c578139D066fD'
-		event: AgentCreated
-	    receipt_summary:
-		blockHash: '0xa5f28fbf4ba6c60ed49e871297abd516bbd6853bf67baa9758d402d6236fe3f2'
-		blockNumber: 8458295
-		cumulativeGasUsed: 1728995
-		gasUsed: 1728995
-		transactionHash: '0x73f3d503426a8a99b17dd145e3a43ba7e127e14f4e041c2900aec4cd86fecf43'
-
-	set current_agent_at 0xE0Ca10C9747426d18C46891eF51c578139D066fD
+-	snet identity create [identity_name] [identity_type]
+	 - `identity_name` name of your SingularityNET Identity
+	 - `identity_type` type of Identity (rpc, mnemonic, key, ledger or trezor)
 ```
-- 	0xE0Ca10C9747426d18C46891eF51c578139D066fD is your agent's address.
+$ snet identity create MY_ID_NAME key
+Private key: <PASTE YOUR PRIVATE_KEY HERE>
+
+set identity_name MY_ID_NAME
+```
 
 - **SNET-CLI: Publishing the Service (of your Agent)**
 
+-   Now it's time to publish the service on the network!
+```
+$ cd dnn-model-services/Services/gRPC/Basic_Template/service/
+```
 -	snet service init
 ```	
-	$ snet service init
-	Please provide values to populate your service.json file
+$ snet service init
+Please provide values to populate your service.json file
 
-	Choose a name for your service: (default: "BasicService")
+Choose a name for your service: (default: "BasicService")
 
-	Choose the path to your service's model directory: (default: "model/")
+Choose the path to your service's spec directory: (default: "service_spec/")
 
-	Choose an organization to register your service under: (default: "")
-	SNET_BH
-	Choose the path under which your Service registration will be created: (default: "")
+Choose an organization to register your service under: (default: "")
+SNET_BH
+Choose the path under which your Service registration will be created: (default: "")
 
-	Choose a price in AGI to call your service: (default: 0)
-	100
-	Endpoint to call the API for your service: (default: "")
-	http://54.203.198.53:7000
-	Input a list of tags for your service: (default: [])
-	Basic Service, Template, Arithmetic
-	Input a description for your service: (default: "")
-	A basic template to show how to publish a service on SingularityNET platform.
-	{
-	    "name": "BasicService",
-	    "model": "model/",
-	    "organization": "SNET_BH",
-	    "path": "",
-	    "price": 100,
-	    "endpoint": "http://54.203.198.53:7000",
-	    "tags": [
-		"Basic",
-		"Service,",
-		"Template,",
-		"Arithmetic"
-	    ],
-	    "metadata": {
-		"description": "A basic template to show how to publish a service on SingularityNET platform."
-	    }
-	}
+Choose a price in AGI to call your service: (default: 0)
+100
+Endpoint to call the API for your service: (default: "")
+http://54.203.198.53:7000
+Input a list of tags for your service: (default: [])
+Basic Service, Template, Arithmetic
+Input a description for your service: (default: "")
+A basic template to show how to publish a service on SingularityNET platform.
+{
+    "name": "BasicService",
+    "service_spec": "service_spec/",
+    "organization": "SNET_BH",
+    "path": "",
+    "price": 100,
+    "endpoint": "http://54.203.198.53:7000",
+    "tags": [
+    "Basic",
+    "Service,",
+    "Template,",
+    "Arithmetic"
+    ],
+    "metadata": {
+    "description": "A basic template to show how to publish a service on SingularityNET platform."
+    }
+}
 
-	service.json file has been created!
+service.json file has been created!
 ```
--	Now you have to create the 'model' folder and put the .proto file inside it.
+-	Now you have to create the 'service_spec' folder and put the .proto file inside it.
 ```
-	$ mkdir model
-	$ cp basic_tamplate_rpc.proto model/
-	$ ls -la model/
-	total 12
-	drwxrwxr-x 2 artur artur 4096 Ago 22 13:24 .
-	drwxrwxr-x 3 artur artur 4096 Ago 22 13:24 ..
-	-rw-rw-r-- 1 artur artur  375 Ago 22 13:18 basic_tamplate_rpc.proto
+$ mkdir service_spec
+$ cp basic_tamplate_rpc.proto service_spec/
+$ ls -la service_spec/
+total 12
+drwxrwxr-x 2 artur artur 4096 Ago 22 13:24 .
+drwxrwxr-x 3 artur artur 4096 Ago 22 13:24 ..
+-rw-rw-r-- 1 artur artur  375 Ago 22 13:18 basic_tamplate_rpc.proto
 ```
 
 -	snet service publish
 ```
-	$ snet service publish
-	Creating transaction to create agent contract...
+$ snet service publish
+Creating transaction to create agent contract...
 
-	    transaction:
-		chainId: 42
-		data: '...'
-		from: '0xFF2a327ed1Ca40CE93F116C5d6646b56991c0ddE'
-		gas: 1788459
-		gasPrice: 1000000000
-		nonce: 241
-		to: '0x1fAa8ec70aFe4f5ce904dA935A6ddF5f3482eEDb'
-		value: 0
+    transaction:
+    chainId: 42
+    data: '...'
+    from: '0xFF2a327ed1Ca40CE93F116C5d6646b56991c0ddE'
+    gas: 1788459
+    gasPrice: 1000000000
+    nonce: 241
+    to: '0x1fAa8ec70aFe4f5ce904dA935A6ddF5f3482eEDb'
+    value: 0
 
-	Proceed? (y/n): y
-	Submitting transaction...
+Proceed? (y/n): y
+Submitting transaction...
 
-	    event_summaries:
-	    -   args:
-		    agent: '0x1591F7ecB3C4Fb2E57a2679c30aC8D9b4EC65248'
-		event: AgentCreated
-	    receipt_summary:
-		blockHash: '0x378d58f4a18f3e4a7b828e67c87c0db8fe8427d68c65686f76d0868f6a2927c2'
-		blockNumber: 8458369
-		cumulativeGasUsed: 7059222
-		gasUsed: 1788285
-		transactionHash: '0xb232da6977c1e427c6148071cd78de3b64a7db59ab8a17af5b36aa8b78208058'
+    event_summaries:
+    -   args:
+        agent: '0x1591F7ecB3C4Fb2E57a2679c30aC8D9b4EC65248'
+    event: AgentCreated
+    receipt_summary:
+    blockHash: '0x378d58f4a18f3e4a7b828e67c87c0db8fe8427d68c65686f76d0868f6a2927c2'
+    blockNumber: 8458369
+    cumulativeGasUsed: 7059222
+    gasUsed: 1788285
+    transactionHash: '0xb232da6977c1e427c6148071cd78de3b64a7db59ab8a17af5b36aa8b78208058'
 
-	Adding contract address to service.json file...
+Adding contract address to service.json file...
 
-	Creating transaction to create service registration...
+Creating transaction to create service registration...
 
-	    transaction:
-		chainId: 42
-		data: '...'
-		from: '0xFF2a327ed1Ca40CE93F116C5d6646b56991c0ddE'
-		gas: 1025279
-		gasPrice: 1000000000
-		nonce: 242
-		to: '0x440cF8424fcD7Fc2D2fF3a5668c919E93A3d2aAb'
-		value: 0
+    transaction:
+    chainId: 42
+    data: '...'
+    from: '0xFF2a327ed1Ca40CE93F116C5d6646b56991c0ddE'
+    gas: 1025279
+    gasPrice: 1000000000
+    nonce: 242
+    to: '0x440cF8424fcD7Fc2D2fF3a5668c919E93A3d2aAb'
+    value: 0
 
-	Proceed? (y/n): y
-	Submitting transaction...
+Proceed? (y/n): y
+Submitting transaction...
 
-	    event_summaries:
-	    -   args:
-		    orgName: 534e45545f424800000000000000000000000000000000000000000000000000
-		    orgNameIndexed: 534e45545f424800000000000000000000000000000000000000000000000000
-		    serviceName: '4261736963536572766963650000000000000000000000000000000000000000'
-		    serviceNameIndexed: '4261736963536572766963650000000000000000000000000000000000000000'
-		event: ServiceCreated
-	    receipt_summary:
-		blockHash: '0x9dcecddcaaf10f17a0f0f958a3ae94514427cf2a62db51065c7b929af27bc89e'
-		blockNumber: 8458371
-		cumulativeGasUsed: 1048919
-		gasUsed: 1025279
-		transactionHash: '0x0105eaa581334c22e6a6d8957d735fd059484b2b57b553b941364c106417d889'
+    event_summaries:
+    -   args:
+        orgName: 534e45545f424800000000000000000000000000000000000000000000000000
+        orgNameIndexed: 534e45545f424800000000000000000000000000000000000000000000000000
+        serviceName: '4261736963536572766963650000000000000000000000000000000000000000'
+        serviceNameIndexed: '4261736963536572766963650000000000000000000000000000000000000000'
+    event: ServiceCreated
+    receipt_summary:
+    blockHash: '0x9dcecddcaaf10f17a0f0f958a3ae94514427cf2a62db51065c7b929af27bc89e'
+    blockNumber: 8458371
+    cumulativeGasUsed: 1048919
+    gasUsed: 1025279
+    transactionHash: '0x0105eaa581334c22e6a6d8957d735fd059484b2b57b553b941364c106417d889'
 ```
+
 - **SNET-CLI: List Services**
 
-- 	Check the services from a specific Organization ('SNET_BH')
+- 	List services from a specific Organization ('SNET_BH')
 ```
-	$ snet contract Registry listServicesForOrganization SNET_BH
-	[True, [b'BASIC_gRPC_ARITHMETIC_015\x00\x00\x00\x00\x00\x00\x00',
-	b'ResNetService\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
-	b'BasicService\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00']]
+$ snet organization list-services SNET_BH
 
+List of SNET_BH's Services:
+- BasicService
 ```
+
 - **SNET-CLI: Removing an Agent (Set your service unavailable)**
 
--	snet contract Registry deleteServiceRegistration [organization] [name] --transact
+-	snet service delete [organization] [service_name]
 	 - `organization` name of the Organization.
-	 - `name` of the Agent.
+	 - `service_name` name of the Service.
 ```
-	$ snet contract Registry deleteServiceRegistration SNET_BH BASIC_gRPC_ARITHMETIC_015 --transact
-	    transaction:
-		chainId: 42
-		data: '...'
-		from: '0xFF2a327ed1Ca40CE93F116C5d6646b56991c0ddE'
-		gas: 127507
-		gasPrice: 1000000000
-		nonce: 244
-		to: '0x440cF8424fcD7Fc2D2fF3a5668c919E93A3d2aAb'
-		value: 0
+$ snet service delete SNET_BH BasicService
+Getting information about the service...
+Deleting service BasicService...
+Proceed? (y/n): y
+Submitting transaction...
 
-	Proceed? (y/n): y
-	Submitting transaction...
+Removing current contract address from session...
 
-	    event_summaries:
-	    -   args:
-		    orgName: 534e45545f424800000000000000000000000000000000000000000000000000
-		    orgNameIndexed: 534e45545f424800000000000000000000000000000000000000000000000000
-		    serviceName: 42415349435f675250435f41524954484d455449435f30313500000000000000
-		    serviceNameIndexed: 42415349435f675250435f41524954484d455449435f30313500000000000000
-		event: ServiceDeleted
-	    receipt_summary:
-		blockHash: '0xb7a9cb6081f85e3e35f43b9819e4948f0a6239fe139204bd0795489dce411e4d'
-		blockNumber: 8458422
-		cumulativeGasUsed: 3241353
-		gasUsed: 63754
-		transactionHash: '0x44fbaaaad23c9773e534a78524b2e4aeb87ef640986c4e5dbf414a47b3f01250'
+unset current_agent_at
+
+Service was deleted!
 ```
 - **SNET-CLI: Checking you session**
 ```
-	snet session
-	    session:
-		current_agent_at: 'YOU_AGENT_ADRESS'
-		default_eth_rpc_endpoint: https://kovan.infura.io
-		default_gas_price: '1000000000'
-		default_wallet_index: '0'
-		identity_name: ARTUR_ID
+$ snet session
+    session:
+    current_agent_at: 'YOUR_SERVICE_ADDRESS'
+    default_eth_rpc_endpoint: https://kovan.infura.io
+    default_gas_price: '1000000000'
+    default_wallet_index: '0'
+    identity_name: MY_ID_NAME
 ```
 - **SNET-CLI: SET and UNSET**
 -	If you need to change keys from your session.
@@ -332,37 +275,39 @@ $ pip3.6 install snet_cli
 ```
 
 ### 8. SNET DAEMON: Running the service
+-   Go to the root of your service's folders.
+-   Create a json file `snetd_[SERVICE_NAME]_config.json`
+-   Save it inside a `config/` folder.
+-   Generate the gRPC python codes.
 -	Access your service endpoint and start the Daemon.
 
 ```
-	$ git clone https://github.com/arturgontijo/snet_bh.git
-	$ cd snet_bh/Snet_Services/gRPC/Basic_Template
-	$ cat config/snetd_basic_service_one_config.json
-	{
-	    "DAEMON_TYPE": "grpc",
-	    "DAEMON_LISTENING_PORT": "7000",
-	    "BLOCKCHAIN_ENABLED": true,
-	    "ETHEREUM_JSON_RPC_ENDPOINT": "https://kovan.infura.io",
-	    "AGENT_CONTRACT_ADDRESS": "YOUR_AGENT_ADDRESS",
-	    "SERVICE_TYPE": "grpc",
-	    "PASSTHROUGH_ENABLED": true,
-	    "PASSTHROUGH_ENDPOINT": "http://localhost:7003",
-	    "LOG_LEVEL": 10,
-	    "PRIVATE_KEY": "YOUR_PRIVATE_KEY"
-	}
-	
-	$ sh buildproto.sh
-	
-	$ python3.6 run_basic_service.py --daemon-config config/
-	Launching service.basic_service_one on ports {'grpc': 7003, 'snetd': 7000}
-	2018-08-22 16:48:48,343 - [   DEBUG] - basic_template - AdditionServicer created
-	2018-08-22 16:48:48,344 - [   DEBUG] - basic_template - SubtractionServicer created
-	2018-08-22 16:48:48,344 - [   DEBUG] - basic_template - MultiplicationServicer created
-	2018-08-22 16:48:48,344 - [   DEBUG] - basic_template - DivisionServicer created
-	DEBU[0000] starting daemon
+$ cat config/snetd_basic_service_one_config.json
+{
+    "DAEMON_TYPE": "grpc",
+    "DAEMON_LISTENING_PORT": "7000",
+    "BLOCKCHAIN_ENABLED": true,
+    "ETHEREUM_JSON_RPC_ENDPOINT": "https://kovan.infura.io",
+    "AGENT_CONTRACT_ADDRESS": "YOUR_AGENT_ADDRESS",
+    "SERVICE_TYPE": "grpc",
+    "PASSTHROUGH_ENABLED": true,
+    "PASSTHROUGH_ENDPOINT": "http://localhost:7003",
+    "LOG_LEVEL": 10,
+    "PRIVATE_KEY": "YOUR_PRIVATE_KEY"
+}
+
+$ sh buildproto.sh
+
+$ python3.6 run_basic_service.py --daemon-config config/
+Launching service.basic_service_one on ports {'grpc': 7003, 'snetd': 7000}
+2018-08-22 16:48:48,343 - [   DEBUG] - basic_template - AdditionServicer created
+2018-08-22 16:48:48,344 - [   DEBUG] - basic_template - SubtractionServicer created
+2018-08-22 16:48:48,344 - [   DEBUG] - basic_template - MultiplicationServicer created
+2018-08-22 16:48:48,344 - [   DEBUG] - basic_template - DivisionServicer created
+DEBU[0000] starting daemon
 ```
 
-### 9. SNET-CLI: Calling the Service
+### 9. SNET-CLI: Calling the Service (remote)
 
 -	snet client call [method] '[json]'
 	 - `method` one of your service's methods.
@@ -469,4 +414,15 @@ $ pip3.6 install snet_cli
 
 	    response:
 		value: 924.0
+```
+
+### 9.1 SNET-CLI: Calling the Service (local)
+```
+$ python3.6 test_call_basic_service.py 
+Endpoint (localhost:7003): 
+Method (add|sub|mul|div): mul
+Number 1: 12
+Number 2: 77
+924.0
+
 ```

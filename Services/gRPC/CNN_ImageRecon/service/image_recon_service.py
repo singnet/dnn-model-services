@@ -9,8 +9,8 @@ import service.image_recon as img_recon
 from service import flowers_map_names, dogs_map_names, cars_map_names
 
 # Importing the generated codes from buildproto.sh
-import service.model.image_recon_pb2_grpc as grpc_bt_grpc
-from service.model.image_recon_pb2 import Result
+import service.service_spec.image_recon_pb2_grpc as grpc_bt_grpc
+from service.service_spec.image_recon_pb2 import Result
 
 logging.basicConfig(
     level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s"

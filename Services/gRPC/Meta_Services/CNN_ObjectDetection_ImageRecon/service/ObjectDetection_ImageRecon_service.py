@@ -3,14 +3,13 @@ import logging
 
 import service.common
 from service.ObjectDetection_ImageRecon import DetectRecon
-from service import map_names
 
 import grpc
 import concurrent.futures as futures
 
 # Importing the generated codes from buildproto.sh
-import service.model.ObjectDetection_ImageRecon_pb2_grpc as grpc_bt_grpc
-from service.model.ObjectDetection_ImageRecon_pb2 import Result
+import service.service_spec.ObjectDetection_ImageRecon_pb2_grpc as grpc_bt_grpc
+from service.service_spec.ObjectDetection_ImageRecon_pb2 import Result
 
 logging.basicConfig(
     level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s"
@@ -24,12 +23,11 @@ class DetectReconServicer(grpc_bt_grpc.DetectReconServicer):
     """
 
     def __init__(self):
-        self.flag_start_th = False
         self.model_detect = "yolov3"
         self.model_recon = "ResNet152"
+        self.confidence = "0.7"
         self.img_path = ""
         self.result = "Fail"
-        self.confidence = "0.7"
         log.debug("DetectReconServicer created")
 
     def detect_recon(self, request, context):
@@ -38,7 +36,7 @@ class DetectReconServicer(grpc_bt_grpc.DetectReconServicer):
         self.model_recon = request.model_recon
         self.confidence = request.confidence
 
-        # Instanciate an object of the Service.
+        # Instantiate an object of the Service.
         obj_service = DetectRecon(self.model_detect, self.model_recon, self.img_path)
 
         # Setting ObjectDetection Service params

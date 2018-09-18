@@ -5,7 +5,6 @@ import threading
 import traceback
 import yaml
 import time
-import os
 
 
 logging.basicConfig(
@@ -113,7 +112,7 @@ class SnetInstance:
         Makes the "snet client call' with passing params
         """
         try:
-            cwd = pathlib.Path("./service/model").absolute()
+            cwd = pathlib.Path("./service/service_spec").absolute()
             cmd_list = [
                 "snet",
                 "client",

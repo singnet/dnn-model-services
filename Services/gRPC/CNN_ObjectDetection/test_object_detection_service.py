@@ -1,47 +1,40 @@
-import base64
-import jsonrpcclient
+import grpc
+
+# import the generated classes
+import service.service_spec.object_detection_pb2_grpc as grpc_bt_grpc
+import service.service_spec.object_detection_pb2 as grpc_bt_pb2
+
 from service import registry
 
 if __name__ == "__main__":
 
     try:
         endpoint = input(
-            "Endpoint (localhost:{}): ".format(
-                registry["object_detection_service"]["jsonrpc"]
-            )
+            "Endpoint (localhost:{}): ".format(registry["object_detection_service"]["grpc"])
         )
         if endpoint == "":
-            endpoint = "localhost:{}".format(
-                registry["object_detection_service"]["jsonrpc"]
-            )
+            endpoint = "localhost:{}".format(registry["object_detection_service"]["grpc"])
 
-        rpc_method = "detect"
+        # open a gRPC channel
+        channel = grpc.insecure_channel("{}".format(endpoint))
 
-        model = input("Model (YOLOv3): ")
-        if model == "":
-            model = "YOLOv3"
-
+        grpc_method = "detect"
+        model = "yolov3"
         confidence = input("Confidence (0.7): ")
         if confidence == "":
             confidence = "0.7"
 
         img_path = input("Image (Path or Link): ")
 
-        ret = jsonrpcclient.request(
-            "http://{}".format(endpoint),
-            rpc_method,
-            model=model,
-            confidence=confidence,
-            img_path=img_path,
-        )
-        delta_time = ret["result"]["delta_time"]
-        img_base64 = ret["result"]["img_base64"]
-        print("Delta time: " + str(delta_time))
-        # Storing the image into output.jpg
-        imgdata = base64.b64decode(img_base64)
-        with open("output.jpg", "wb") as f:
-            f.write(imgdata)
-        print("Done!")
+        # create a stub (client)
+        stub = grpc_bt_grpc.DetectStub(channel)
+        # create a valid request message
+        request = grpc_bt_pb2.ObjectDetectionRequest(model=model,
+                                                     confidence=confidence,
+                                                     img_path=img_path)
+        # make the call
+        response = stub.detect(request)
+        print(response)
 
     except Exception as e:
         print(e)

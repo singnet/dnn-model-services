@@ -9,8 +9,8 @@ import grpc
 import concurrent.futures as futures
 
 # Importing the generated codes from buildproto.sh
-import service.model.object_detection_pb2_grpc as grpc_bt_grpc
-from service.model.object_detection_pb2 import Result
+import service.service_spec.object_detection_pb2_grpc as grpc_bt_grpc
+from service.service_spec.object_detection_pb2 import Result
 
 logging.basicConfig(
     level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s"
@@ -22,8 +22,8 @@ class ObjectDetectorServicer(grpc_bt_grpc.DetectServicer):
     def __init__(self):
         self.model = "yolov3"
         self.img_path = ""
-        self.result = "Fail"
         self.confidence = "0.7"
+        self.result = "Fail"
         log.debug("ObjectDetectorServicer created")
 
     def detect(self, request, context):

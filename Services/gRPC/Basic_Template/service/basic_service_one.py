@@ -7,8 +7,8 @@ import concurrent.futures as futures
 import service.common
 
 # Importing the generated codes from buildproto.sh
-import service.model.basic_tamplate_rpc_pb2_grpc as grpc_bt_grpc
-from service.model.basic_tamplate_rpc_pb2 import Result
+import service.service_spec.basic_tamplate_rpc_pb2_grpc as grpc_bt_grpc
+from service.service_spec.basic_tamplate_rpc_pb2 import Result
 
 logging.basicConfig(
     level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s"

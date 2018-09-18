@@ -8,4 +8,6 @@
 Examples/
 temp/
 Models/
-model/*.py
+config/
+service/*.json
+service_spec/*.py

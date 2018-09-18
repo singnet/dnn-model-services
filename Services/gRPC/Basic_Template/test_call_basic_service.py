@@ -1,8 +1,8 @@
 import grpc
 
 # import the generated classes
-import service.model.basic_tamplate_rpc_pb2_grpc as grpc_bt_grpc
-import service.model.basic_tamplate_rpc_pb2 as grpc_bt_pb2
+import service.service_spec.basic_tamplate_rpc_pb2_grpc as grpc_bt_grpc
+import service.service_spec.basic_tamplate_rpc_pb2 as grpc_bt_pb2
 
 from service import registry
 
