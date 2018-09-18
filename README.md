@@ -278,8 +278,8 @@ $ snet session
 -   Go to the root of your service's folders.
 -   Create a json file `snetd_[SERVICE_NAME]_config.json`
 -   Save it inside a `config/` folder.
--   Generate the gRPC python codes.
--	Access your service endpoint and start the Daemon.
+-   Generate the gRPC python codes (`buildproto.sh`).
+-   Access your service endpoint and start the Daemon.
 
 ```
 $ cat config/snetd_basic_service_one_config.json
