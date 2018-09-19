@@ -9,6 +9,7 @@ from scipy.io import loadmat
 
 import tarfile
 import time
+import traceback
 
 import cntk.io.transforms as xforms
 
@@ -23,8 +24,14 @@ import requests
 
 # Import CNTK and helpers
 import cntk as C
+import cv2
 
-from registry import flowers_map_names, dogs_map_names, cars_map_names
+from registry import (
+    flowers_map_names,
+    dogs_map_names,
+    imagenet_map_names,
+    coco_map_names,
+)
 
 isFast = True
 # C.device.try_set_default_device(C.device.gpu(0))
@@ -70,20 +77,22 @@ def download_unless_exists(url, filename, max_retries=3):
 
 
 def download_model(
-    model_root=os.path.join(data_root, "PretrainedModels"),
-    model_filename="ResNet_18_ImageNet_CNTK.model",
+    model_root=output_path, model_filename="ResNet_18_ImageNet_CNTK.model"
 ):
     ensure_exists(model_root)
-    resnet_model_uri = "https://www.cntk.ai/Models/CNTK_Pretrained/{}".format(
-        model_filename
-    )
+    model_uri = "https://www.cntk.ai/Models/CNTK_Pretrained/{}".format(model_filename)
     if "VGG" in model_filename:
-        resnet_model_uri = "https://www.cntk.ai/Models/Caffe_Converted/{}".format(
+        model_uri = "https://www.cntk.ai/Models/Caffe_Converted/{}".format(
             model_filename
         )
-    resnet_model_local = os.path.join(model_root, model_filename)
-    download_unless_exists(resnet_model_uri, resnet_model_local)
-    return resnet_model_local
+    if "yolo" in model_filename:
+        model_uri = "https://raw.githubusercontent.com/arunponnusamy/object-detection-opencv/master/yolov3.cfg"
+        model_local = os.path.join(model_root, "yolov3.cfg")
+        download_unless_exists(model_uri, model_local)
+        model_uri = "https://pjreddie.com/media/files/{}".format(model_filename)
+    model_local = os.path.join(model_root, model_filename)
+    download_unless_exists(model_uri, model_local)
+    return model_local
 
 
 def download_flowers_dataset(dataset_root=os.path.join(datasets_path, "Flowers")):
@@ -175,7 +184,68 @@ def download_animals_dataset(dataset_root=os.path.join(datasets_path, "Animals")
     }
 
 
-def setup_flowers(num_epochs):
+def setup_imagenet(opt_model):
+
+    if opt_model != "":
+        if "VGG" in opt_model:
+            model_filename = opt_model + "_ImageNet_Caffe.model"
+        else:
+            model_filename = opt_model + "_ImageNet_CNTK.model"
+    else:
+        opt_model = "ResNet18"
+        model_filename = opt_model + "_ImageNet_CNTK.model"
+
+    model_details = setup_base_model(opt_model, model_filename)
+
+    set_model = {
+        "model_file": model_details["model_file"],
+        "results_file": os.path.join(
+            output_path, "ImageNet_{}_Predic.txt".format(opt_model)
+        ),
+        "num_classes": 1000,
+    }
+
+    return set_model, model_details, imagenet_map_names
+
+
+def setup_detect(opt_model):
+
+    if opt_model != "":
+        if "VGG" in opt_model:
+            model_filename = opt_model + "_ImageNet_Caffe.model"
+        elif "yolo" in opt_model:
+            model_filename = opt_model + ".weights"
+        else:
+            model_filename = opt_model + "_ImageNet_CNTK.model"
+    else:
+        opt_model = "yolov3"
+        model_filename = opt_model + ".weights"
+
+    model_details = setup_base_model(opt_model, model_filename)
+
+    classes = [v for k, v in coco_map_names.items()]
+    colors = np.random.uniform(0, 255, size=(len(classes), 3))
+
+    set_model = {
+        "model_file": model_details["model_file"],
+        "model_cfg": os.path.join(output_path, "{}.cfg".format(opt_model)),
+        "results_file": os.path.join(
+            output_path, "Detect_{}_Predic.txt".format(opt_model)
+        ),
+        "num_classes": 80,
+        "classes": classes,
+        "colors": colors,
+    }
+
+    return set_model, model_details, coco_map_names
+
+
+def setup_flowers(num_epochs, opt_model):
+    print("Downloading flowers and animals data-set...")
+    set_data = download_flowers_dataset()
+    # animals_data = download_animals_dataset()
+    print("All flowers data now available!")
+
     set_model = {
         "model_file": os.path.join(
             output_path, "flowers_{}_{}.model".format(opt_model, num_epochs)
@@ -186,15 +256,21 @@ def setup_flowers(num_epochs):
         "num_classes": 102,
     }
 
-    print("Downloading flowers and animals data-set...")
-    set_data = download_flowers_dataset()
-    # animals_data = download_animals_dataset()
-    print("All flowers data now available!")
+    if opt_model != "":
+        if "VGG" in opt_model:
+            model_filename = opt_model + "_ImageNet_Caffe.model"
+        else:
+            model_filename = opt_model + "_ImageNet_CNTK.model"
+    else:
+        opt_model = "ResNet18"
+        model_filename = opt_model + "_ImageNet_CNTK.model"
 
-    return set_data, set_model, flowers_map_names
+    model_details = setup_base_model(opt_model, model_filename)
+
+    return set_data, set_model, model_details, flowers_map_names
 
 
-def setup_dogs(num_epochs):
+def setup_dogs(num_epochs, opt_model):
     dataset_root = os.path.join(datasets_path, "Dogs")
 
     set_data = {
@@ -260,7 +336,18 @@ def setup_dogs(num_epochs):
             num_breed = int(num_breed.split(".")[0]) - 1
             my_f.write(file + "\t" + str(num_breed) + "\n")
 
-    return set_data, set_model, dogs_map_names
+    if opt_model != "":
+        if "VGG" in opt_model:
+            model_filename = opt_model + "_ImageNet_Caffe.model"
+        else:
+            model_filename = opt_model + "_ImageNet_CNTK.model"
+    else:
+        opt_model = "ResNet18"
+        model_filename = opt_model + "_ImageNet_CNTK.model"
+
+    model_details = setup_base_model(opt_model, model_filename)
+
+    return set_data, set_model, model_details, dogs_map_names
 
 
 # Creates a minibatch source for training or testing
@@ -475,10 +562,133 @@ def eval_test_images(
                 if pred_count >= num_images:
                     break
     print("{0} of {1} prediction were correct".format(correct_count, pred_count))
+    if pred_count == 0:
+        pred_count = 1
     return correct_count, pred_count, (float(correct_count) / pred_count)
 
 
-def force_train(base_model, set_model, set_data, max_training_epochs):
+def eval_single_image_ImageNet(opt_model, loaded_model, image_path, image_dims):
+    img = Image.open(image_path)
+
+    if image_path.endswith("png"):
+        temp = Image.new("RGB", img.size, (255, 255, 255))
+        temp.paste(img, img)
+        img = temp
+    resized = img.resize((image_dims[2], image_dims[1]), Image.ANTIALIAS)
+    bgr_image = np.asarray(resized, dtype=np.float32)[..., [2, 1, 0]]
+    hwc_format = np.ascontiguousarray(np.rollaxis(bgr_image, 2))
+
+    if "VGG" in opt_model:
+        arguments = {loaded_model.arguments[0]: [hwc_format]}
+        output = loaded_model.eval(arguments)
+        sm = C.softmax(output[0])
+        return sm.eval()
+    elif "InceptionV3" in opt_model:
+        z = C.as_composite(loaded_model[0].owner)
+        output = z.eval({z.arguments[0]: [hwc_format]})
+    else:
+        z = C.as_composite(loaded_model[3].owner)
+        output = z.eval({z.arguments[0]: [hwc_format]})
+
+    predictions = np.squeeze(output)
+    return predictions
+
+
+def detect_objects(trained_model, set_model, min_conf, img_path):
+    def get_output_layers(net):
+        layer_names = net.getLayerNames()
+        output_layers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
+        return output_layers
+
+    def drawPred(image, classes, colors, classId, conf, left, top, right, bottom):
+        label = "%.2f" % conf
+        if classes:
+            assert classId < len(classes)
+            label = "%s:%s" % (classes[classId], label)
+
+        cv2.rectangle(image, (left, top), (right, bottom), colors[classId], 2)
+        y = top - 15 if top - 15 > 15 else top + 15
+        cv2.putText(
+            image, label, (left, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, colors[classId], 2
+        )
+
+    image = cv2.imread(img_path)
+    w_image = image.shape[1]
+    h_image = image.shape[0]
+    scale = 0.00392
+
+    blob = cv2.dnn.blobFromImage(image, scale, (416, 416), (0, 0, 0), True, crop=False)
+
+    trained_model.setInput(blob)
+
+    outs = trained_model.forward(get_output_layers(trained_model))
+
+    class_ids = []
+    confidences = []
+    boxes = []
+    conf_threshold = 0.1
+    nms_threshold = 0.4
+
+    for out in outs:
+        for detection in out:
+            scores = detection[5:]
+            class_id = np.argmax(scores)
+            confidence = scores[class_id]
+            if confidence >= float(min_conf):
+                center_x = int(detection[0] * w_image)
+                center_y = int(detection[1] * h_image)
+                w = int(detection[2] * w_image)
+                h = int(detection[3] * h_image)
+                x = center_x - w / 2
+                y = center_y - h / 2
+                class_ids.append(class_id)
+                confidences.append(float(confidence))
+                boxes.append([x, y, w, h])
+
+    indices = cv2.dnn.NMSBoxes(boxes, confidences, conf_threshold, nms_threshold)
+
+    for i in indices:
+        i = i[0]
+        box = boxes[i]
+        x = box[0]
+        y = box[1]
+        w = box[2]
+        h = box[3]
+        drawPred(
+            image,
+            set_model["classes"],
+            set_model["colors"],
+            class_ids[i],
+            confidences[i],
+            round(x),
+            round(y),
+            round(x + w),
+            round(y + h),
+        )
+
+    delta_time = time.time() - start_time
+
+    # Check if a display is available
+    try:
+        os.environ["DISPLAY"]
+        if w_image > 416 or h_image > 416:
+            image = cv2.resize(image, (416, 416))
+        cv2.imshow("object detection", image)
+        cv2.waitKey()
+
+        cv2.imwrite("object-detection.jpg", image)
+        cv2.destroyAllWindows()
+    except Exception as e:
+        print(e)
+        print("Command line version...")
+
+    return {
+        "delta_time": delta_time,
+        "boxes": [(conf, c) for conf, c in zip(confidences, class_ids)],
+    }
+
+
+def force_training(base_model, set_model, set_data, max_training_epochs):
     # Print out all layers in the model
     print("Loading {} and printing all layers:".format(base_model["model_file"]))
     node_outputs = C.logging.get_node_outputs(C.load_model(base_model["model_file"]))
@@ -561,13 +771,13 @@ while opt_setup != "q":
         opt_test = ""
         while opt_test != "q":
             try:
-                opt_test = str(input("==> Set;Model;Epochs;Image (r=Return): ")).split(
-                    ";"
-                )
+                opt_test = str(
+                    input("==> Method;Model;Epochs;Image (r=Return): ")
+                ).split(";")
 
-                opt_set, opt_model, opt_epochs, img_path = ["", "", "", ""]
+                opt_method, opt_model, opt_epochs, img_path = ["", "", "", ""]
                 if len(opt_test) == 4:
-                    opt_set, opt_model, opt_epochs, img_path = opt_test
+                    opt_method, opt_model, opt_epochs, img_path = opt_test
                 elif opt_test == ["r"]:
                     break
                 else:
@@ -580,28 +790,30 @@ while opt_setup != "q":
                     max_training_epochs = int(opt_epochs)
 
                 map_names = set_data = set_model = {}
-                if opt_set == "flowers":
-                    set_data, set_model, map_names = setup_flowers(max_training_epochs)
-                elif opt_set == "dogs":
-                    set_data, set_model, map_names = setup_dogs(max_training_epochs)
+                if opt_method == "ImageNet":
+                    set_model, model_details, map_names = setup_imagenet(opt_model)
+                elif opt_method == "Detect":
+                    set_model, model_details, map_names = setup_detect(opt_model)
+                elif opt_method == "flowers":
+                    set_data, set_model, model_details, map_names = setup_flowers(
+                        max_training_epochs, opt_model
+                    )
+                elif opt_method == "dogs":
+                    set_data, set_model, model_details, map_names = setup_dogs(
+                        max_training_epochs, opt_model
+                    )
                 else:
                     print("Invalid Set!")
                     continue
 
-                if opt_model != "":
-                    if "VGG" in opt_model:
-                        model_filename = opt_model + "_ImageNet_Caffe.model"
-                    else:
-                        model_filename = opt_model + "_ImageNet_CNTK.model"
-                else:
-                    opt_model = "ResNet18"
-                    model_filename = opt_model + "_ImageNet_CNTK.model"
-
-                model_details = setup_base_model(opt_model, model_filename)
-
                 if os.path.exists(set_model["model_file"]):
                     print("Loading existing model from %s" % set_model["model_file"])
-                    trained_model = C.load_model(set_model["model_file"])
+                    if opt_method == "Detect":
+                        trained_model = cv2.dnn.readNet(
+                            set_model["model_file"], set_model["model_cfg"]
+                        )
+                    else:
+                        trained_model = C.load_model(set_model["model_file"])
                 else:
                     print("{} Exists?".format(set_model["model_file"]))
                     continue
@@ -614,9 +826,44 @@ while opt_setup != "q":
 
                 start_time = time.time()
                 print("============================\nTest Results: ")
-                probs = eval_single_image(
-                    trained_model, img_path, model_details["image_dims"]
-                )
+                if opt_method == "ImageNet":
+                    probs = eval_single_image_ImageNet(
+                        opt_model, trained_model, img_path, model_details["image_dims"]
+                    )
+                    p_array = probs.argsort()[-5:][::-1]
+                    if len(p_array) > 1:
+                        for i, prob in enumerate(p_array):
+                            print("{0:05.2f}: {1}".format(probs[prob], map_names[prob]))
+                    predicted_label = np.argmax(probs)
+                    print("\nPredicted Label: " + str(map_names[predicted_label]))
+                    delta_time = time.time() - start_time
+                    print("Delta Time: {0:.2f}\n".format(delta_time))
+                    if img_path == "temp_img.jpg":
+                        os.remove(img_path)
+                    continue
+
+                elif opt_method == "Detect":
+                    confidence = "0.5"
+                    ret = detect_objects(trained_model, set_model, confidence, img_path)
+                    delta_time = ret["delta_time"]
+                    boxes = ret["boxes"]
+                    for (conf, class_id) in boxes:
+                        print(
+                            "{0:05.2f}%: {1}".format(
+                                float(conf) * 100, map_names[class_id]
+                            )
+                        )
+                    print("Delta Time: {0:.2f}\n".format(delta_time))
+
+                    if img_path == "temp_img.jpg":
+                        os.remove(img_path)
+                    continue
+
+                else:
+                    probs = eval_single_image(
+                        trained_model, img_path, model_details["image_dims"]
+                    )
+
                 p_array = probs.argsort()[-5:][::-1]
                 for i, prob in enumerate(p_array):
                     perc = probs[prob] * 100
@@ -630,48 +877,51 @@ while opt_setup != "q":
                     os.remove(img_path)
 
             except Exception as e:
+                traceback.print_exc()
                 print("Error! " + str(e))
                 break
+
     elif opt_setup == "2":
         opt_train = ""
         while opt_train != "r":
-            opt_train = str(input("==> Set;Model;Epochs (r=Return): ")).split(";")
+            try:
+                opt_train = str(input("==> Method;Model;Epochs (r=Return): ")).split(
+                    ";"
+                )
 
-            opt_set, opt_model, opt_epochs = ["", "", ""]
-            if len(opt_train) == 3:
-                opt_set, opt_model, opt_epochs = opt_train
-            elif opt_train == ["r"]:
-                break
-            else:
-                print("Please, provide 3 fields!")
-                continue
-
-            print()
-            max_training_epochs = 10
-            if opt_epochs.isdigit():
-                max_training_epochs = int(opt_epochs)
-
-            map_names = set_data = set_model = {}
-            if opt_set == "flowers":
-                set_data, set_model, map_names = setup_flowers(max_training_epochs)
-            elif opt_set == "dogs":
-                set_data, set_model, map_names = setup_dogs(max_training_epochs)
-            else:
-                print("Invalid Set!")
-                continue
-
-            if opt_model != "":
-                if "VGG" in opt_model:
-                    model_filename = opt_model + "_ImageNet_Caffe.model"
+                opt_method, opt_model, opt_epochs = ["", "", ""]
+                if len(opt_train) == 3:
+                    opt_method, opt_model, opt_epochs = opt_train
+                elif opt_train == ["r"]:
+                    break
                 else:
-                    model_filename = opt_model + "_ImageNet_CNTK.model"
-            else:
-                opt_model = "ResNet18"
-                model_filename = opt_model + "_ImageNet_CNTK.model"
+                    print("Please, provide 3 fields!")
+                    continue
 
-            model_details = setup_base_model(opt_model, model_filename)
+                print()
+                max_training_epochs = 10
+                if opt_epochs.isdigit():
+                    max_training_epochs = int(opt_epochs)
 
-            force_train(model_details, set_model, set_data, max_training_epochs)
+                map_names = set_data = set_model = {}
+                if opt_method == "flowers":
+                    set_data, set_model, model_details, map_names = setup_flowers(
+                        max_training_epochs, opt_model
+                    )
+                elif opt_method == "dogs":
+                    set_data, set_model, model_details, map_names = setup_dogs(
+                        max_training_epochs, opt_model
+                    )
+                else:
+                    print("Invalid Set!")
+                    continue
+
+                force_training(model_details, set_model, set_data, max_training_epochs)
+
+            except Exception as e:
+                traceback.print_exc()
+                print("Error!!" + str(e))
+                break
 
     else:
         print("Exit!")

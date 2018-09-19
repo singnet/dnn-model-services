@@ -1,0 +1,2 @@
+aiohttp==3.3.2
+jsonrpcserver==3.5.6
