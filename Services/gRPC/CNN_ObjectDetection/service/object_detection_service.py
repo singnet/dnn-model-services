@@ -12,9 +12,7 @@ import concurrent.futures as futures
 import service.service_spec.object_detection_pb2_grpc as grpc_bt_grpc
 from service.service_spec.object_detection_pb2 import Result
 
-logging.basicConfig(
-    level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s"
-)
+logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s")
 log = logging.getLogger("obj_detect_service")
 
 

@@ -9,5 +9,5 @@ Examples/
 temp/
 Models/
 config/
-service/*.json
-service_spec/*.py
+**/service/*.json
+**/service_spec/*.py

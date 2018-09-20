@@ -25,23 +25,14 @@ class ObjectDetector:
         return output_layers
 
     # Draw the predicted bounding box
-    def drawPred(self, image, classId, conf, left, top, right, bottom):
+    def draw_pred(self, img, class_id, conf, left, top, right, bottom):
         label = "%.2f" % conf
         if self.map_names:
-            assert classId < len(self.map_names)
-            label = "%s:%s" % (self.map_names[classId], label)
-        cv2.rectangle(image, (left, top), (right, bottom), self.colors[classId], 2)
-        cv2.rectangle(
-            image, (left, top), (right, top + 15), self.colors[classId], cv2.FILLED
-        )
-        cv2.putText(
-            image,
-            label,
-            (left, top + 10),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            0.5,
-            (255, 255, 255),
-        )
+            assert class_id < len(self.map_names)
+            label = "%s:%s" % (self.map_names[class_id], label)
+        cv2.rectangle(img, (left, top), (right, bottom), self.colors[class_id], 2)
+        cv2.rectangle(img, (left, top), (right, top + 15), self.colors[class_id], cv2.FILLED)
+        cv2.putText(img, label, (left, top + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(255, 255, 255))
 
     def detect(self):
         try:
@@ -71,17 +62,12 @@ class ObjectDetector:
                 net = cv2.dnn.readNet(model_file, model_config)
 
                 image = cv2.imread(self.img_path)
-
                 w_image = image.shape[1]
                 h_image = image.shape[0]
                 scale = 0.00392
 
-                blob = cv2.dnn.blobFromImage(
-                    image, scale, (416, 416), (0, 0, 0), True, crop=False
-                )
-
+                blob = cv2.dnn.blobFromImage(image, scale, (416, 416), (0, 0, 0), True, crop=False)
                 net.setInput(blob)
-
                 outs = net.forward(self.get_output_layers(net))
 
                 class_ids = []
@@ -106,9 +92,7 @@ class ObjectDetector:
                             confidences.append(float(confidence))
                             boxes.append([x, y, w, h])
 
-                indices = cv2.dnn.NMSBoxes(
-                    boxes, confidences, conf_threshold, nms_threshold
-                )
+                indices = cv2.dnn.NMSBoxes(boxes, confidences, conf_threshold, nms_threshold)
 
                 ret_boxes = []
                 ret_class_ids = []
@@ -121,7 +105,7 @@ class ObjectDetector:
                     y = box[1]
                     w = box[2]
                     h = box[3]
-                    self.drawPred(
+                    self.draw_pred(
                         image,
                         class_ids[i],
                         confidences[i],

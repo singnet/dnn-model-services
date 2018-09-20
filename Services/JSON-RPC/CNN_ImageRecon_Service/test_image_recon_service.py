@@ -4,11 +4,7 @@ from service import registry
 if __name__ == "__main__":
 
     try:
-        endpoint = input(
-            "Endpoint (localhost:{}): ".format(
-                registry["image_recon_service"]["jsonrpc"]
-            )
-        )
+        endpoint = input("Endpoint (localhost:{}): ".format(registry["image_recon_service"]["jsonrpc"]))
         if endpoint == "":
             endpoint = "localhost:{}".format(registry["image_recon_service"]["jsonrpc"])
 
@@ -20,9 +16,7 @@ if __name__ == "__main__":
 
         img_path = input("Image (Path or Link): ")
 
-        ret = jsonrpcclient.request(
-            "http://{}".format(endpoint), rpc_method, model=model, img_path=img_path
-        )
+        ret = jsonrpcclient.request("http://{}".format(endpoint), rpc_method, model=model, img_path=img_path)
         delta_time = ret["result"]["delta_time"]
         top5 = ret["result"]["top_5"]
         print("Delta time: " + str(delta_time))

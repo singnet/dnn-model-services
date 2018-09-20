@@ -7,9 +7,7 @@ import yaml
 import time
 
 
-logging.basicConfig(
-    level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s"
-)
+logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s")
 log = logging.getLogger("snetControl")
 
 
@@ -18,7 +16,6 @@ class SnetInstance:
     Used to interact with snet (SNET-CLI v0.1.5) script.
     Executes (max=3x) the 'snet client call' command and returns its output.
     """
-
     def __init__(self):
         # Control variables
         self.snet_attempts = 5
@@ -75,11 +72,7 @@ class SnetInstance:
                 while not self.snet_exited:
                     time.sleep(1)
                     if not count % 5:
-                        log.info(
-                            "Waiting snet service {}...[Attempt {}]".format(
-                                name, num_attempt + 1
-                            )
-                        )
+                        log.info("Waiting snet service {}...[Attempt {}]".format(name, num_attempt + 1))
                     count += 1
                     if count > self.snet_waiting_response:
                         if self.snet_pid:
@@ -90,15 +83,9 @@ class SnetInstance:
                     return True
                 else:
                     if self.snet_error == 1:
-                        log.info(
-                            "Waiting 30s for the previous transaction be completed..."
-                        )
+                        log.info("Waiting 30s for the previous transaction be completed...")
                         time.sleep(self.snet_waiting_busy)
-                    log.info(
-                        "Trying to call snet service {} again [Attempt {}]".format(
-                            name, num_attempt + 1
-                        )
-                    )
+                    log.info("Trying to call snet service {} again [Attempt {}]".format(name, num_attempt + 1))
                     self.snet_reset_flags()
 
             return False
@@ -126,11 +113,7 @@ class SnetInstance:
                 method_params,
             ]
 
-            log.info(
-                "Running 'snet client call {}' with args:\n{}".format(
-                    method, str(cmd_list)[:500]
-                )
-            )
+            log.info("Running 'snet client call {}' with args:\n{}".format(method, str(cmd_list)[:500]))
 
             self.snet_pid = subprocess.Popen(
                 cmd_list,
@@ -147,18 +130,9 @@ class SnetInstance:
                     self.snet_response = yaml.load(outs)
                     return True
                 else:
-                    log.error(
-                        "Snet client call returned an error: {}!".format(
-                            self.snet_pid.returncode
-                        )
-                    )
-                    if (
-                        b"There is another transaction with same nonce in the queue."
-                        in errs
-                    ):
-                        log.error(
-                            "There is another transaction with same nonce in the queue."
-                        )
+                    log.error("Snet client call returned an error: {}!".format(self.snet_pid.returncode))
+                    if b"There is another transaction with same nonce in the queue." in errs:
+                        log.error("There is another transaction with same nonce in the queue.")
                         self.snet_error = 1
 
             except subprocess.TimeoutExpired:

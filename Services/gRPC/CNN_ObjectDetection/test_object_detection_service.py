@@ -9,9 +9,7 @@ from service import registry
 if __name__ == "__main__":
 
     try:
-        endpoint = input(
-            "Endpoint (localhost:{}): ".format(registry["object_detection_service"]["grpc"])
-        )
+        endpoint = input("Endpoint (localhost:{}): ".format(registry["object_detection_service"]["grpc"]))
         if endpoint == "":
             endpoint = "localhost:{}".format(registry["object_detection_service"]["grpc"])
 
@@ -29,9 +27,7 @@ if __name__ == "__main__":
         # create a stub (client)
         stub = grpc_bt_grpc.DetectStub(channel)
         # create a valid request message
-        request = grpc_bt_pb2.ObjectDetectionRequest(model=model,
-                                                     confidence=confidence,
-                                                     img_path=img_path)
+        request = grpc_bt_pb2.ObjectDetectionRequest(model=model, confidence=confidence, img_path=img_path)
         # make the call
         response = stub.detect(request)
         print(response)

@@ -9,9 +9,7 @@ import service.common
 from service.object_detection import ObjectDetector
 from service import map_names
 
-logging.basicConfig(
-    level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s"
-)
+logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s")
 log = logging.getLogger("obj_detect_service")
 
 
@@ -27,7 +25,7 @@ async def detect(**kwargs):
     confidence = kwargs.get("confidence", "0.7")
     img_path = kwargs.get("img_path", None)
     if img_path is None:
-        raise InvalidParams('"img_path" is required')
+        raise InvalidParams("\"img_path\" is required")
     log.debug("detect({},{},{})".format(model, confidence, len(img_path)))
     objd = ObjectDetector(model, confidence, map_names, img_path)
 

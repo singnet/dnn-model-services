@@ -9,17 +9,13 @@ import threading
 
 from service import registry
 
-logging.basicConfig(
-    level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s"
-)
+logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s")
 log = logging.getLogger("run_obj_d_service")
 
 
 def main():
     parser = argparse.ArgumentParser(prog=__file__)
-    parser.add_argument(
-        "--daemon-config-path", help="File with daemon configuration.", required=False
-    )
+    parser.add_argument("--daemon-config-path", help="File with daemon configuration.", required=False)
     args = parser.parse_args(sys.argv[1:])
 
     root_path = pathlib.Path(__file__).absolute().parent
@@ -56,22 +52,17 @@ def start_all_services(cwd, service_modules, config_path=None):
 
             snetd_config = None
             if config_path:
-                snetd_config = pathlib.Path(config_path) / (
-                    "snetd_" + server_name + ".json"
-                )
+                snetd_config = pathlib.Path(config_path) / ("snetd_" + server_name + ".json")
 
-            processThread = threading.Thread(
-                target=start_service, args=(cwd, service_module, snetd_config)
-            )
+            process_th = threading.Thread(target=start_service, args=(cwd, service_module, snetd_config))
 
             # Bind the thread with the main() to abort it when main() exits.
-            processThread.daemon = True
-            processThread.start()
+            process_th.daemon = True
+            process_th.start()
 
     except Exception as e:
         print(e)
         return False
-
     return True
 
 
@@ -84,8 +75,7 @@ def start_service(cwd, service_module, daemon_config_file=None):
     jsonrpc_port = registry[server_name]["jsonrpc"]
     subprocess.Popen(
         [sys.executable, "-m", service_module, "--json-rpc-port", str(jsonrpc_port)],
-        cwd=str(cwd),
-    )
+        cwd=str(cwd))
     db_file = "db_" + server_name + ".db"
     start_snetd(str(cwd), daemon_config_file, db_file)
 

@@ -12,9 +12,7 @@ from service import flowers_map_names, dogs_map_names, cars_map_names
 import service.service_spec.image_recon_pb2_grpc as grpc_bt_grpc
 from service.service_spec.image_recon_pb2 import Result
 
-logging.basicConfig(
-    level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s"
-)
+logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s")
 log = logging.getLogger("image_recon_service")
 
 
@@ -39,17 +37,13 @@ class FlowersServicer(grpc_bt_grpc.FlowersServicer):
 
         map_names = flowers_map_names
         image_dims = (3, 224, 224)
-        json_result = img_recon.image_recognition(
-            "flowers", self.model, map_names, self.img_path, image_dims
-        )
+        json_result = img_recon.image_recognition("flowers", self.model, map_names, self.img_path, image_dims)
 
         # To respond we need to create a Result() object (from .proto file)
         self.result = Result()
         self.result.top_5 = str(json_result["top_5"]).encode("utf-8")
         self.result.delta_time = str(json_result["delta_time"]).encode("utf-8")
-        log.debug(
-            "flowers({},{})={}".format(self.model, self.img_path, self.result.top_5)
-        )
+        log.debug("flowers({},{})={}".format(self.model, self.img_path, self.result.top_5))
         return self.result
 
 
@@ -67,9 +61,7 @@ class DogsServicer(grpc_bt_grpc.DogsServicer):
 
         map_names = dogs_map_names
         image_dims = (3, 224, 224)
-        json_result = img_recon.image_recognition(
-            "dogs", self.model, map_names, self.img_path, image_dims
-        )
+        json_result = img_recon.image_recognition("dogs", self.model, map_names, self.img_path, image_dims)
 
         self.result = Result()
         self.result.top_5 = str(json_result["top_5"]).encode("utf-8")
@@ -92,9 +84,7 @@ class CarsServicer(grpc_bt_grpc.CarsServicer):
 
         map_names = cars_map_names
         image_dims = (3, 224, 224)
-        json_result = img_recon.image_recognition(
-            "cars", self.model, map_names, self.img_path, image_dims
-        )
+        json_result = img_recon.image_recognition("cars", self.model, map_names, self.img_path, image_dims)
 
         self.result = Result()
         self.result.top_5 = str(json_result["top_5"]).encode("utf-8")
