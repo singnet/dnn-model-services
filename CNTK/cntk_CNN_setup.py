@@ -218,11 +218,12 @@ def setup_detect(opt_model):
     return set_model, model_details, coco_map_names
 
 
-def setup_flowers(num_epochs, opt_model):
-    print("Downloading flowers and animals data-set...")
-    set_data = download_flowers_dataset()
-    # animals_data = download_animals_dataset()
-    print("All flowers data now available!")
+def setup_flowers(num_epochs, opt_model, training=False):
+    if training:
+        print("Downloading flowers and animals data-set...")
+        set_data = download_flowers_dataset()
+        # animals_data = download_animals_dataset()
+        print("All flowers data now available!")
 
     set_model = {
         "model_file": os.path.join(output_path, "flowers_{}_{}.model".format(opt_model, num_epochs)),
@@ -244,7 +245,7 @@ def setup_flowers(num_epochs, opt_model):
     return set_data, set_model, model_details, flowers_map_names
 
 
-def setup_dogs(num_epochs, opt_model):
+def setup_dogs(num_epochs, opt_model, training=False):
     dataset_root = os.path.join(data_sets_path, "Dogs")
 
     set_data = {
@@ -262,8 +263,10 @@ def setup_dogs(num_epochs, opt_model):
     }
     # Get the images if they dont exist
     zip_dir = os.path.join(dataset_root)
-    download_unless_exists("https://s3-us-west-1.amazonaws.com/udacity-aind/dog-project/dogImages.zip",
-                           zip_dir + "/dogImages.zip")
+    ensure_exists(zip_dir)
+    if training:
+        download_unless_exists("https://s3-us-west-1.amazonaws.com/udacity-aind/dog-project/dogImages.zip",
+                               zip_dir + "/dogImages.zip")
 
     if not os.path.exists(zip_dir):
         print("Extracting {} to {}".format("dogImages.zip", zip_dir))
@@ -722,7 +725,7 @@ def main():
 
                     if opt_method == "ImageNet":
                         set_model, model_details, map_names = setup_imagenet(opt_model)
-                    elif opt_method == "Detect":
+                    elif opt_method == "detect":
                         set_model, model_details, map_names = setup_detect(opt_model)
                     elif opt_method == "flowers":
                         set_data, set_model, model_details, map_names = setup_flowers(max_training_epochs, opt_model)
@@ -734,7 +737,7 @@ def main():
 
                     if os.path.exists(set_model["model_file"]):
                         print("Loading existing model from %s" % set_model["model_file"])
-                        if opt_method == "Detect":
+                        if opt_method == "detect":
                             trained_model = cv2.dnn.readNet(set_model["model_file"], set_model["model_cfg"])
                         else:
                             trained_model = cntk.load_model(set_model["model_file"])
@@ -743,7 +746,10 @@ def main():
                         continue
 
                     if "http://" in img_path or "https://" in img_path:
-                        r = requests.get(img_path, allow_redirects=True)
+                        header = {
+                            'User-Agent': 'Mozilla/5.0 (Windows NT x.y; Win64; x64; rv:9.0) Gecko/20100101 Firefox/10.0'
+                        }
+                        r = requests.get(img_path, headers=header, allow_redirects=True)
                         with open("temp_img.jpg", "wb") as my_f:
                             my_f.write(r.content)
                             img_path = "temp_img.jpg"
@@ -767,7 +773,7 @@ def main():
                             os.remove(img_path)
                         continue
 
-                    elif opt_method == "Detect":
+                    elif opt_method == "detect":
                         confidence = "0.5"
                         ret = detect_objects(trained_model, set_model, confidence, img_path)
                         boxes = ret["boxes"]
@@ -818,9 +824,13 @@ def main():
                         max_training_epochs = int(opt_epochs)
 
                     if opt_method == "flowers":
-                        set_data, set_model, model_details, map_names = setup_flowers(max_training_epochs, opt_model)
+                        set_data, set_model, model_details, map_names = setup_flowers(max_training_epochs,
+                                                                                      opt_model,
+                                                                                      True)
                     elif opt_method == "dogs":
-                        set_data, set_model, model_details, map_names = setup_dogs(max_training_epochs, opt_model)
+                        set_data, set_model, model_details, map_names = setup_dogs(max_training_epochs,
+                                                                                   opt_model,
+                                                                                   True)
                     else:
                         print("Invalid Set!")
                         continue

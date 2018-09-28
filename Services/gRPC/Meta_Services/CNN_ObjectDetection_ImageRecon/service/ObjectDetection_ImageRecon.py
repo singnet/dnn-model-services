@@ -43,7 +43,10 @@ class DetectRecon(SnetInstance):
 
             # Link
             if "http://" in self.img_path or "https://" in self.img_path:
-                r = requests.get(self.img_path, allow_redirects=True)
+                header = {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT x.y; Win64; x64; rv:9.0) Gecko/20100101 Firefox/10.0'
+                }
+                r = requests.get(self.img_path, headers=header, allow_redirects=True)
                 with open("temp_img.jpg", "wb") as my_f:
                     my_f.write(r.content)
                     self.img_path = "temp_img.jpg"
