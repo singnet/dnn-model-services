@@ -85,7 +85,6 @@ def download_model(model_root=output_path, model_filename="ResNet_18_ImageNet_CN
         model_uri = "https://pjreddie.com/media/files/{}".format(model_filename)
     model_local = os.path.join(model_root, model_filename)
     download_unless_exists(model_uri, model_local)
-
     return model_local
 
 
@@ -141,7 +140,6 @@ def download_flowers_dataset(dataset_root=os.path.join(data_sets_path, "Flowers"
         print("Map files written, dataset download and unpack completed.")
     else:
         print("Using cached map files.")
-
     return flowers_data
 
 
@@ -157,7 +155,6 @@ def download_animals_dataset(dataset_root=os.path.join(data_sets_path, "Animals"
             print("Extraction completed.")
     else:
         print("Reusing previously extracted Animals data.")
-
     return {
         "training_folder": os.path.join(dataset_root, "Train"),
         "testing_folder": os.path.join(dataset_root, "Test"),
@@ -183,7 +180,6 @@ def setup_imagenet(opt_model):
         ),
         "num_classes": 1000,
     }
-
     return set_model, model_details, imagenet_map_names
 
 
@@ -214,7 +210,6 @@ def setup_detect(opt_model):
         "classes": classes,
         "colors": colors,
     }
-
     return set_model, model_details, coco_map_names
 
 
@@ -240,7 +235,6 @@ def setup_flowers(num_epochs, opt_model):
         model_filename = opt_model + "_ImageNet_CNTK.model"
 
     model_details = setup_base_model(opt_model, model_filename)
-
     return set_data, set_model, model_details, flowers_map_names
 
 
@@ -303,7 +297,6 @@ def setup_dogs(num_epochs, opt_model):
         model_filename = opt_model + "_ImageNet_CNTK.model"
 
     model_details = setup_base_model(opt_model, model_filename)
-
     return set_data, set_model, model_details, dogs_map_names
 
 
@@ -317,7 +310,6 @@ def create_mb_source(map_file, image_dims, num_classes, randomize=True):
             interpolations="linear",
         )
     ]
-
     return cntk.io.MinibatchSource(
         cntk.io.ImageDeserializer(
             map_file,
@@ -334,9 +326,10 @@ def create_mb_source(map_file, image_dims, num_classes, randomize=True):
 def create_model(model_details, num_classes, input_features, new_prediction_node_name="prediction", freeze=False):
     # Load the pre-trained classification net and find nodes
     base_model = cntk.load_model(model_details["model_file"])
-    feature_node = cntk.logging.find_by_name(base_model, model_details["feature_node_name"])
 
+    feature_node = cntk.logging.find_by_name(base_model, model_details["feature_node_name"])
     last_node = cntk.logging.find_by_name(base_model, model_details["last_hidden_node_name"])
+
     if model_details["inception"]:
         node_outputs = cntk.logging.get_node_outputs(base_model)
         last_node = node_outputs[5]
@@ -355,7 +348,6 @@ def create_model(model_details, num_classes, input_features, new_prediction_node
     feat_norm = input_features - cntk.Constant(114)
     cloned_out = cloned_layers(feat_norm)
     z = cntk.layers.Dense(num_classes, activation=None, name=new_prediction_node_name)(cloned_out)
-
     return z
 
 
@@ -385,6 +377,7 @@ def train_model(model_details, num_classes, train_map_file, learning_params, max
         image_input,
         freeze=learning_params["freeze_weights"],
     )
+
     ce = cntk.cross_entropy_with_softmax(tl_model, label_input)
     pe = cntk.classification_error(tl_model, label_input)
 
@@ -423,7 +416,6 @@ def train_model(model_details, num_classes, train_map_file, learning_params, max
                 print("Processed {0} samples".format(sample_count))
 
         progress_printer.epoch_summary(with_metric=True)
-
     return tl_model
 
 
@@ -452,7 +444,6 @@ def eval_single_image(loaded_model, image_path, image_dims):
 
     except FileNotFoundError:
         print("Could not open (skipping file): ", image_path)
-
         return ["None"]
 
 
@@ -498,7 +489,6 @@ def eval_test_images(loaded_model, output_file, test_map_file, image_dims, max_i
 
     if pred_count == 0:
         pred_count = 1
-
     return correct_count, pred_count, (float(correct_count) / pred_count)
 
 
@@ -517,7 +507,6 @@ def eval_single_image_imagenet(opt_model, loaded_model, image_path, image_dims):
         arguments = {loaded_model.arguments[0]: [hwc_format]}
         output = loaded_model.eval(arguments)
         sm = cntk.softmax(output[0])
-
         return sm.eval()
 
     elif "InceptionV3" in opt_model:
@@ -529,7 +518,6 @@ def eval_single_image_imagenet(opt_model, loaded_model, image_path, image_dims):
         output = z.eval({z.arguments[0]: [hwc_format]})
 
     predictions = np.squeeze(output)
-
     return predictions
 
 
@@ -620,7 +608,6 @@ def detect_objects(trained_model, set_model, min_conf, img_path):
     except Exception as e:
         print(e)
         print("Command line version...")
-
     return {"boxes": [(conf, c) for conf, c in zip(confidences, class_ids)]}
 
 
