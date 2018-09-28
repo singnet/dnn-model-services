@@ -218,12 +218,11 @@ def setup_detect(opt_model):
     return set_model, model_details, coco_map_names
 
 
-def setup_flowers(num_epochs, opt_model, training=False):
-    if training:
-        print("Downloading flowers and animals data-set...")
-        set_data = download_flowers_dataset()
-        # animals_data = download_animals_dataset()
-        print("All flowers data now available!")
+def setup_flowers(num_epochs, opt_model):
+    print("Downloading flowers and animals data-set...")
+    set_data = download_flowers_dataset()
+    # animals_data = download_animals_dataset()
+    print("All flowers data now available!")
 
     set_model = {
         "model_file": os.path.join(output_path, "flowers_{}_{}.model".format(opt_model, num_epochs)),
@@ -245,7 +244,7 @@ def setup_flowers(num_epochs, opt_model, training=False):
     return set_data, set_model, model_details, flowers_map_names
 
 
-def setup_dogs(num_epochs, opt_model, training=False):
+def setup_dogs(num_epochs, opt_model):
     dataset_root = os.path.join(data_sets_path, "Dogs")
 
     set_data = {
@@ -263,15 +262,12 @@ def setup_dogs(num_epochs, opt_model, training=False):
     }
     # Get the images if they dont exist
     zip_dir = os.path.join(dataset_root)
-    ensure_exists(zip_dir)
-    if training:
+    if not os.path.exists(zip_dir + "dogImages/"):
+        ensure_exists(zip_dir)
         download_unless_exists("https://s3-us-west-1.amazonaws.com/udacity-aind/dog-project/dogImages.zip",
                                zip_dir + "/dogImages.zip")
-
-    if not os.path.exists(zip_dir):
         print("Extracting {} to {}".format("dogImages.zip", zip_dir))
-        os.makedirs(zip_dir)
-        zip_ref = zipfile.ZipFile("dogImages.zip", "r")
+        zip_ref = zipfile.ZipFile(zip_dir + "/dogImages.zip", "r")
         zip_ref.extractall(zip_dir)
         zip_ref.close()
     else:
@@ -824,13 +820,9 @@ def main():
                         max_training_epochs = int(opt_epochs)
 
                     if opt_method == "flowers":
-                        set_data, set_model, model_details, map_names = setup_flowers(max_training_epochs,
-                                                                                      opt_model,
-                                                                                      True)
+                        set_data, set_model, model_details, map_names = setup_flowers(max_training_epochs, opt_model)
                     elif opt_method == "dogs":
-                        set_data, set_model, model_details, map_names = setup_dogs(max_training_epochs,
-                                                                                   opt_model,
-                                                                                   True)
+                        set_data, set_model, model_details, map_names = setup_dogs(max_training_epochs, opt_model)
                     else:
                         print("Invalid Set!")
                         continue
