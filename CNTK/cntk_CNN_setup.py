@@ -256,7 +256,7 @@ def setup_dogs(num_epochs, opt_model):
     }
     # Get the images if they dont exist
     zip_dir = os.path.join(dataset_root)
-    if not os.path.exists(zip_dir + "dogImages/"):
+    if not os.path.exists(zip_dir + "/dogImages/"):
         ensure_exists(zip_dir)
         download_unless_exists("https://s3-us-west-1.amazonaws.com/udacity-aind/dog-project/dogImages.zip",
                                zip_dir + "/dogImages.zip")
