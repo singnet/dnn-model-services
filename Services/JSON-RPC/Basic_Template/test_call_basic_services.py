@@ -22,7 +22,6 @@ if __name__ == '__main__':
             jsonrpcclient.request(f"http://127.0.0.1:{jsonrpc_port}",
                                   jsonrpc_method,
                                   test="testing...")
-
         else:
             print('Service unavailable!')
 

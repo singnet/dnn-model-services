@@ -19,18 +19,22 @@ def crop_image(img_path, coords, img_type, output_file="temp_img.jpg"):
             return base64_img.decode("utf8")
         else:
             return False
+
     except Exception as e:
         traceback.print_exc()
+        print(e)
         return False
 
 
 def save64(base64_img, output_file="temp_img.jpg"):
     try:
-        imgdata = base64.b64decode(base64_img)
+        img_data = base64.b64decode(base64_img)
         with open(output_file, "wb") as f:
-            f.write(imgdata)
+            f.write(img_data)
         return True
+
     except Exception as e:
         traceback.print_exc()
+        print(e)
         return False
 

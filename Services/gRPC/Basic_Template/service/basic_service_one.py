@@ -10,9 +10,7 @@ import service.common
 import service.service_spec.basic_tamplate_rpc_pb2_grpc as grpc_bt_grpc
 from service.service_spec.basic_tamplate_rpc_pb2 import Result
 
-logging.basicConfig(
-    level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s"
-)
+logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s")
 log = logging.getLogger("basic_template")
 
 
@@ -48,6 +46,9 @@ Calling service...
 # derived from the protobuf codes.
 class AdditionServicer(grpc_bt_grpc.AdditionServicer):
     def __init__(self):
+        self.a = 0
+        self.b = 0
+        self.result = 0
         # Just for debugging purpose.
         log.debug("AdditionServicer created")
 
@@ -69,6 +70,9 @@ class AdditionServicer(grpc_bt_grpc.AdditionServicer):
 
 class SubtractionServicer(grpc_bt_grpc.SubtractionServicer):
     def __init__(self):
+        self.a = 0
+        self.b = 0
+        self.result = 0
         log.debug("SubtractionServicer created")
 
     def sub(self, request, context):
@@ -83,6 +87,9 @@ class SubtractionServicer(grpc_bt_grpc.SubtractionServicer):
 
 class MultiplicationServicer(grpc_bt_grpc.MultiplicationServicer):
     def __init__(self):
+        self.a = 0
+        self.b = 0
+        self.result = 0
         log.debug("MultiplicationServicer created")
 
     def mul(self, request, context):
@@ -97,6 +104,9 @@ class MultiplicationServicer(grpc_bt_grpc.MultiplicationServicer):
 
 class DivisionServicer(grpc_bt_grpc.DivisionServicer):
     def __init__(self):
+        self.a = 0
+        self.b = 0
+        self.result = 0
         log.debug("DivisionServicer created")
 
     def div(self, request, context):

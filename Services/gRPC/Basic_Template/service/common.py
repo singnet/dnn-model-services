@@ -12,8 +12,7 @@ def common_parser(script_name):
                         help="port to bind gRPC service to",
                         default=registry[service_name]['grpc'],
                         type=int,
-                        required=False
-                        )
+                        required=False)
     return parser
 
 

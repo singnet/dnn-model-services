@@ -5,15 +5,9 @@ from service import registry
 if __name__ == "__main__":
 
     try:
-        endpoint = input(
-            "Endpoint (localhost:{}): ".format(
-                registry["object_detection_service"]["jsonrpc"]
-            )
-        )
+        endpoint = input("Endpoint (localhost:{}): ".format(registry["object_detection_service"]["jsonrpc"]))
         if endpoint == "":
-            endpoint = "localhost:{}".format(
-                registry["object_detection_service"]["jsonrpc"]
-            )
+            endpoint = "localhost:{}".format(registry["object_detection_service"]["jsonrpc"])
 
         rpc_method = "detect"
 

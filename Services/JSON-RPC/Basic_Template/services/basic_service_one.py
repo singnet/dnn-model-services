@@ -7,12 +7,11 @@ from jsonrpcserver.exceptions import InvalidParams
 
 import services.common
 
-logging.basicConfig(
-    level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s")
-log = logging.getLogger('basic_service_one')
+logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s")
+log = logging.getLogger("basic_service_one")
 
 
-'''
+"""
 Simple arithmetic service to test the Snet Daemon, dApp and/or Snet-CLI.
 The user must provide the method (arithmetic operation) and
 two numeric inputs: "a" and "b".
@@ -38,7 +37,7 @@ Result:
     "id": 1
 }
 
-'''
+"""
 
 
 @methods.add
@@ -49,25 +48,25 @@ async def add(**kwargs):
     log.debug(f"add({a},{b})")
 
     if a is None:
-        raise InvalidParams('"a" is required')
+        raise InvalidParams("\"a\" is required")
 
     if b is None:
-        raise InvalidParams('"b" is required')
+        raise InvalidParams("\"b\" is required")
 
     if type(a) is str:
         if a.isdigit():
             a = int(a)
         else:
-            raise InvalidParams('"a" must be a number')
+            raise InvalidParams("\"a\" must be a number")
 
     if type(b) is str:
         if b.isdigit():
             b = int(b)
         else:
-            raise InvalidParams('"b" must be a number')
+            raise InvalidParams("\"b\" must be a number")
 
     result = a + b
-    return {'result': result}
+    return {"result": result}
 
 
 @methods.add
@@ -78,25 +77,25 @@ async def sub(**kwargs):
     log.debug(f"sub({a},{b})")
 
     if a is None:
-        raise InvalidParams('"a" is required')
+        raise InvalidParams("\"a\" is required")
 
     if b is None:
-        raise InvalidParams('"b" is required')
+        raise InvalidParams("\"b\" is required")
 
     if type(a) is str:
         if a.isdigit():
             a = int(a)
         else:
-            raise InvalidParams('"a" must be a number')
+            raise InvalidParams("\"a\" must be a number")
 
     if type(b) is str:
         if b.isdigit():
             b = int(b)
         else:
-            raise InvalidParams('"b" must be a number')
+            raise InvalidParams("\"b\" must be a number")
 
     result = a - b
-    return {'result': result}
+    return {"result": result}
 
 
 @methods.add
@@ -107,25 +106,25 @@ async def mul(**kwargs):
     log.debug(f"mul({a},{b})")
 
     if a is None:
-        raise InvalidParams('"a" is required')
+        raise InvalidParams("\"a\" is required")
 
     if b is None:
-        raise InvalidParams('"b" is required')
+        raise InvalidParams("\"b\" is required")
 
     if type(a) is str:
         if a.isdigit():
             a = int(a)
         else:
-            raise InvalidParams('"a" must be a number')
+            raise InvalidParams("\"a\" must be a number")
 
     if type(b) is str:
         if b.isdigit():
             b = int(b)
         else:
-            raise InvalidParams('"b" must be a number')
+            raise InvalidParams("\"b\" must be a number")
 
     result = a * b
-    return {'result': result}
+    return {"result": result}
 
 
 @methods.add
@@ -136,25 +135,25 @@ async def div(**kwargs):
     log.debug(f"div({a},{b})")
 
     if a is None:
-        raise InvalidParams('"a" is required')
+        raise InvalidParams("\"a\" is required")
 
     if b is None:
-        raise InvalidParams('"b" is required')
+        raise InvalidParams("\"b\" is required")
 
     if type(a) is str:
         if a.isdigit():
             a = int(a)
         else:
-            raise InvalidParams('"a" must be a number')
+            raise InvalidParams("\"a\" must be a number")
 
     if type(b) is str:
         if b.isdigit():
             b = int(b)
         else:
-            raise InvalidParams('"b" must be a number')
+            raise InvalidParams("\"b\" must be a number")
 
     result = a / b
-    return {'result': result}
+    return {"result": result}
 
 
 async def json_rpc_handle(request):
@@ -166,10 +165,10 @@ async def json_rpc_handle(request):
         return web.json_response(response, status=response.http_status)
 
 
-if __name__ == '__main__':
-    '''
+if __name__ == "__main__":
+    """
     Runs the JSON-RPC server to communicate with the Snet Daemon.
-    '''
+    """
     parser = services.common.common_parser(__file__)
     args = parser.parse_args(sys.argv[1:])
     services.common.main_loop(json_rpc_handle, args)

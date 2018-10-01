@@ -9,9 +9,7 @@ from service import registry
 if __name__ == "__main__":
 
     try:
-        endpoint = input(
-            "Endpoint (localhost:{}): ".format(registry["ObjectDetection_ImageRecon_service"]["grpc"])
-        )
+        endpoint = input("Endpoint (localhost:{}): ".format(registry["ObjectDetection_ImageRecon_service"]["grpc"]))
         if endpoint == "":
             endpoint = "localhost:{}".format(registry["ObjectDetection_ImageRecon_service"]["grpc"])
 

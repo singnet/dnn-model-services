@@ -9,9 +9,7 @@ import service.common
 import service.image_recon as img_recon
 from service import flowers_map_names, dogs_map_names
 
-logging.basicConfig(
-    level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s"
-)
+logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s")
 log = logging.getLogger("img_recon_service")
 
 
@@ -28,7 +26,7 @@ async def flowers(**kwargs):
     map_names = flowers_map_names
     img_path = kwargs.get("img_path", None)
     if img_path is None:
-        raise InvalidParams('"img_path" is required')
+        raise InvalidParams("\"img_path\" is required")
     image_dims = (3, 224, 224)
     result = img_recon.image_recognition(
         "flowers", model, map_names, img_path, image_dims
@@ -43,7 +41,7 @@ async def dogs(**kwargs):
     map_names = dogs_map_names
     img_path = kwargs.get("img_path", None)
     if img_path is None:
-        raise InvalidParams('"img_path" is required')
+        raise InvalidParams("\"img_path\" is required")
     image_dims = (3, 224, 224)
 
     result = img_recon.image_recognition("dogs", model, map_names, img_path, image_dims)

@@ -13,8 +13,7 @@ def common_parser(script_name):
                         help="port to bind jsonrpc service to",
                         default=registry[service_name]['jsonrpc'],
                         type=int,
-                        required=False
-                        )
+                        required=False)
     return parser
 
 

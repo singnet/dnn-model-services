@@ -13,7 +13,7 @@ resources_root = os.path.join("..", "..", "..", "CNTK", "Resources")
 
 # Evaluates a single image using the re-trained model
 def eval_single_image(loaded_model, image_path, image_dims):
-    # load and format image (resize, RGB -> BGR, CHW -> HWC)
+    # Load and format image (resize, RGB -> BGR, CHW -> HWC)
     try:
         img = Image.open(image_path)
 
@@ -25,13 +25,14 @@ def eval_single_image(loaded_model, image_path, image_dims):
         bgr_image = np.asarray(resized, dtype=np.float32)[..., [2, 1, 0]]
         hwc_format = np.ascontiguousarray(np.rollaxis(bgr_image, 2))
 
-        # compute model output
+        # Compute model output
         arguments = {loaded_model.arguments[0]: [hwc_format]}
         output = loaded_model.eval(arguments)
 
-        # return softmax probabilities
+        # Return softmax probabilities
         sm = C.softmax(output[0])
         return sm.eval()
+
     except FileNotFoundError:
         print("Could not open (skipping file): ", image_path)
         return ["None"]
@@ -41,22 +42,23 @@ def image_recognition(method, model, map_names, img_path, image_dims):
     try:
         # Link
         if "http://" in img_path or "https://" in img_path:
-            r = requests.get(img_path, allow_redirects=True)
+            header = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT x.y; Win64; x64; rv:9.0) Gecko/20100101 Firefox/10.0'
+            }
+            r = requests.get(img_path, headers=header, allow_redirects=True)
             with open("temp_img.jpg", "wb") as my_f:
                 my_f.write(r.content)
                 img_path = "temp_img.jpg"
 
         # Base64
         elif len(img_path) > 500:
-            imgdata = base64.b64decode(img_path)
+            img_data = base64.b64decode(img_path)
             filename = "temp_img.jpg"
             with open(filename, "wb") as f:
-                f.write(imgdata)
+                f.write(img_data)
                 img_path = "temp_img.jpg"
 
-        model_file = os.path.join(
-            resources_root, "Models", "{}_{}_20.model".format(method, model)
-        )
+        model_file = os.path.join(resources_root, "Models", "{}_{}_20.model".format(method, model))
 
         if model == "AlexNet":
             image_dims = (3, 227, 227)
@@ -75,5 +77,6 @@ def image_recognition(method, model, map_names, img_path, image_dims):
         delta_time = time.time() - start_time
         os.remove("temp_img.jpg")
         return {"delta_time": "{:.4f}".format(delta_time), "top_5": top_5_dict}
+
     except Exception as e:
         return {"delta_time": "Fail", "top_5": "Fail"}
