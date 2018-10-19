@@ -58,7 +58,7 @@ $ mkdir /opt/snet; cd /opt/snet
 ```
 	$ go get -v -u github.com/golang/dep/cmd/dep
 	$ go get -v -u github.com/golang/protobuf/protoc-gen-go
-	$ go get -v -u github.com/golang/lint/golint
+	$ go get -v -u golang.org/x/lint/golint
 ```
 - **Proto3: Installation**
 ```
