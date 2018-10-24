@@ -125,29 +125,29 @@ Choose a name for your service: (default: "BasicService")
 
 Choose the path to your service's spec directory: (default: "service_spec/")
 
-Choose an organization to register your service under: (default: "")
-SNET_BH
+Choose an organization to register your service under: (required)
+MY_ORG_NAME
 Choose the path under which your Service registration will be created: (default: "")
 
 Choose a price in AGI to call your service: (default: 0)
 100
-Endpoint to call the API for your service: (default: "")
+Endpoint to call the API for your service, should start with http(s):// : (default: "")
 http://54.203.198.53:7000
-Input a list of tags for your service: (default: [])
-Basic Service, Template, Arithmetic
+Input a list of tags for your service, space separated: (default: [])
+Basic Service Template Arithmetic
 Input a description for your service: (default: "")
 A basic template to show how to publish a service on SingularityNET platform.
 {
     "name": "BasicService",
     "service_spec": "service_spec/",
-    "organization": "SNET_BH",
+    "organization": "MY_ORG_NAME",
     "path": "",
     "price": 100,
     "endpoint": "http://54.203.198.53:7000",
     "tags": [
     "Basic",
-    "Service,",
-    "Template,",
+    "Service",
+    "Template",
     "Arithmetic"
     ],
     "metadata": {
@@ -231,11 +231,11 @@ Submitting transaction...
 
 - **SNET-CLI: List Services**
 
-- 	List services from a specific Organization ('SNET_BH')
+- 	List services from a specific Organization ('MY_ORG_NAME')
 ```
-$ snet organization list-services SNET_BH
+$ snet organization list-services MY_ORG_NAME
 
-List of SNET_BH's Services:
+List of MY_ORG_NAME's Services:
 - BasicService
 ```
 
@@ -245,7 +245,7 @@ List of SNET_BH's Services:
 	 - `organization` name of the Organization.
 	 - `service_name` name of the Service.
 ```
-$ snet service delete SNET_BH BasicService
+$ snet service delete MY_ORG_NAME BasicService
 Getting information about the service...
 Deleting service BasicService...
 Proceed? (y/n): y
@@ -274,7 +274,7 @@ $ snet session
 	$ snet set current_agent_at 0x1591F7ecB3C4Fb2E57a2679c30aC8D9b4EC65248
 ```
 
-### 8. SNET DAEMON: Running the service
+### 9. SNET DAEMON: Running the service
 -   Go to the root of your service's folders.
 -   Create a json file `snetd_[SERVICE_NAME]_config.json`
 -   Save it inside a `config/` folder.
@@ -307,7 +307,7 @@ Launching service.basic_service_one on ports {'grpc': 7003, 'snetd': 7000}
 DEBU[0000] starting daemon
 ```
 
-### 9. SNET-CLI: Calling the Service (remote)
+### 10. SNET-CLI: Calling the Service (remote)
 
 -	snet client call [method] '[json]'
 	 - `method` one of your service's methods.
@@ -416,7 +416,7 @@ DEBU[0000] starting daemon
 		value: 924.0
 ```
 
-### 9.1 SNET-CLI: Calling the Service (local)
+### 10.1 SNET-CLI: Calling the Service (local)
 ```
 $ python3.6 test_call_basic_service.py 
 Endpoint (localhost:7003): 
