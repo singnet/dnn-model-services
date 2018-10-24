@@ -134,7 +134,7 @@ Choose a price in AGI to call your service: (default: 0)
 Endpoint to call the API for your service, should start with http(s):// : (default: "")
 http://54.203.198.53:7000
 Input a list of tags for your service, space separated: (default: [])
-Basic Service Template Arithmetic
+Basic Template Arithmetic
 Input a description for your service: (default: "")
 A basic template to show how to publish a service on SingularityNET platform.
 {
@@ -146,7 +146,6 @@ A basic template to show how to publish a service on SingularityNET platform.
     "endpoint": "http://54.203.198.53:7000",
     "tags": [
     "Basic",
-    "Service",
     "Template",
     "Arithmetic"
     ],
