@@ -15,7 +15,7 @@ log = logging.getLogger("run_basic_service")
 
 def main():
     parser = argparse.ArgumentParser(prog=__file__)
-    parser.add_argument("--daemon-config-path", help="File with daemon configuration.", required=False)
+    parser.add_argument("--daemon-config-path", help="Directory with daemon configurations.", required=False)
     args = parser.parse_args(sys.argv[1:])
 
     root_path = pathlib.Path(__file__).absolute().parent
@@ -86,7 +86,7 @@ def start_snetd(cwd, daemon_config_file=None, db_file=None):
     - Configurations from: daemon_config_file
     - Database in db_file
     """
-    cmd = ["snetd"]
+    cmd = ["snetd", "serve"]
     if db_file is not None:
         cmd.extend(["--db-path", str(db_file)])
     if daemon_config_file is not None:
