@@ -10,20 +10,20 @@ import threading
 from service import registry
 
 logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s")
-log = logging.getLogger("run_image_recon_service")
+log = logging.getLogger("run_video_cap_service")
 
 
 def main():
     parser = argparse.ArgumentParser(prog=__file__)
-    parser.add_argument("--daemon-config-path", help="File with daemon configuration.", required=False)
+    parser.add_argument("--daemon-config-path", help="Directory with daemon configurations.", required=False)
     args = parser.parse_args(sys.argv[1:])
 
     root_path = pathlib.Path(__file__).absolute().parent
 
     # All services modules go here
-    service_modules = ["service.image_recon_service"]
+    service_modules = ["service.video_cap_service"]
 
-    # Removing all previous snetd .db file
+    # Removing all previous SNET Daemon's .db file
     os.system("rm *.db")
 
     # Call for all the services listed in service_modules
@@ -41,9 +41,9 @@ def main():
 def start_all_services(cwd, service_modules, config_path=None):
     """
     Loop through all service_modules and start them.
-    For each one, an instance of Daemon 'snetd' is created.
-    snetd will start with configs from 'snet_SERVICENAME_config.json'
-    and will create a 'db_SERVICENAME.db' database file for each service.
+    For each one, an instance of Daemon "snetd" is created.
+    snetd will start with configs from "snet_SERVICENAME_config.json"
+    and will create a "db_SERVICENAME.db" database file for each service.
     """
     try:
         for i, service_module in enumerate(service_modules):
@@ -69,7 +69,7 @@ def start_all_services(cwd, service_modules, config_path=None):
 def start_service(cwd, service_module, daemon_config_file=None):
     """
     Starts the python module of the service at the passed gRPC port and
-    an instance of 'snetd' for the service.
+    an instance of "snetd" for the service.
     """
     service_name = service_module.split(".")[-1]
     grpc_port = registry[service_name]["grpc"]
@@ -82,7 +82,7 @@ def start_service(cwd, service_module, daemon_config_file=None):
 
 def start_snetd(cwd, daemon_config_file=None, db_file=None):
     """
-    Starts the Daemon 'snetd' with:
+    Starts the Daemon "snetd" with:
     - Configurations from: daemon_config_file
     - Database in db_file
     """

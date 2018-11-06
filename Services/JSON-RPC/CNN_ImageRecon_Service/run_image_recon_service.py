@@ -52,7 +52,7 @@ def start_all_services(cwd, service_modules, config_path=None):
 
             snetd_config = None
             if config_path:
-                snetd_config = pathlib.Path(config_path) / ("snetd_" + server_name + ".json")
+                snetd_config = pathlib.Path(config_path) / ("snetd_" + server_name + "_config.json")
 
             process_th = threading.Thread(target=start_service, args=(cwd, service_module, snetd_config))
 

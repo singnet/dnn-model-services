@@ -54,7 +54,7 @@ def start_all_services(cwd, service_modules, config_path=None):
             if config_path:
                 snetd_config = pathlib.Path(config_path) / ("snetd_" + service_name + "_config.json")
 
-            process_th = threading.Thread(target=start_service, args=(cwd, service_module, snetd_config,))
+            process_th = threading.Thread(target=start_service, args=(cwd, service_module, snetd_config))
 
             # Bind the thread with the main() to abort it when main() exits.
             process_th.daemon = True

@@ -47,12 +47,12 @@ def start_all_services(cwd, service_modules, config_path=None):
     """
     try:
         for i, service_module in enumerate(service_modules):
-            server_name = service_module.split(".")[-1]
-            print("Launching", service_module, "on ports", str(registry[server_name]))
+            service_name = service_module.split(".")[-1]
+            print("Launching", service_module, "on ports", str(registry[service_name]))
 
             snetd_config = None
             if config_path:
-                snetd_config = pathlib.Path(config_path) / ("snetd_" + server_name + ".json")
+                snetd_config = pathlib.Path(config_path) / ("snetd_" + service_name + "_config.json")
 
             process_th = threading.Thread(target=start_service, args=(cwd, service_module, snetd_config))
 
@@ -68,13 +68,13 @@ def start_all_services(cwd, service_modules, config_path=None):
 
 def start_service(cwd, service_module, daemon_config_file=None):
     """
-    Starts the python module of the service at the passed JSON-RPC port and
+    Starts the python module of the service at the passed gRPC port and
     an instance of 'snetd' for the service.
     """
     service_name = service_module.split(".")[-1]
     grpc_port = registry[service_name]["grpc"]
     subprocess.Popen(
-        [sys.executable,"-m", service_module, "--grpc-port", str(grpc_port)],
+        [sys.executable, "-m", service_module, "--grpc-port", str(grpc_port)],
         cwd=str(cwd))
     db_file = "db_" + service_name + ".db"
     start_snetd(str(cwd), daemon_config_file, db_file)
@@ -86,7 +86,7 @@ def start_snetd(cwd, daemon_config_file=None, db_file=None):
     - Configurations from: daemon_config_file
     - Database in db_file
     """
-    cmd = ["snetd"]
+    cmd = ["snetd", "serve"]
     if db_file is not None:
         cmd.extend(["--db-path", str(db_file)])
     if daemon_config_file is not None:
