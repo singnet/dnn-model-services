@@ -1,8 +1,8 @@
-## Image Recognition (Flowers & Dogs)
+## Object Detection
 
 ### 1. Reference:
 
-- This service uses [CNTK Image Recognition](https://cntk.ai/pythondocs/CNTK_301_Image_Recognition_with_Deep_Transfer_Learning.html) to perform image recognition on photos.
+- This service uses [YOLOv3](https://pjreddie.com/darknet/yolo/) to perform object detection on images.
 
 ### 2. Preparing the file structure:
 
@@ -11,21 +11,21 @@
 ```
 $ git clone https://github.com/singnet/dnn-model-services.git
 $ cd dnn-model-services/utils
-$ ./get_cntk_models.sh
+$ ./get_yolov3.sh
 $ ls -la Resources/Models
 
 $ cd ..
-$ cd Services/gRPC/CNTK_ImageRecon
+$ cd Services/gRPC/YOLOv3_ObjectDetection
 ```
 
 ### 3. Running the service:
 
 - Create the SNET Daemon's config JSON file. It must looks like this:
 ```
-$ cat snetd_image_recon_service_config.json
+$ cat snetd_object_detection_service_config.json
 {
     "DAEMON_TYPE": "grpc",
-    "DAEMON_LISTENING_PORT": "7007",
+    "DAEMON_LISTENING_PORT": "7003",
     "BLOCKCHAIN_ENABLED": true,
     "ETHEREUM_JSON_RPC_ENDPOINT": "https://kovan.infura.io",
     "AGENT_CONTRACT_ADDRESS": "YOUR_AGENT_ADDRESS",

@@ -1,4 +1,9 @@
-registry = {"object_detection_service": {"grpc": 7004, "snetd": 7005}}
+registry = {
+    "object_detection_service": {
+        "grpc": 7003,
+        "snetd": 7005
+    }
+}
 
 map_names = {
     0: "person",

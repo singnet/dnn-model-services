@@ -3,7 +3,7 @@
 ### 1. Cloning this repository:
 ```
 $ git clone https://github.com/singnet/dnn-model-services.git
-$ cd dnn-model-services/Services/gRPC/Meta_Services/CNN_ObjectDetection_ImageRecon/
+$ cd dnn-model-services/Services/gRPC/Meta_Services/ObjectDetection_ImageRecon/
 ```
 
 ### 2. SNET-CLI: Installation (v0.1.5)
