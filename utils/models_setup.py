@@ -22,14 +22,17 @@ import requests
 import cntk
 import cv2
 
-from registry import (
+from data_classes import (
     flowers_map_names,
     dogs_map_names,
-    imagenet_map_names,
     coco_map_names,
+    imagenet_map_names,
 )
 
+# Fast training
 isFast = True
+
+# If you want to use GPU, uncomment next line
 # cntk.device.try_set_default_device(C.device.gpu(0))
 
 
@@ -687,7 +690,7 @@ def main():
 
     opt_setup = ""
     while opt_setup != "q":
-        opt_setup = input("==> Setup CNTK CNN: (1=Test/2=Train/q=Quit)? ")
+        opt_setup = input("==> Models Setup: (1=Test/2=Train/q=Quit)? ")
         if opt_setup == "1":
             opt_test = ""
             while opt_test != "q":

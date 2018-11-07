@@ -54,7 +54,7 @@ MetaService
 Choose the path to your service's spec directory: (default: "service_spec/")
 
 Choose an organization to register your service under: (default: "")
-SNET_BH
+ORGANIZATION_NAME
 Choose the path under which your Service registration will be created: (default: "")
 
 Choose a price in AGI to call your service: (default: 0)
@@ -68,13 +68,13 @@ A service that calls another services.
 {
     "name": "MetaService",
     "service_spec": "service_spec/",
-    "organization": "SNET_BH",
+    "organization": "ORGANIZATION_NAME",
     "path": "",
     "price": 5,
-    "endpoint": "http://54.203.198.53:7009",
+    "endpoint": "http://your_endpoint_ip:7009",
     "tags": [
-        "Meta,",
-        "multiple,",
+        "Meta",
+        "multiple",
         "service"
     ],
     "metadata": {
@@ -146,14 +146,13 @@ Submitting transaction...
 ```
 - **SNET-CLI: List Services**
 
-- 	List services from a specific Organization ('SNET_BH')
+- 	List services from a specific Organization ('ORGANIZATION_NAME')
 ```
-$ snet organization list-services SNET_BH
+$ snet organization list-services ORGANIZATION_NAME
 
-List of SNET_BH's Services:
-- BasicService
-- CNN_ImageRecon
-- CNN_ObjectDetection
+List of ORGANIZATION_NAME's Services:
+- SERVICE_NAME_1
+- SERVICE_NAME_2
 - MetaService
 
 ```

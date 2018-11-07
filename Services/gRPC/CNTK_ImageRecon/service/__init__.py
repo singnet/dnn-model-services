@@ -1,4 +1,9 @@
-registry = {"image_recon_service": {"grpc": 7000, "snetd": 7007}}
+registry = {
+    "image_recon_service": {
+        "grpc": 7003,
+        "snetd": 7007
+    }
+}
 
 flowers_map_names = {
     0: "pink primrose",

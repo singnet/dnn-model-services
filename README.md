@@ -126,13 +126,13 @@ Choose a name for your service: (default: "BasicService")
 Choose the path to your service's spec directory: (default: "service_spec/")
 
 Choose an organization to register your service under: (required)
-MY_ORG_NAME
+ORGANIZATION_NAME
 Choose the path under which your Service registration will be created: (default: "")
 
 Choose a price in AGI to call your service: (default: 0)
 100
 Endpoint to call the API for your service, should start with http(s):// : (default: "")
-http://54.203.198.53:7000
+http://you_service_endpoint:7000
 Input a list of tags for your service, space separated: (default: [])
 Basic Template Arithmetic
 Input a description for your service: (default: "")
@@ -140,14 +140,14 @@ A basic template to show how to publish a service on SingularityNET platform.
 {
     "name": "BasicService",
     "service_spec": "service_spec/",
-    "organization": "MY_ORG_NAME",
+    "organization": "ORGANIZATION_NAME",
     "path": "",
     "price": 100,
-    "endpoint": "http://54.203.198.53:7000",
+    "endpoint": "http://you_service_endpoint:7000",
     "tags": [
-    "Basic",
-    "Template",
-    "Arithmetic"
+        "Basic",
+        "Template",
+        "Arithmetic"
     ],
     "metadata": {
     "description": "A basic template to show how to publish a service on SingularityNET platform."
@@ -230,11 +230,11 @@ Submitting transaction...
 
 - **SNET-CLI: List Services**
 
-- 	List services from a specific Organization ('MY_ORG_NAME')
+- 	List services from a specific Organization ('ORGANIZATION_NAME')
 ```
-$ snet organization list-services MY_ORG_NAME
+$ snet organization list-services ORGANIZATION_NAME
 
-List of MY_ORG_NAME's Services:
+List of ORGANIZATION_NAME's Services:
 - BasicService
 ```
 
@@ -244,7 +244,7 @@ List of MY_ORG_NAME's Services:
 	 - `organization` name of the Organization.
 	 - `service_name` name of the Service.
 ```
-$ snet service delete MY_ORG_NAME BasicService
+$ snet service delete ORGANIZATION_NAME BasicService
 Getting information about the service...
 Deleting service BasicService...
 Proceed? (y/n): y
@@ -260,7 +260,6 @@ Service was deleted!
 ```
 $ snet session
     session:
-    current_agent_at: 'YOUR_SERVICE_ADDRESS'
     default_eth_rpc_endpoint: https://kovan.infura.io
     default_gas_price: '1000000000'
     default_wallet_index: '0'
@@ -270,7 +269,7 @@ $ snet session
 -	If you need to change keys from your session.
 ```
 	$ snet unset current_agent_at
-	$ snet set current_agent_at 0x1591F7ecB3C4Fb2E57a2679c30aC8D9b4EC65248
+	$ snet set current_agent_at YOUR_AGENT_ADDRESS
 ```
 
 ### 9. SNET DAEMON: Running the service
@@ -313,7 +312,7 @@ DEBU[0000] starting daemon
 	 - `json` the params of the method.
 ```
 	$ snet client call mul '{"a":12.0, "b":77.0}'
-	set current_agent_at 0x1591F7ecB3C4Fb2E57a2679c30aC8D9b4EC65248
+	set current_agent_at YOUR_AGENT_ADDRESS
 
 	Accept job price 0.00000100 AGI? (y/n): y
 	Creating transaction to create job...
@@ -325,7 +324,7 @@ DEBU[0000] starting daemon
 		gas: 734276
 		gasPrice: 1000000000
 		nonce: 245
-		to: '0x1591F7ecB3C4Fb2E57a2679c30aC8D9b4EC65248'
+		to: 'YOUR_AGENT_ADDRESS'
 		value: 0
 
 	Proceed? (y/n): y

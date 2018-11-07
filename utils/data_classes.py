@@ -1,12 +1,4 @@
-registry = {
-    'image_recon_service': {
-        'grpc': 7000,
-        'snetd': 7007,
-    },
-}
-
 flowers_map_names = {
-
     0: 'pink primrose',
     1: 'hard-leaved pocket orchid',
     2: 'canterbury bells',
@@ -245,16 +237,6 @@ dogs_map_names = {
     130: 'Wirehaired_pointing_griffon',
     131: 'Xoloitzcuintli',
     132: 'Yorkshire_terrier'
-}
-
-cars_map_names = {
-    0: 'Fiat_Argo',
-    1: 'Fiat_Cronos',
-    2: 'Fiat_Doblo',
-    3: 'Fiat_Mobi',
-    4: 'Fiat_Strada',
-    5: 'Fiat_Toro',
-    6: 'Fiat_Uno'
 }
 
 coco_map_names = {

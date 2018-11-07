@@ -32,7 +32,7 @@ $ git clone https://github.com/singnet/dnn-model-services.git
   - You'll need the following files at `service/utils/data`:
   
 ```
-$ cd dnn-model-services/Services/gRPC/CNN_VideoCaptioning
+$ cd dnn-model-services/Services/gRPC/S2VT_VideoCaptioning
 $ ls -la service/utils/data
 total 882120
 -rw-r--r-- 1 user user 553432081 Nov  6 10:59 VGG_ILSVRC_16_layers.caffemodel

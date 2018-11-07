@@ -16,13 +16,13 @@ if __name__ == "__main__":
         # open a gRPC channel
         channel = grpc.insecure_channel("{}".format(endpoint))
 
-        grpc_method = input("Method (flowers|dogs|cars): ")
+        grpc_method = input("Method (flowers|dogs): ")
 
-        model = input("Model (ResNet18): ")
+        model = input("Model (ResNet152): ")
         if model == "":
-            model = "ResNet18"
+            model = "ResNet152"
 
-        img_path = input("Image (Path or Link): ")
+        img_path = input("Image (Link): ")
 
         if grpc_method == "flowers":
             # create a stub (client)

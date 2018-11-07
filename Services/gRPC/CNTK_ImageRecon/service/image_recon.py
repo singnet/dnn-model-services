@@ -9,7 +9,7 @@ import requests
 import base64
 import traceback
 
-resources_root = os.path.join("..", "..", "..", "CNTK", "Resources")
+resources_root = os.path.join("..", "..", "..", "utils", "Resources")
 
 
 # Evaluates a single image using the re-trained model

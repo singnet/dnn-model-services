@@ -6,7 +6,7 @@ import base64
 import cv2
 import traceback
 
-resources_root = os.path.join("..", "..", "..", "CNTK", "Resources")
+resources_root = os.path.join("..", "..", "..", "utils", "Resources")
 
 
 class ObjectDetector:
