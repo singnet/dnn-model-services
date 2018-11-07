@@ -166,7 +166,7 @@ List of SNET_BH's Services:
 -   Access your service endpoint and start the Daemon.
 
 ```
-$ cat config/snetd_ObjectDetection_ImageRecon_service.json
+$ cat config/snetd_ObjectDetection_ImageRecon_service_config.json
 {
     "DAEMON_TYPE": "grpc",
     "DAEMON_LISTENING_PORT": "7009",
