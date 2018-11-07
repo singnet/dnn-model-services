@@ -19,8 +19,8 @@ if __name__ == "__main__":
 
         grpc_method = input("Method (video_action_recon): ")
         if grpc_method == "video_action_recon" or grpc_method == "":
-            url = input("Url: ")
             model = input("Model: ")
+            url = input("Url: ")
             # Create a stub (client)
             stub = grpc_bt_grpc.VideoActionRecognitionStub(channel)
             # Create a valid request message

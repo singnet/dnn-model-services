@@ -2,54 +2,24 @@
 
 ### 1. Reference:
 
-- This service tries to describe a visual content with natural language text based on [S2VT](https://vsubhashini.github.io/s2vt.html).
+- This service uses [I3D](https://github.com/deepmind/kinetics-i3d) to perform action recognition on videos.
 
-### 2. Setup from author's repository:
-
-- We recommend you to follow the setup at author's repository:
-https://github.com/vsubhashini/caffe/tree/recurrent/examples/s2vt
-- You'll need the python Caffe module.
-  - You can run a Docker Container from [bvlc/caffe](https://hub.docker.com/r/bvlc/caffe/):
-  ```bash
-  $ nvidia-docker run --name "SNET_VideoCaptioning" -p 7004:7004 -ti bvlc/caffe:gpu bash
-  ```
-  - Inside the container install `python-tk` and `nano`:
-  ```
-  # apt update
-  # apt get install python-tk nano
-  ```
-
-### 3. Preparing the file structure:
+### 2. Preparing the file structure:
 
 - Then clone this repository:
 ```
 $ git clone https://github.com/singnet/dnn-model-services.git
+$ cd dnn-model-services/Services/gRPC/I3D_VideoActionRecognition
 ```
 
-- Necessary files:
-  - You can copy all files from setup (step 2) and put them inside `service/utils/data`
-  - Or, you can use the script (`service/utils/get_s2vt.sh`) to download them.
-  - You'll need the following files at `service/utils/data`:
-  
-```
-$ cd dnn-model-services/Services/gRPC/CNN_VideoCaptioning
-$ ls -la service/utils/data
-total 882120
--rw-r--r-- 1 user user 553432081 Nov  6 10:59 VGG_ILSVRC_16_layers.caffemodel
--rwxr-xr-x 1 user user      2728 Nov  6 11:05 s2vt.words_to_preds.deploy.prototxt
--rw-r--r-- 1 user user 349436137 Nov  6 11:01 s2vt_vgg_rgb.caffemodel
--rw-r--r-- 1 user user      4582 Nov  6 11:03 vgg_orig_16layer.deploy.prototxt
--rw-r--r-- 1 user user    393710 Nov  6 10:59 yt_coco_mvad_mpiimd_vocabulary.txt
-```
-
-### 4. Running the service:
+### 3. Running the service:
 
 - Create the SNET Daemon's config JSON file. It must looks like this:
 ```
-$ cat snetd_video_cap_service_config.json
+$ cat snetd_video_action_recon_service_config.json
 {
     "DAEMON_TYPE": "grpc",
-    "DAEMON_LISTENING_PORT": "7004",
+    "DAEMON_LISTENING_PORT": "7002",
     "BLOCKCHAIN_ENABLED": true,
     "ETHEREUM_JSON_RPC_ENDPOINT": "https://kovan.infura.io",
     "AGENT_CONTRACT_ADDRESS": "YOUR_AGENT_ADDRESS",
@@ -60,9 +30,9 @@ $ cat snetd_video_cap_service_config.json
     "PRIVATE_KEY": "YOUR_PRIVATE_KEY"
 }
 ```
-- Install all dependencies (this service uses Python 2.7):
+- Install all dependencies:
 ```
-$ pip2 install -r requirements.txt
+$ pip3 install -r requirements.txt
 ```
 - Generate the gRPC codes:
 ```
@@ -70,27 +40,31 @@ $ sh buildproto.sh
 ```
 - Start the service and SNET Daemon:
 ```
-$ python2 run_video_cap_service.py --daemon-conf .
+$ python3 run_video_action_recon_service.py --daemon-conf .
 ```
 
-### 5. Calling the service:
+### 4. Calling the service:
 
 - Inputs:
-  - `url`: An YouTube video URL.
-  - `start_time_sec`: Start time position, in seconds.
-  - `stop_time_sec`: Stop time position, in seconds.
-  - The delta time (stop-start) must be <= 20 seconds.
+  - `model`: kinetics-i3d model ("400" or "600").
+  - `url`: A video URL.
 
 - Local (testing purpose):
 
 ```
-$ python2 test_call_video_cap_service.py 
+$ python3 test_call_video_action_recon_service.py
+Endpoint (localhost:7003):
+Method (video_action_recon): 
+Model: 400
+Url: http://crcv.ucf.edu/THUMOS14/UCF101/UCF101/v_MoppingFloor_g25_c01.avi
+{'Action': 'mopping floor\t56.66%\ncleaning floor\t31.83%\nsweeping floor\t11.39%\nsanding floor\t0.02%\nshoveling snow\t0.01%\n'}
+
+$ python3 test_call_video_action_recon_service.py 
 Endpoint (localhost:7003): <ENTER>
-Method (video_cap): <ENTER>
-Url: https://www.youtube.com/watch?v=WC5FdFlUcl0
-StartTime(s): 96
-StopTime (s): 101
-{'Caption': '1\n00:01:36,00 --> 00:01:41,00\nA man is playing a song.'}
+Method (video_action_recon): <ENTER>
+Model: 600
+Url: http://crcv.ucf.edu/THUMOS14/UCF101/UCF101/v_MoppingFloor_g25_c01.avi
+{'Action': 'mopping floor\t54.51%\nsweeping floor\t41.16%\ncurling (sport)\t4.13%\ngolf driving\t0.05%\nplaying ice hockey\t0.03%\n'}
 ```
 
 - Through Blockchain:
@@ -99,12 +73,12 @@ StopTime (s): 101
 $ snet set current_agent_at YOUR_AGENT_ADDRESS
 set current_agent_at YOUR_AGENT_ADDRESS
 
-$ snet client call video_cap '{"url": "https://www.youtube.com/watch?v=WC5FdFlUcl0", "start_time_sec": "96", "stop_time_sec": "101"}'
+$ snet client call video_action_recon '{"model": "400", url": "http://crcv.ucf.edu/THUMOS14/UCF101/UCF101/v_CricketShot_g04_c02.avi"}'
 ...
 Read call params from cmdline...
 
 Calling service...
 
     response:
-        value: '{''Caption'': ''1\n00:01:36,00 --> 00:01:41,00\nA man is playing a song.''}'
+        value: '{'Action': 'playing cricket\t97.77%\nskateboarding\t0.71%\nrobot dancing\t0.56%\nroller skating\t0.56%\ngolf putting\t0.13%\n'}'
 ```
