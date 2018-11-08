@@ -5,7 +5,7 @@ ___
 
 #### Services Description:
 
-- ##### Images:
+- #### Images:
 
   - [CNTK_ImageRecon](Services/gRPC/CNTK_ImageRecon):
     - This service uses ResNet152 model, trained to recognize different types of flowers and dog breeds.
@@ -23,12 +23,12 @@ ___
       }
       ```
 
-  - [Meta_Services](Services/gRPC/Meta_Services/ObjectDetection_ImageRecon):
+  - [Meta_Service](Services/gRPC/Meta_Services/ObjectDetection_ImageRecon):
     - This service uses two other services.
     First it calls `YOLOv3_ObjectDetection` and get all detected objects from an image.
     Then it calls `CNTK_ImageRecon` for each object and returns its classification.
 
-- ##### Videos:
+- #### Videos:
 
   - [I3D_VideoActionRecognition](Services/gRPC/I3D_VideoActionRecognition):
     - This service uses I3D model to recognize actions on videos (with 400 or 600 labels).
