@@ -21,6 +21,7 @@ https://github.com/vsubhashini/caffe/tree/recurrent/examples/s2vt
 
 ### 3. Preparing the file structure:
 
+- To get the `YOUR_AGENT_ADDRESS` you must have already published a service (check this [link](https://github.com/singnet/wiki/tree/master/tutorials/howToPublishService)).
 - Then clone this repository:
 ```
 $ git clone https://github.com/singnet/dnn-model-services.git
@@ -93,7 +94,7 @@ StopTime (s): 101
 {'Caption': '1\n00:01:36,00 --> 00:01:41,00\nA man is playing a song.'}
 ```
 
-- Through Blockchain:
+- Through SingularityNET:
 
 ```
 $ snet set current_agent_at YOUR_AGENT_ADDRESS

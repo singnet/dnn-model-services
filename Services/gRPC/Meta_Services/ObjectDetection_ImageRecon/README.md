@@ -1,0 +1,90 @@
+## Object Detection and Image Recognition
+
+### 1. Reference:
+
+- This service uses 2 other services:
+  - `YOLOv3_ObjectDetection` to detect objects on images and;
+  - `CNTK_ImageRecon` to classify these objects.
+
+### 2. Preparing the file structure:
+
+- Clone this repository:
+```
+$ git clone https://github.com/singnet/dnn-model-services.git
+```
+
+### 3. Running the service:
+
+- To get the `YOUR_AGENT_ADDRESS` you must have already published a service (check this [link](https://github.com/singnet/wiki/tree/master/tutorials/howToPublishService)).
+- Create the SNET Daemon's config JSON file. It must looks like this:
+```
+$ cd dnn-model-services/Services/gRPC/Meta_Services/ObjectDetection_ImageRecon
+$ cat snetd_ObjectDetection_ImageRecon_service_config.json
+{
+    "DAEMON_TYPE": "grpc",
+    "DAEMON_LISTENING_PORT": "7009",
+    "BLOCKCHAIN_ENABLED": true,
+    "ETHEREUM_JSON_RPC_ENDPOINT": "https://kovan.infura.io",
+    "AGENT_CONTRACT_ADDRESS": "YOUR_AGENT_ADDRESS",
+    "SERVICE_TYPE": "grpc",
+    "PASSTHROUGH_ENABLED": true,
+    "PASSTHROUGH_ENDPOINT": "http://localhost:7003",
+    "LOG_LEVEL": 10,
+    "PRIVATE_KEY": "YOUR_PRIVATE_KEY"
+}
+```
+- Install all dependencies:
+```
+$ pip3 install -r requirements.txt
+```
+- Generate the gRPC codes:
+```
+$ sh buildproto.sh
+```
+- Start the service and SNET Daemon:
+```
+$ python3 run_ObjectDetection_ImageRecon_service.py --daemon-conf .
+```
+
+### 4. Calling the service:
+
+- Inputs:
+  - `model_detect`: DNN Model ("yolov3").
+  - `model_recon`: DNN Model ("ResNet152").
+  - `img_path`: An image URL.
+  - `confidence`: Confidence of object detection (between 0 and 1).
+
+- Local (testing purpose):
+
+```
+$ python3 test_ObjectDetection_ImageRecon_service.py 
+Endpoint (localhost:7003): <ENTER>
+Model ImageRecon (ResNet152): <ENTER>
+Confidence (0.7): <ENTER>
+Image (Path or Link): https://www.mediastorehouse.com/p/172/dog-man-child-walking-labrador-lead-10489821.jpg
+delta_time: "203.43261623382568"
+boxes: "[[315.0, 76.0, 156, 310], [246.0, -1.5, 142, 381], [178.0, 220.5, 114, 161]]"
+confidences: "[0.9993983507156372, 0.9992683529853821, 0.9989995360374451]"
+class_ids: "[0, 0, 16]"
+top_1_list: "[\'56.95%: Canaan_dog\']"
+```
+
+- Through SingularityNET:
+
+```
+$ snet set current_agent_at YOUR_AGENT_ADDRESS
+set current_agent_at YOUR_AGENT_ADDRESS
+
+$ snet client call detect_recon '{"model_detect": "yolov3", "model_recon": "ResNet152", "img_path": "https://figopetinsurance.com/sites/default/files/styles/blog_detail/public/imagedogsman-and-dog-hiking-mountainsblog.jpg", "confidence": "0.5"}'
+...
+Read call params from cmdline...
+
+Calling service...
+
+    response:
+        boxes: '[[340.5, 113.5, 153, 361], [432.5, 162.5, 73, 119], [256.5, 219.0, 133, 278]]'
+        class_ids: '[0, 24, 16]'
+        confidences: '[0.9899819493293762, 0.971903383731842, 0.9540891647338867]'
+        delta_time: '202.7593548297882'
+        top_1_list: '[''78.86%: Australian_cattle_dog'']'
+```

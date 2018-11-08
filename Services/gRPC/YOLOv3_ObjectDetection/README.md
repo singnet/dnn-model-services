@@ -25,13 +25,14 @@ $ cd ..
 
 ### 3. Running the service:
 
+- To get the `YOUR_AGENT_ADDRESS` you must have already published a service (check this [link](https://github.com/singnet/wiki/tree/master/tutorials/howToPublishService)).
 - Create the SNET Daemon's config JSON file. It must looks like this:
 ```
 $ cd Services/gRPC/YOLOv3_ObjectDetection
 $ cat snetd_object_detection_service_config.json
 {
     "DAEMON_TYPE": "grpc",
-    "DAEMON_LISTENING_PORT": "7003",
+    "DAEMON_LISTENING_PORT": "7005",
     "BLOCKCHAIN_ENABLED": true,
     "ETHEREUM_JSON_RPC_ENDPOINT": "https://kovan.infura.io",
     "AGENT_CONTRACT_ADDRESS": "YOUR_AGENT_ADDRESS",
@@ -58,43 +59,45 @@ $ python3 run_image_recon_service.py --daemon-conf .
 ### 4. Calling the service:
 
 - Inputs:
-  - `model`: DNN Model ("ResNet152").
+  - `model`: DNN Model ("yolov3").
   - `img_path`: An image URL.
+  - `confidence`: Confidence of object detection (between 0 and 1).
 
 - Local (testing purpose):
 
 ```
-$ python3 test_image_recon_service.py 
-Endpoint (localhost:7000): 
-Method (flowers|dogs): flowers
-Model (ResNet152): <ENTER>
-Image (Link): https://www.fiftyflowers.com/site_files/FiftyFlowers/Image/Product/Mini-Black-Eye-bloom-350_c7d02e72.jpg
-3.8751
-{1: '98.93%: sunflower', 2: '00.64%: black-eyed susan', 3: '00.16%: barbeton daisy', 4: '00.14%: oxeye daisy', 5: '00.03%: daffodil'}
-
-$ python3 test_image_recon_service.py 
-Endpoint (localhost:7000): 
-Method (flowers|dogs): dogs
-Model (ResNet152): <ENTER>
-Image (Link): https://cdn2-www.dogtime.com/assets/uploads/2011/01/file_22950_standard-schnauzer-460x290.jpg
-1.5280
-{1: '99.83%: Miniature_schnauzer', 2: '00.09%: Alaskan_malamute', 3: '00.05%: Giant_schnauzer', 4: '00.01%: Bouvier_des_flandres', 5: '00.01%: Lowchen'}
+$ python3 test_object_detection_service.py 
+Endpoint (localhost:7003): 
+Confidence (0.7): 
+Image (Link): http://www.reidsitaly.com/images/planning/sightseeing/calcio.jpg
+delta_time: "2.4893"
+boxes: "[[150.5, 7.0, 31, 30], [219.5, 65.0, 73, 182], [275.0, 60.0, 212, 198]]"
+class_ids: "[32, 0, 0]"
+confidences: "[0.9988894462585449, 0.9795901775360107, 0.9754813313484192]"
+... (BASE64_BBOX_IMAGE)
 ```
 
-- Through Blockchain:
+- Through SingularityNET:
 
 ```
 $ snet set current_agent_at YOUR_AGENT_ADDRESS
 set current_agent_at YOUR_AGENT_ADDRESS
 
-$ snet client call flowers '{"model": "ResNet152", "img_path": "https://www.fiftyflowers.com/site_files/FiftyFlowers/Image/Product/Mini-Black-Eye-bloom-350_c7d02e72.jpg"}'
+$ snet client call detect '{"model": "yolov3", "img_path": "https://hips.hearstapps.com/amv-prod-cad-assets.s3.amazonaws.com/images/media/51/2017-10best-lead-photo-672628-s-original.jpg", "confidence": "0.5"}'
 ...
 Read call params from cmdline...
 
 Calling service...
 
     response:
-        delta_time: '1.5536'
-        top_5: '{1: ''98.93%: sunflower'', 2: ''00.64%: black-eyed susan'', 3: ''00.16%:
-            barbeton daisy'', 4: ''00.14%: oxeye daisy'', 5: ''00.03%: daffodil''}'
-            ```
+        boxes: '[[8.5, 151.0, 223, 118], [294.0, 138.0, 78, 48], [127.0, 185.5, 250, 209],
+            [605.0, 152.5, 224, 115], [432.0, 129.5, 86, 55], [205.5, 129.0, 81, 38],
+            [18.5, 127.0, 127, 40], [439.5, 187.5, 299, 225], [525.0, 132.0, 88, 34],
+            [694.5, 126.0, 115, 40]]'
+        class_ids: '[2, 2, 2, 2, 2, 2, 2, 2, 2, 2]'
+        confidences: '[0.998349130153656, 0.9982008337974548, 0.9977825284004211, 0.995550811290741,
+            0.9875208735466003, 0.980316698551178, 0.9753901362419128, 0.969804048538208,
+            0.9632347226142883, 0.9579626321792603]'
+        delta_time: '2.0124'
+        img_base64: ... (BASE64_BBOX_IMAGE)
+```

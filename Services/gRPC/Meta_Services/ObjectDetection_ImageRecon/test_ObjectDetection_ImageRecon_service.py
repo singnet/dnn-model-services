@@ -17,7 +17,6 @@ if __name__ == "__main__":
         channel = grpc.insecure_channel("{}".format(endpoint))
 
         grpc_method = "detect_recon"
-
         model_detect = "yolov3"
 
         model_recon = input("Model ImageRecon (ResNet152): ")
@@ -28,7 +27,7 @@ if __name__ == "__main__":
         if confidence == "":
             confidence = "0.7"
 
-        img_path = input("Image (Path or Link): ")
+        img_path = input("Image (Link): ")
 
         # create a stub (client)
         stub = grpc_bt_grpc.DetectReconStub(channel)

@@ -14,6 +14,7 @@ $ cd dnn-model-services/Services/gRPC/I3D_VideoActionRecognition
 
 ### 3. Running the service:
 
+- To get the `YOUR_AGENT_ADDRESS` you must have already published a service (check this [link](https://github.com/singnet/wiki/tree/master/tutorials/howToPublishService)).
 - Create the SNET Daemon's config JSON file. It must looks like this:
 ```
 $ cat snetd_video_action_recon_service_config.json
@@ -67,7 +68,7 @@ Url: http://crcv.ucf.edu/THUMOS14/UCF101/UCF101/v_MoppingFloor_g25_c01.avi
 {'Action': 'mopping floor\t54.51%\nsweeping floor\t41.16%\ncurling (sport)\t4.13%\ngolf driving\t0.05%\nplaying ice hockey\t0.03%\n'}
 ```
 
-- Through Blockchain:
+- Through SingularityNET:
 
 ```
 $ snet set current_agent_at YOUR_AGENT_ADDRESS

@@ -23,6 +23,7 @@ $ cd ..
 
 ### 3. Running the service:
 
+- To get the `YOUR_AGENT_ADDRESS` you must have already published a service (check this [link](https://github.com/singnet/wiki/tree/master/tutorials/howToPublishService)).
 - Create the SNET Daemon's config JSON file. It must looks like this:
 ```
 $ cd Services/gRPC/CNTK_ImageRecon
@@ -63,7 +64,7 @@ $ python3 run_image_recon_service.py --daemon-conf .
 
 ```
 $ python3 test_image_recon_service.py 
-Endpoint (localhost:7000): 
+Endpoint (localhost:7003): 
 Method (flowers|dogs): flowers
 Model (ResNet152): <ENTER>
 Image (Link): https://www.fiftyflowers.com/site_files/FiftyFlowers/Image/Product/Mini-Black-Eye-bloom-350_c7d02e72.jpg
@@ -79,7 +80,7 @@ Image (Link): https://cdn2-www.dogtime.com/assets/uploads/2011/01/file_22950_sta
 {1: '99.83%: Miniature_schnauzer', 2: '00.09%: Alaskan_malamute', 3: '00.05%: Giant_schnauzer', 4: '00.01%: Bouvier_des_flandres', 5: '00.01%: Lowchen'}
 ```
 
-- Through Blockchain:
+- Through SingularityNET:
 
 ```
 $ snet set current_agent_at YOUR_AGENT_ADDRESS
@@ -95,4 +96,4 @@ Calling service...
         delta_time: '1.5536'
         top_5: '{1: ''98.93%: sunflower'', 2: ''00.64%: black-eyed susan'', 3: ''00.16%:
             barbeton daisy'', 4: ''00.14%: oxeye daisy'', 5: ''00.03%: daffodil''}'
-            ```
+```
