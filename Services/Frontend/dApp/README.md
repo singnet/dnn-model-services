@@ -15,17 +15,17 @@ $ cd alpha-dapp
 $ cd src/components/service
 $ ls -la
 total 72
-drwxrwxr-x 2 artur artur 4096 Ago 23 09:07 .
-drwxrwxr-x 3 artur artur 4096 Ago 23 09:06 ..
--rw-rw-r-- 1 artur artur 4166 Ago 23 09:06 alpha_example.js
--rw-rw-r-- 1 artur artur 3073 Ago 23 09:06 default.js
--rw-rw-r-- 1 artur artur 2580 Ago 23 09:06 exchange.js
--rw-rw-r-- 1 artur artur 4694 Ago 23 09:06 face_alignment.js
--rw-rw-r-- 1 artur artur  468 Ago 23 09:06 face_detect.css.js
--rw-rw-r-- 1 artur artur 4683 Ago 23 09:06 face_detect.js
--rw-rw-r-- 1 artur artur  468 Ago 23 09:06 face_landmarks.css.js
--rw-rw-r-- 1 artur artur 6562 Ago 23 09:06 face_landmarks.js
--rw-rw-r-- 1 artur artur 4543 Ago 23 09:06 face_recognition.js
+drwxrwxr-x 2 user user 4096 Ago 23 09:07 .
+drwxrwxr-x 3 user user 4096 Ago 23 09:06 ..
+-rw-rw-r-- 1 user user 4166 Ago 23 09:06 alpha_example.js
+-rw-rw-r-- 1 user user 3073 Ago 23 09:06 default.js
+-rw-rw-r-- 1 user user 2580 Ago 23 09:06 exchange.js
+-rw-rw-r-- 1 user user 4694 Ago 23 09:06 face_alignment.js
+-rw-rw-r-- 1 user user  468 Ago 23 09:06 face_detect.css.js
+-rw-rw-r-- 1 user user 4683 Ago 23 09:06 face_detect.js
+-rw-rw-r-- 1 user user  468 Ago 23 09:06 face_landmarks.css.js
+-rw-rw-r-- 1 user user 6562 Ago 23 09:06 face_landmarks.js
+-rw-rw-r-- 1 user user 4543 Ago 23 09:06 face_recognition.js
 ```
 This is the folder where your frontend file has to be.
 You can use some of these available services to help you understand how to build your own.
@@ -37,18 +37,18 @@ Once your service .js file is ready, just copy and paste it inside `service/`
 $ mv ~/cnn_image_recon.js .
 $ ls -la
 total 72
-drwxrwxr-x 2 artur artur 4096 Ago 23 09:07 .
-drwxrwxr-x 3 artur artur 4096 Ago 23 09:06 ..
--rw-rw-r-- 1 artur artur 4166 Ago 23 09:06 alpha_example.js
--rw-rw-r-- 1 artur artur 3073 Ago 23 09:06 default.js
--rw-rw-r-- 1 artur artur 2580 Ago 23 09:06 exchange.js
--rw-rw-r-- 1 artur artur 4694 Ago 23 09:06 face_alignment.js
--rw-rw-r-- 1 artur artur  468 Ago 23 09:06 face_detect.css.js
--rw-rw-r-- 1 artur artur 4683 Ago 23 09:06 face_detect.js
--rw-rw-r-- 1 artur artur  468 Ago 23 09:06 face_landmarks.css.js
--rw-rw-r-- 1 artur artur 6562 Ago 23 09:06 face_landmarks.js
--rw-rw-r-- 1 artur artur 4543 Ago 23 09:06 face_recognition.js
--rw-rw-r-- 1 artur artur 7359 Ago 23 17:41 cnn_image_recon.js
+drwxrwxr-x 2 user user 4096 Ago 23 09:07 .
+drwxrwxr-x 3 user user 4096 Ago 23 09:06 ..
+-rw-rw-r-- 1 user user 4166 Ago 23 09:06 alpha_example.js
+-rw-rw-r-- 1 user user 3073 Ago 23 09:06 default.js
+-rw-rw-r-- 1 user user 2580 Ago 23 09:06 exchange.js
+-rw-rw-r-- 1 user user 4694 Ago 23 09:06 face_alignment.js
+-rw-rw-r-- 1 user user  468 Ago 23 09:06 face_detect.css.js
+-rw-rw-r-- 1 user user 4683 Ago 23 09:06 face_detect.js
+-rw-rw-r-- 1 user user  468 Ago 23 09:06 face_landmarks.css.js
+-rw-rw-r-- 1 user user 6562 Ago 23 09:06 face_landmarks.js
+-rw-rw-r-- 1 user user 4543 Ago 23 09:06 face_recognition.js
+-rw-rw-r-- 1 user user 7359 Ago 23 17:41 cnn_image_recon.js
 ```
 
 ### 5. Making your frontend file visible for dApp
@@ -58,13 +58,13 @@ Now you have to add your service to the dApp `index.js`
 $ cd /opt/snet/alpha-dapp/src
 $ ls -la
 total 32
-drwxrwxr-x 3 artur artur 4096 Ago 23 17:54 .
-drwxrwxr-x 9 artur artur 4096 Ago 23 18:07 ..
-drwxrwxr-x 3 artur artur 4096 Ago 23 09:06 components
--rw-rw-r-- 1 artur artur 1436 Ago 23 09:06 index.html
--rw-rw-r-- 1 artur artur 7460 Ago 23 17:54 index.js
--rw-rw-r-- 1 artur artur 2862 Ago 23 09:06 jsonrpc.js
--rw-rw-r-- 1 artur artur 3076 Ago 23 09:06 util.js
+drwxrwxr-x 3 user user 4096 Ago 23 17:54 .
+drwxrwxr-x 9 user user 4096 Ago 23 18:07 ..
+drwxrwxr-x 3 user user 4096 Ago 23 09:06 components
+-rw-rw-r-- 1 user user 1436 Ago 23 09:06 index.html
+-rw-rw-r-- 1 user user 7460 Ago 23 17:54 index.js
+-rw-rw-r-- 1 user user 2862 Ago 23 09:06 jsonrpc.js
+-rw-rw-r-- 1 user user 3076 Ago 23 09:06 util.js
 $ nano index.js
 ```
 Make 2 additions to `index.js`

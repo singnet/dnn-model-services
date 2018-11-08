@@ -6,22 +6,26 @@
 
 ### 2. Preparing the file structure:
 
-- For this service you'll need to download 2 pre-trained models.
+- For this service you'll need to download 2 trained models (flowers and dogs).
 - Clone this repository:
 ```
 $ git clone https://github.com/singnet/dnn-model-services.git
 $ cd dnn-model-services/utils
 $ ./get_cntk_models.sh
 $ ls -la Resources/Models
-
+total 458416
+drwxrwxr-x 2 user user      4096 Nov  8 08:49 .
+drwxrwxr-x 3 user user      4096 Nov  8 08:49 ..
+-rw-rw-r-- 1 user user 234830033 Ago 28 17:28 dogs_ResNet152_20.model
+-rw-rw-r-- 1 user user 234574954 Ago 28 15:57 flowers_ResNet152_20.model
 $ cd ..
-$ cd Services/gRPC/CNTK_ImageRecon
 ```
 
 ### 3. Running the service:
 
 - Create the SNET Daemon's config JSON file. It must looks like this:
 ```
+$ cd Services/gRPC/CNTK_ImageRecon
 $ cat snetd_image_recon_service_config.json
 {
     "DAEMON_TYPE": "grpc",
@@ -63,7 +67,7 @@ Endpoint (localhost:7000):
 Method (flowers|dogs): flowers
 Model (ResNet152): <ENTER>
 Image (Link): https://www.fiftyflowers.com/site_files/FiftyFlowers/Image/Product/Mini-Black-Eye-bloom-350_c7d02e72.jpg
-3.8751
+1.8751
 {1: '98.93%: sunflower', 2: '00.64%: black-eyed susan', 3: '00.16%: barbeton daisy', 4: '00.14%: oxeye daisy', 5: '00.03%: daffodil'}
 
 $ python3 test_image_recon_service.py 

@@ -6,22 +6,28 @@
 
 ### 2. Preparing the file structure:
 
-- For this service you'll need to download 2 pre-trained models.
+- For this service you'll need to download 2 additional files:
+  - `yolov3.weights`
+  - `yolov3.cfg`
 - Clone this repository:
 ```
 $ git clone https://github.com/singnet/dnn-model-services.git
 $ cd dnn-model-services/utils
 $ ./get_yolov3.sh
 $ ls -la Resources/Models
-
+total 242420
+drwxrwxr-x 2 user user      4096 Nov  8 08:51 .
+drwxrwxr-x 3 user user      4096 Nov  8 08:51 ..
+-rw-rw-r-- 1 user user    213558 Nov  8 08:47 yolov3.cfg
+-rw-rw-r-- 1 user user 248007048 Mar 25  2018 yolov3.weights
 $ cd ..
-$ cd Services/gRPC/YOLOv3_ObjectDetection
 ```
 
 ### 3. Running the service:
 
 - Create the SNET Daemon's config JSON file. It must looks like this:
 ```
+$ cd Services/gRPC/YOLOv3_ObjectDetection
 $ cat snetd_object_detection_service_config.json
 {
     "DAEMON_TYPE": "grpc",

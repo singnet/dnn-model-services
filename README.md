@@ -121,8 +121,8 @@ $ cd dnn-model-services/Services/gRPC/Basic_Template/service/
 $ snet service init
 Please provide values to populate your service.json file
 
-Choose a name for your service: (default: "BasicService")
-
+Choose a name for your service: (default: "service")
+BasicService
 Choose the path to your service's spec directory: (default: "service_spec/")
 
 Choose an organization to register your service under: (required)

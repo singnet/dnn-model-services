@@ -34,15 +34,15 @@ set identity_name MY_ID_NAME
 $ cd service/
 $ ls -la
 total 44
-drwxrwxr-x 3 artur artur 4096 Set 18 08:23 .
-drwxrwxr-x 5 artur artur 4096 Set 18 08:08 ..
--rw-rw-r-- 1 artur artur  793 Set 11 09:17 common.py
--rw-rw-r-- 1 artur artur  991 Set 10 10:10 image_utils.py
--rw-rw-r-- 1 artur artur 1589 Set 11 09:17 __init__.py
--rw-rw-r-- 1 artur artur 7275 Set 17 07:52 ObjectDetection_ImageRecon.py
--rw-rw-r-- 1 artur artur 3195 Set 18 08:08 ObjectDetection_ImageRecon_service.py
-drwxrwxr-x 2 artur artur 4096 Set 18 07:47 service_spec
--rw-rw-r-- 1 artur artur 5384 Set 18 08:08 snet_control.py
+drwxrwxr-x 3 user user 4096 Set 18 08:23 .
+drwxrwxr-x 5 user user 4096 Set 18 08:08 ..
+-rw-rw-r-- 1 user user  793 Set 11 09:17 common.py
+-rw-rw-r-- 1 user user  991 Set 10 10:10 image_utils.py
+-rw-rw-r-- 1 user user 1589 Set 11 09:17 __init__.py
+-rw-rw-r-- 1 user user 7275 Set 17 07:52 ObjectDetection_ImageRecon.py
+-rw-rw-r-- 1 user user 3195 Set 18 08:08 ObjectDetection_ImageRecon_service.py
+drwxrwxr-x 2 user user 4096 Set 18 07:47 service_spec
+-rw-rw-r-- 1 user user 5384 Set 18 08:08 snet_control.py
 ```
 -	snet service init
 ```	
