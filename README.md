@@ -14,6 +14,14 @@ ___
   - `YOLOv3_ObjectDetection`:
     - This service uses YOLOv3 model to detect objects on images.
     - [Reference](https://pjreddie.com/darknet/yolo/)
+    - ```
+      @article{yolov3,
+          title={YOLOv3: An Incremental Improvement},
+          author={Redmon, Joseph and Farhadi, Ali},
+          journal = {arXiv},
+          year={2018}
+      }
+      ```
 
   - `Meta_Services`:
     - This service uses two other services.
@@ -29,3 +37,12 @@ ___
   - `S2VT_VideoCaptioning`:
     - This service uses "Sequence to Sequence - Video to Text" to describe video content with natural language text.
     - [Reference](https://vsubhashini.github.io/s2vt.html)
+    - ```
+      @inproceedings{venugopalan15iccv,
+          title = {Sequence to Sequence -- Video to Text},
+          author = {Venugopalan, Subhashini and Rohrbach, Marcus and Donahue, Jeff 
+                    and Mooney, Raymond and Darrell, Trevor and Saenko, Kate},
+          booktitle = {Proceedings of the IEEE International Conference on Computer Vision (ICCV)},
+          year = {2015}
+      }
+      ```
