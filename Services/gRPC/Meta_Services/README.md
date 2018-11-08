@@ -157,7 +157,7 @@ List of ORGANIZATION_NAME's Services:
 
 ```
 
-### 8. SNET DAEMON: Running the service
+### 3. SNET DAEMON: Running the service
 -   Go to the root of your service's folders.
 -   Create a json file `snetd_[SERVICE_NAME]_config.json`
 -   Save it inside a `config/` folder.
@@ -187,7 +187,7 @@ Launching service.ObjectDetection_ImageRecon_service on ports {'grpc': 7008, 'sn
 DEBU[0000] starting daemon
 ```
 
-### 9. Testing the Service (local)
+### 4. Testing the Service (local)
 
 -	On the same machine run the test script wile Daemon is running:
 ```

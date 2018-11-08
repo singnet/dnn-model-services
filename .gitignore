@@ -11,5 +11,5 @@ Models/
 config/
 **/service/*.json
 **/service_spec/*.py
-!/Services/gRPC/CNN_VideoCaptioning/service/service_spec/__init__.py
+!/Services/gRPC/S2VT_VideoCaptioning/service/service_spec/__init__.py
 .idea/

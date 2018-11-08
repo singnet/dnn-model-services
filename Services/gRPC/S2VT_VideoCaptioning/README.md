@@ -2,7 +2,7 @@
 
 ### 1. Reference:
 
-- This service tries to describe a visual content with natural language text based on [S2VT](https://vsubhashini.github.io/s2vt.html).
+- This service describes video content with natural language text based on [S2VT](https://vsubhashini.github.io/s2vt.html).
 
 ### 2. Setup from author's repository:
 
