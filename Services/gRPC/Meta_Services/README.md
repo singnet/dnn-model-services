@@ -60,7 +60,7 @@ Choose the path under which your Service registration will be created: (default:
 Choose a price in AGI to call your service: (default: 0)
 5
 Endpoint to call the API for your service: (default: "")
-http://54.203.198.53:7009
+http://your_service_endpoint:7009
 Input a list of tags for your service: (default: [])
 Meta, multiple, service
 Input a description for your service: (default: "")
@@ -71,7 +71,7 @@ A service that calls another services.
     "organization": "ORGANIZATION_NAME",
     "path": "",
     "price": 5,
-    "endpoint": "http://your_endpoint_ip:7009",
+    "endpoint": "http://your_service_endpoint:7009",
     "tags": [
         "Meta",
         "multiple",

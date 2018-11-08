@@ -132,7 +132,7 @@ Choose the path under which your Service registration will be created: (default:
 Choose a price in AGI to call your service: (default: 0)
 100
 Endpoint to call the API for your service, should start with http(s):// : (default: "")
-http://you_service_endpoint:7000
+http://your_service_endpoint:7000
 Input a list of tags for your service, space separated: (default: [])
 Basic Template Arithmetic
 Input a description for your service: (default: "")
@@ -143,7 +143,7 @@ A basic template to show how to publish a service on SingularityNET platform.
     "organization": "ORGANIZATION_NAME",
     "path": "",
     "price": 100,
-    "endpoint": "http://you_service_endpoint:7000",
+    "endpoint": "http://your_service_endpoint:7000",
     "tags": [
         "Basic",
         "Template",
