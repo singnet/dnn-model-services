@@ -162,9 +162,9 @@ $ mkdir service_spec
 $ cp basic_tamplate_rpc.proto service_spec/
 $ ls -la service_spec/
 total 12
-drwxrwxr-x 2 artur artur 4096 Ago 22 13:24 .
-drwxrwxr-x 3 artur artur 4096 Ago 22 13:24 ..
--rw-rw-r-- 1 artur artur  375 Ago 22 13:18 basic_tamplate_rpc.proto
+drwxrwxr-x 2 user user 4096 Ago 22 13:24 .
+drwxrwxr-x 3 user user 4096 Ago 22 13:24 ..
+-rw-rw-r-- 1 user user  375 Ago 22 13:18 basic_tamplate_rpc.proto
 ```
 
 -	snet service publish
