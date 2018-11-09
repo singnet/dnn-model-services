@@ -1,3 +1,0 @@
-grpcio==1.14.2                
-grpcio-tools==1.14.1
-snet-cli==0.1.5
