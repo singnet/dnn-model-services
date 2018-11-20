@@ -1,7 +1,5 @@
 <!--
 - Please follow the issue template below for bug reports and feature requests.
-- If you have a support request rather than a bug, please use [Stack Overflow](http://stackoverflow.com/questions/tagged/brandmgmt) with the Brand Management App tag.
-- For bug reports it is mandatory to run the command `Brand Management App info` in your project's root folder, and paste the result here.
 - Tickets opened without any of these pieces of information will be **closed** without any explanation.
 -->
 
