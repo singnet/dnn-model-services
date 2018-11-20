@@ -139,11 +139,11 @@ class ObjectDetector:
 
             else:
                 return {
-                    "delta_time": "ModelError",
+                    "delta_time": "Fail",
                     "boxes": [],
                     "class_ids": [],
                     "confidences": [],
-                    "img_base64": "ModelError",
+                    "img_base64": "Fail",
                 }
 
         except Exception as e:

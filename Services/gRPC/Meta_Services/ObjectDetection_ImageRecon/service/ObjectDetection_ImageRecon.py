@@ -69,6 +69,7 @@ class DetectRecon(SnetInstance):
 
             # Preparing the response
             result = {
+                "delta_time": "Fail",
                 "boxes": "Fail",
                 "class_ids": "Fail",
                 "confidences": "Fail",
@@ -143,4 +144,10 @@ class DetectRecon(SnetInstance):
 
         except Exception as e:
             traceback.print_exc()
-            return {"delta_time": "Fail", "top_1_list": "Fail"}
+            return {
+                "delta_time": "Fail",
+                "boxes": "Fail",
+                "class_ids": "Fail",
+                "confidences": "Fail",
+                "top_1_list": "Fail"
+                    }
