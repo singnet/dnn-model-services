@@ -1,5 +1,5 @@
-[issue-template]: ../../../issues/new?template=BUG_REPORT.md
-[feature-template]: ../../../issues/new?template=FEATURE_REQUEST.md
+[issue-template]: ../../../../../issues/new?template=BUG_REPORT.md
+[feature-template]: ../../../../../issues/new?template=FEATURE_REQUEST.md
 
 ![singnetlogo](../../../docs/assets/singnet-logo.jpg?raw=true 'SingularityNET')
 

@@ -18,7 +18,7 @@ jobs:
             nvidia-docker build \
               --build-arg agent_contract=$AGENT_CONTRACT_CNTK_ImageRecon \
               --build-arg private_key=$PRIVATE_KEY \
-              -t $DOCKER_IMAGE_NAME_CNTK https://github.com/arturgontijo/dnn-model-services.git#master:/Services/gRPC/$SERVICE_NAME
+              -t $DOCKER_IMAGE_NAME_CNTK https://github.com/singnet/dnn-model-services.git#master:/Services/gRPC/$SERVICE_NAME
             nvidia-docker run --runtime=nvidia \
               --name $DOCKER_CONTAINER_NAME_CNTK \
               --restart unless-stopped \
@@ -61,7 +61,7 @@ jobs:
             nvidia-docker build \
               --build-arg agent_contract=$AGENT_CONTRACT_I3D_VideoActionRecognition \
               --build-arg private_key=$PRIVATE_KEY \
-              -t $DOCKER_IMAGE_NAME_I3D https://github.com/arturgontijo/dnn-model-services.git#master:/Services/gRPC/$SERVICE_NAME
+              -t $DOCKER_IMAGE_NAME_I3D https://github.com/singnet/dnn-model-services.git#master:/Services/gRPC/$SERVICE_NAME
             nvidia-docker run --runtime=nvidia \
               --name $DOCKER_CONTAINER_NAME_I3D \
               --restart unless-stopped \
@@ -104,7 +104,7 @@ jobs:
             nvidia-docker build \
               --build-arg agent_contract=$AGENT_CONTRACT_ObjectDetection_ImageRecon \
               --build-arg private_key=$PRIVATE_KEY \
-              -t $DOCKER_IMAGE_NAME_META https://github.com/arturgontijo/dnn-model-services.git#master:/Services/gRPC/$SERVICE_NAME
+              -t $DOCKER_IMAGE_NAME_META https://github.com/singnet/dnn-model-services.git#master:/Services/gRPC/$SERVICE_NAME
             nvidia-docker run --runtime=nvidia \
               --name $DOCKER_CONTAINER_NAME_META \
               --restart unless-stopped \
@@ -147,7 +147,7 @@ jobs:
             nvidia-docker build \
               --build-arg agent_contract=$AGENT_CONTRACT_S2VT_VideoCaptioning \
               --build-arg private_key=$PRIVATE_KEY \
-              -t $DOCKER_IMAGE_NAME_S2VT https://github.com/arturgontijo/dnn-model-services.git#master:/Services/gRPC/$SERVICE_NAME
+              -t $DOCKER_IMAGE_NAME_S2VT https://github.com/singnet/dnn-model-services.git#master:/Services/gRPC/$SERVICE_NAME
             nvidia-docker run --runtime=nvidia \
               --name $DOCKER_CONTAINER_NAME_S2VT \
               --restart unless-stopped \
@@ -190,7 +190,7 @@ jobs:
             nvidia-docker build \
               --build-arg agent_contract=$AGENT_CONTRACT_YOLOv3_ObjectDetection \
               --build-arg private_key=$PRIVATE_KEY \
-              -t $DOCKER_IMAGE_NAME_YOLOv3 https://github.com/arturgontijo/dnn-model-services.git#master:/Services/gRPC/$SERVICE_NAME
+              -t $DOCKER_IMAGE_NAME_YOLOv3 https://github.com/singnet/dnn-model-services.git#master:/Services/gRPC/$SERVICE_NAME
             nvidia-docker run --runtime=nvidia \
               --name $DOCKER_CONTAINER_NAME_YOLOv3 \
               --restart unless-stopped \

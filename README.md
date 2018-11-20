@@ -3,7 +3,7 @@
 
 ![singnetlogo](docs/assets/singnet-logo.jpg 'SingularityNET')
 
-[![CircleCI](https://circleci.com/gh/arturgontijo/dnn-model-services.svg?style=svg)](https://circleci.com/gh/arturgontijo/dnn-model-services)
+[![CircleCI](https://circleci.com/gh/singnet/dnn-model-services.svg?style=svg)](https://circleci.com/gh/singnet/dnn-model-services)
 
 # Third Party Deep Neural Networks Model Services
 

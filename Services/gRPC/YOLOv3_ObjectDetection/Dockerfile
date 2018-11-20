@@ -42,7 +42,7 @@ RUN cd ${SINGNET_REPOS} && \
     cp snetd-linux-amd64 /usr/local/bin/snetd
 
 RUN cd ${SINGNET_REPOS} && \
-    git clone https://github.com/arturgontijo/${DNN_REPO_NAME}.git && \
+    git clone https://github.com/singnet/${DNN_REPO_NAME}.git && \
     cd dnn-model-services/utils && \
     ./get_yolov3.sh
 

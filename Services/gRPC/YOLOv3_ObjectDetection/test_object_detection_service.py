@@ -7,7 +7,7 @@ import service.service_spec.object_detection_pb2 as grpc_bt_pb2
 
 from service import registry
 
-TEST_URL = "https://raw.githubusercontent.com/arturgontijo/dnn-model-services/master/docs/assets/users_guide/backpack_man_dog.jpg"
+TEST_URL = "https://raw.githubusercontent.com/singnet/dnn-model-services/master/docs/assets/users_guide/backpack_man_dog.jpg"
 
 if __name__ == "__main__":
 
