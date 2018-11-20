@@ -43,11 +43,6 @@ jobs:
     - image: circleci/python:3.6.6-node
     working_directory: ~/singnet
     environment:
-      ORG: singnet
-      DOCKER_ORG: singularitynet
-      DOCKER_IMAGE_NAME: artur_i3d_video_action_recognition
-      DOCKER_CONTAINER_NAME: ARTUR_I3D_VideoActionRecognition
-      REPO_NAME: dnn-model-services
       SERVICE_NAME: I3D_VideoActionRecognition
       SERVICE_RUN_SCRIPT: run_video_action_recon_service.py
       SERVICE_TEST_SCRIPT: test_video_action_recon_service.py
@@ -86,11 +81,6 @@ jobs:
     - image: circleci/python:3.6.6-node
     working_directory: ~/singnet
     environment:
-      ORG: singnet
-      DOCKER_ORG: singularitynet
-      DOCKER_IMAGE_NAME: artur_meta_service
-      DOCKER_CONTAINER_NAME: ARTUR_ObjectDetection_ImageRecon
-      REPO_NAME: dnn-model-services
       SERVICE_NAME: Meta_Services/ObjectDetection_ImageRecon
       SERVICE_RUN_SCRIPT: run_ObjectDetection_ImageRecon_service.py
       SERVICE_TEST_SCRIPT: test_ObjectDetection_ImageRecon_service.py
@@ -129,11 +119,6 @@ jobs:
     - image: circleci/python:3.6.6-node
     working_directory: ~/singnet
     environment:
-      ORG: singnet
-      DOCKER_ORG: singularitynet
-      DOCKER_IMAGE_NAME: artur_s2vt_video_captioning
-      DOCKER_CONTAINER_NAME: ARTUR_S2VT_VideoCaptioning
-      REPO_NAME: dnn-model-services
       SERVICE_NAME: S2VT_VideoCaptioning
       SERVICE_RUN_SCRIPT: run_video_cap_service.py
       SERVICE_TEST_SCRIPT: test_video_cap_service.py
@@ -172,11 +157,6 @@ jobs:
     - image: circleci/python:3.6.6-node
     working_directory: ~/singnet
     environment:
-      ORG: singnet
-      DOCKER_ORG: singularitynet
-      DOCKER_IMAGE_NAME: artur_yolov3_object_detection
-      DOCKER_CONTAINER_NAME: ARTUR_YOLOv3_ObjectDetection
-      REPO_NAME: dnn-model-services
       SERVICE_NAME: YOLOv3_ObjectDetection
       SERVICE_RUN_SCRIPT: run_object_detection_service.py
       SERVICE_TEST_SCRIPT: test_object_detection_service.py
