@@ -28,7 +28,7 @@ class VideoActionRecognizer:
         try:
             # Link
             if "http://" in self.url or "https://" in self.url:
-                header = {'User-Agent': 'Mozilla/5.0 (Windows NT x.y; Win64; x64; rv:9.0) Gecko/20100101 Firefox/10.0'}
+                header = {"User-Agent": "Mozilla/5.0 (Windows NT x.y; Win64; x64; rv:9.0) Gecko/20100101 Firefox/10.0"}
                 r = requests.get(self.url, headers=header, allow_redirects=True)
                 self.video_path = self.video_folder + "/tmp_video.vid"
                 with open(self.video_path, "wb") as my_f:
@@ -72,8 +72,8 @@ class VideoActionRecognizer:
 
     # Main method, it gets the url, start_time and stop_time and returns a Caption.
     def video_action_recon(self):
-        if not os.path.exists('./service/data/videos'):
-            os.makedirs('./service/data/videos')
+        if not os.path.exists("./service/data/videos"):
+            os.makedirs("./service/data/videos")
         if not os.path.exists(self.video_folder):
             os.makedirs(self.video_folder)
 
@@ -95,7 +95,7 @@ class VideoActionRecognizer:
                 model_input = np.expand_dims(sample_video, axis=0)
 
                 top_5 = ""
-                with tf.device('/device:GPU:0'):
+                with tf.device("/device:GPU:0"):
                     # Create the i3d model and get the action probabilities.
                     with tf.Graph().as_default():
                         i3d = hub.Module("https://tfhub.dev/deepmind/i3d-kinetics-{}/1".format(self.model))
@@ -111,13 +111,13 @@ class VideoActionRecognizer:
                         log.debug("{}\t{:.2f}%".format(labels[i], ps[i] * 100))
                         top_5 += "{}\t{:.2f}%\n".format(labels[i], ps[i] * 100)
                         
-                result = {'Action': top_5}
+                result = {"Action": top_5}
             else:
-                result = {'Error': 'Fail at "_download_video()"'}
+                result = {"Fail": "Fail at '_download_video()'"}
 
         except Exception as e:
             print(e)
-            result = {'Error': e}
+            result = {"Fail": e}
 
         # Deletes video folder.
         if os.path.exists(self.video_folder):

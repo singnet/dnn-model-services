@@ -1,15 +1,25 @@
-## Object Detection
+[issue-template]: ../../../../../issues/new?template=BUG_REPORT.md
+[feature-template]: ../../../../../issues/new?template=FEATURE_REQUEST.md
 
-### 1. Reference:
+![singnetlogo](../../../docs/assets/singnet-logo.jpg?raw=true 'SingularityNET')
 
-- This service uses [YOLOv3](https://pjreddie.com/darknet/yolo/) to perform object detection on images.
+# Object Detection
 
-### 2. Preparing the file structure:
+This service uses [YOLOv3](https://pjreddie.com/darknet/yolo/) to perform object detection on images.
 
-- For this service you'll need to download 2 additional files:
-  - `yolov3.weights`
-  - `yolov3.cfg`
-- Clone this repository:
+It is part of our third party [DNN Model Services](../../..).
+
+## Getting Started
+
+### Requirements
+
+- [Python 3.6.5](https://www.python.org/downloads/release/python-365/)
+- [Node 8+ w/npm](https://nodejs.org/en/download/)
+- YOLOv3 files: `yolov3.weights` and `yolov3.cfg`
+
+### Development
+
+Clone this repository and download the necessary files using the `get_yolov3.sh` script:
 ```
 $ git clone https://github.com/singnet/dnn-model-services.git
 $ cd dnn-model-services/utils
@@ -20,19 +30,19 @@ drwxrwxr-x 2 user user      4096 Nov  8 08:51 .
 drwxrwxr-x 3 user user      4096 Nov  8 08:51 ..
 -rw-rw-r-- 1 user user    213558 Nov  8 08:47 yolov3.cfg
 -rw-rw-r-- 1 user user 248007048 Mar 25  2018 yolov3.weights
-$ cd ..
+$ cd ../Services/gRPC/YOLOv3_ObjectDetection
 ```
 
-### 3. Running the service:
+### Running the service:
 
-- To get the `YOUR_AGENT_ADDRESS` you must have already published a service (check this [link](https://github.com/singnet/wiki/tree/master/tutorials/howToPublishService)).
-- Create the SNET Daemon's config JSON file. It must looks like this:
+To get the `YOUR_AGENT_ADDRESS` you must have already published a service (check this [link](https://github.com/singnet/wiki/tree/master/tutorials/howToPublishService)).
+
+Create the SNET Daemon's config JSON file. It must looks like this:
 ```
-$ cd Services/gRPC/YOLOv3_ObjectDetection
-$ cat snetd_object_detection_service_config.json
+# cat snetd_object_detection_service_config.json
 {
     "DAEMON_TYPE": "grpc",
-    "DAEMON_LISTENING_PORT": "7005",
+    "DAEMON_LISTENING_PORT": "7007",
     "BLOCKCHAIN_ENABLED": true,
     "ETHEREUM_JSON_RPC_ENDPOINT": "https://kovan.infura.io",
     "AGENT_CONTRACT_ADDRESS": "YOUR_AGENT_ADDRESS",
@@ -43,27 +53,27 @@ $ cat snetd_object_detection_service_config.json
     "PRIVATE_KEY": "YOUR_PRIVATE_KEY"
 }
 ```
-- Install all dependencies:
+Install all dependencies:
 ```
 $ pip3 install -r requirements.txt
 ```
-- Generate the gRPC codes:
+Generate the gRPC codes:
 ```
 $ sh buildproto.sh
 ```
-- Start the service and SNET Daemon:
+Start the service and SNET Daemon:
 ```
-$ python3 run_image_recon_service.py --daemon-conf .
+$ python3 run_object_detection_service.py --daemon-conf .
 ```
 
-### 4. Calling the service:
+### Calling the service:
 
-- Inputs:
+Inputs:
   - `model`: DNN Model ("yolov3").
   - `img_path`: An image URL.
   - `confidence`: Confidence of object detection (between 0 and 1).
 
-- Local (testing purpose):
+Local (testing purpose):
 
 ```
 $ python3 test_object_detection_service.py 
@@ -77,7 +87,7 @@ confidences: "[0.9988894462585449, 0.9795901775360107, 0.9754813313484192]"
 ... (BASE64_BBOX_IMAGE)
 ```
 
-- Through SingularityNET:
+Through SingularityNET:
 
 ```
 $ snet set current_agent_at YOUR_AGENT_ADDRESS
@@ -101,3 +111,11 @@ Calling service...
         delta_time: '2.0124'
         img_base64: ... (BASE64_BBOX_IMAGE)
 ```
+
+## Contributing and Reporting Issues
+
+Please read our [guidelines](https://github.com/singnet/wiki/tree/master/template/CONTRIBUTING.md#submitting-an-issue) before submitting an issue. If your issue is a bug, please use the bug template pre-populated [here][issue-template]. For feature requests and queries you can use [this template][feature-template].
+
+## Authors
+
+* **Artur Gontijo** - *Maintainer* - [SingularityNET](https://www.singularitynet.io)

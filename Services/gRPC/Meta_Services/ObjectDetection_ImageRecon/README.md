@@ -1,28 +1,41 @@
-## Object Detection and Image Recognition
+[issue-template]: ../../../../../../issues/new?template=BUG_REPORT.md
+[feature-template]: ../../../../../../issues/new?template=FEATURE_REQUEST.md
 
-### 1. Reference:
+![singnetlogo](../../../../docs/assets/singnet-logo.jpg?raw=true 'SingularityNET')
 
-- This service uses 2 other services:
-  - `YOLOv3_ObjectDetection` to detect objects on images and;
-  - `CNTK_ImageRecon` to classify these objects.
+# Object Detection and Image Recognition
 
-### 2. Preparing the file structure:
+This service uses 2 other services:
+  - `YOLOv3_ObjectDetection` [[Reference](https://pjreddie.com/darknet/yolo/)] to detect objects on images and;
+  - `CNTK_ImageRecon` [[Reference](https://cntk.ai/pythondocs/CNTK_301_Image_Recognition_with_Deep_Transfer_Learning.html)] to classify these objects.
 
-- Clone this repository:
+It is part of our third party [DNN Model Services](../../..).
+
+## Getting Started
+
+### Requirements
+
+- [Python 3.6.5](https://www.python.org/downloads/release/python-365/)
+- [Node 8+ w/npm](https://nodejs.org/en/download/)
+
+### Development
+
+Clone this repository:
 ```
 $ git clone https://github.com/singnet/dnn-model-services.git
-```
-
-### 3. Running the service:
-
-- To get the `YOUR_AGENT_ADDRESS` you must have already published a service (check this [link](https://github.com/singnet/wiki/tree/master/tutorials/howToPublishService)).
-- Create the SNET Daemon's config JSON file. It must looks like this:
-```
 $ cd dnn-model-services/Services/gRPC/Meta_Services/ObjectDetection_ImageRecon
+```
+
+### Running the service:
+
+To get the `YOUR_AGENT_ADDRESS` you must have already published a service (check this [link](https://github.com/singnet/wiki/tree/master/tutorials/howToPublishService)).
+
+Create the SNET Daemon's config JSON file. It must looks like this:
+```
 $ cat snetd_ObjectDetection_ImageRecon_service_config.json
 {
     "DAEMON_TYPE": "grpc",
-    "DAEMON_LISTENING_PORT": "7009",
+    "DAEMON_LISTENING_PORT": "7007",
     "BLOCKCHAIN_ENABLED": true,
     "ETHEREUM_JSON_RPC_ENDPOINT": "https://kovan.infura.io",
     "AGENT_CONTRACT_ADDRESS": "YOUR_AGENT_ADDRESS",
@@ -33,28 +46,28 @@ $ cat snetd_ObjectDetection_ImageRecon_service_config.json
     "PRIVATE_KEY": "YOUR_PRIVATE_KEY"
 }
 ```
-- Install all dependencies:
+Install all dependencies:
 ```
 $ pip3 install -r requirements.txt
 ```
-- Generate the gRPC codes:
+Generate the gRPC codes:
 ```
 $ sh buildproto.sh
 ```
-- Start the service and SNET Daemon:
+Start the service and SNET Daemon:
 ```
 $ python3 run_ObjectDetection_ImageRecon_service.py --daemon-conf .
 ```
 
-### 4. Calling the service:
+### Calling the service:
 
-- Inputs:
+Inputs:
   - `model_detect`: DNN Model ("yolov3").
   - `model_recon`: DNN Model ("ResNet152").
   - `img_path`: An image URL.
   - `confidence`: Confidence of object detection (between 0 and 1).
 
-- Local (testing purpose):
+Local (testing purpose):
 
 ```
 $ python3 test_ObjectDetection_ImageRecon_service.py 
@@ -69,7 +82,7 @@ class_ids: "[0, 0, 16]"
 top_1_list: "[\'56.95%: Canaan_dog\']"
 ```
 
-- Through SingularityNET:
+Through SingularityNET:
 
 ```
 $ snet set current_agent_at YOUR_AGENT_ADDRESS
@@ -88,3 +101,11 @@ Calling service...
         delta_time: '202.7593548297882'
         top_1_list: '[''78.86%: Australian_cattle_dog'']'
 ```
+
+## Contributing and Reporting Issues
+
+Please read our [guidelines](https://github.com/singnet/wiki/tree/master/template/CONTRIBUTING.md#submitting-an-issue) before submitting an issue. If your issue is a bug, please use the bug template pre-populated [here][issue-template]. For feature requests and queries you can use [this template][feature-template].
+
+## Authors
+
+* **Artur Gontijo** - *Maintainer* - [SingularityNET](https://www.singularitynet.io)
