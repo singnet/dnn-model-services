@@ -9,13 +9,15 @@
 
 A collection of services using third party DNN models.
 
+[HTML User's Guide Hub](https://singnet.github.io/dnn-model-services/)
+
 ## Getting Started
 
 For more details on how to publish and test a service, select it from the list below:
 
 ### Images:
-- [CNTK_ImageRecon](Services/gRPC/CNTK_ImageRecon) - This service uses ResNet152 model, trained to recognize different types of flowers and dog breeds. [[Reference](https://cntk.ai/pythondocs/CNTK_301_Image_Recognition_with_Deep_Transfer_Learning.html)]
-- [YOLOv3_ObjectDetection](Services/gRPC/YOLOv3_ObjectDetection) - This service uses YOLOv3 model to detect objects on images. [[Reference](https://pjreddie.com/darknet/yolo/)]
+- [CNTK_ImageRecon](Services/gRPC/CNTK_ImageRecon) ([User's Guide](docs/users_guide/CNTK_ImageRecon.md)) - This service uses ResNet152 model, trained to recognize different types of flowers and dog breeds. [[Reference](https://cntk.ai/pythondocs/CNTK_301_Image_Recognition_with_Deep_Transfer_Learning.html)]
+- [YOLOv3_ObjectDetection](Services/gRPC/YOLOv3_ObjectDetection) ([User's Guide](docs/users_guide/YOLOv3_ObjectDetection.html)) - This service uses YOLOv3 model to detect objects on images. [[Reference](https://pjreddie.com/darknet/yolo/)]
     ```
       @article{yolov3,
           title={YOLOv3: An Incremental Improvement},
@@ -24,13 +26,13 @@ For more details on how to publish and test a service, select it from the list b
           year={2018}
       }
     ```
-- [Meta_Service](Services/gRPC/Meta_Services/ObjectDetection_ImageRecon) - This service uses two other services.
+- [Meta_Service](Services/gRPC/Meta_Services/ObjectDetection_ImageRecon) ([User's Guide](docs/users_guide/ObjectDetection_ImageRecon.html)) - This service uses two other services.
     First it calls `YOLOv3_ObjectDetection` and gets all detected objects from an image.
     Then it calls `CNTK_ImageRecon` for each object and returns its classification.
 
 ### Videos:
-- [I3D_VideoActionRecognition](Services/gRPC/I3D_VideoActionRecognition) - This service uses I3D model to recognize actions on videos (with 400 or 600 labels). [[Reference](https://github.com/deepmind/kinetics-i3d)]
-- [S2VT_VideoCaptioning](Services/gRPC/S2VT_VideoCaptioning) - This service uses "Sequence to Sequence - Video to Text" to describe video content with natural language text. [[Reference](https://vsubhashini.github.io/s2vt.html)]
+- [I3D_VideoActionRecognition](Services/gRPC/I3D_VideoActionRecognition) ([User's Guide](docs/users_guide/I3D_VideoActionRecognition.html)) - This service uses I3D model to recognize actions on videos (with 400 or 600 labels). [[Reference](https://github.com/deepmind/kinetics-i3d)]
+- [S2VT_VideoCaptioning](Services/gRPC/S2VT_VideoCaptioning) ([User's Guide](docs/users_guide/S2VT_VideoCaptioning.html)) - This service uses "Sequence to Sequence - Video to Text" to describe video content with natural language text. [[Reference](https://vsubhashini.github.io/s2vt.html)]
     ```
       @inproceedings{venugopalan15iccv,
           title = {Sequence to Sequence -- Video to Text},
@@ -43,7 +45,7 @@ For more details on how to publish and test a service, select it from the list b
 
 ### Contributing and Reporting Issues
 
-Please read our [guidelines](https://github.com/singnet/wiki/tree/master/template/CONTRIBUTING.md#submitting-an-issue) before submitting an issue. If your issue is a bug, please use the bug template pre-populated [here][issue-template]. For feature requests and queries you can use [this template][feature-template].
+Please read our [guidelines](https://github.com/singnet/wiki/blob/master/guidelines/CONTRIBUTING.md#submitting-an-issue) before submitting an issue. If your issue is a bug, please use the bug template pre-populated [here][issue-template]. For feature requests and queries you can use [this template][feature-template].
 
 ## Authors
 
