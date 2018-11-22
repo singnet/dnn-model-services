@@ -196,6 +196,6 @@ workflows:
     jobs:
       - deploy-CNTK_ImageRecon
       - deploy-I3D_VideoActionRecognition
-      #- deploy-ObjectDetection_ImageRecon
+      ##- deploy-ObjectDetection_ImageRecon
       - deploy-S2VT_VideoCaptioning
       - deploy-YOLOv3_ObjectDetection
