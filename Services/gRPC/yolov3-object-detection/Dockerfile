@@ -4,7 +4,7 @@ ENV SINGNET_REPOS=/opt/singnet
 ENV DNN_REPO_NAME=dnn-model-services
 ENV SERVICES_FOLDER=${SINGNET_REPOS}/${DNN_REPO_NAME}/Services/gRPC
 ENV SERVICE_NAME=yolov3-object-detection
-ENV SNETD_PORT=7005
+ENV SNETD_PORT=7008
 ENV SNETD_CONFIG=snetd.config.json
 
 RUN mkdir -p ${SINGNET_REPOS}

@@ -4,7 +4,7 @@ ENV SINGNET_REPOS=/opt/singnet
 ENV DNN_REPO_NAME=dnn-model-services
 ENV SERVICES_FOLDER=${SINGNET_REPOS}/${DNN_REPO_NAME}/Services/gRPC/Meta_Services
 ENV SERVICE_NAME=object-detection-image-recon
-ENV SNETD_PORT=7009
+ENV SNETD_PORT=7006
 ENV SNETD_CONFIG=snetd.config.json
 
 RUN mkdir -p ${SINGNET_REPOS}
