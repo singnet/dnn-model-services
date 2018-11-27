@@ -5,7 +5,7 @@ ENV DNN_REPO_NAME=dnn-model-services
 ENV SERVICES_FOLDER=${SINGNET_REPOS}/${DNN_REPO_NAME}/Services/gRPC
 ENV SERVICE_NAME=cntk-image-recon
 ENV SNETD_PORT=7004
-ENV SNETD_CONFIG=snetd_image_recon_service_config.json
+ENV SNETD_CONFIG=snetd.config.json
 
 RUN mkdir -p ${SINGNET_REPOS}
 
