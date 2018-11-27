@@ -22,42 +22,28 @@ if __name__ == "__main__":
         b = float(input("Number 2: "))
 
         if grpc_method == "add":
-            # create a stub (client)
             stub = grpc_bt_grpc.AdditionStub(channel)
-            # create a valid request message
             number = grpc_bt_pb2.Numbers(a=a, b=b)
-            # make the call
             response = stub.add(number)
             print(response.value)
 
         elif grpc_method == "sub":
-            # create a stub (client)
             stub = grpc_bt_grpc.SubtractionStub(channel)
-            # create a valid request message
             number = grpc_bt_pb2.Numbers(a=a, b=b)
-            # make the call
             response = stub.sub(number)
             print(response.value)
 
         elif grpc_method == "mul":
-            # create a stub (client)
             stub = grpc_bt_grpc.MultiplicationStub(channel)
-            # create a valid request message
             number = grpc_bt_pb2.Numbers(a=a, b=b)
-            # make the call
             response = stub.mul(number)
             print(response.value)
 
         elif grpc_method == "div":
-            # create a stub (client)
             stub = grpc_bt_grpc.DivisionStub(channel)
-            # create a valid request message
             number = grpc_bt_pb2.Numbers(a=a, b=b)
-            # make the call
             response = stub.div(number)
-            # et voilà
             print(response.value)
-
         else:
             print("Invalid method!")
 
