@@ -24,7 +24,7 @@ RUN cd ${SINGNET_REPOS} && \
     cd snet-daemon && \
     wget https://github.com/singnet/snet-daemon/releases/download/v0.1.2/snetd-0.1.2.tar.gz && \
     tar -xvf snetd-0.1.2.tar.gz && \
-    cp snetd-linux-amd64 /usr/local/bin/snetd
+    cp snetd-0.1.2/snetd-linux-amd64 /usr/local/bin/snetd
 
 RUN cd ${SINGNET_REPOS} && \
     git clone https://github.com/arturgontijo/${DNN_REPO_NAME}.git && \
