@@ -2,7 +2,7 @@
 
 ### 1. This tutorial is for the [alpha](http://alpha.singularitnet.io/) version of the SingularityNET dApp
 
-### 2. Clonning the [alpha-app](https://github.com/singnet/alpha-dapp)
+### 2. Cloning the [alpha-app](https://github.com/singnet/alpha-dapp)
 ```
 $ mkdir /opt/snet
 $ cd /opt/snet
