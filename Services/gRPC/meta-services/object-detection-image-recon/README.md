@@ -43,7 +43,7 @@ $ cat snetd_ObjectDetection_ImageRecon_service_config.json
    "DAEMON_END_POINT": "http://54.203.198.53:7006",
    "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
    "ORGANIZATION_NAME": "snet",
-   "SERVICE_NAME": "cntk-image-recon",
+   "SERVICE_NAME": "object-detection-image-recon",
    "LOG": {
        "LEVEL": "debug",
        "OUTPUT": {
@@ -88,7 +88,7 @@ class_ids: "[0, 0, 16]"
 top_1_list: "[\'56.95%: Canaan_dog\']"
 ```
 
-Through SingularityNET (follow this [link](https://github.com/singnet/wiki/tree/master/tutorials/howToPublishService) to learn how to publish a service and open a payment channel to be able to call it):
+Through SingularityNET (follow this [link](https://github.com/singnet/wiki/blob/master/tutorials/howToPublishService/README.md) to learn how to publish a service and open a payment channel to be able to call it):
 
 Assuming that you have an open channel (`id: 0`) to this service:
 

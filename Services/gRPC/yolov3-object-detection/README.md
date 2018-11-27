@@ -50,7 +50,7 @@ Create the `SNET Daemon`'s config JSON file. It must looks like this:
    "DAEMON_END_POINT": "http://54.203.198.53:7008",
    "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
    "ORGANIZATION_NAME": "snet",
-   "SERVICE_NAME": "cntk-image-recon",
+   "SERVICE_NAME": "yolov3-object-detection",
    "LOG": {
        "LEVEL": "debug",
        "OUTPUT": {
@@ -93,7 +93,7 @@ confidences: "[0.9988894462585449, 0.9795901775360107, 0.9754813313484192]"
 ... (BASE64_BBOX_IMAGE)
 ```
 
-Through SingularityNET (follow this [link](https://github.com/singnet/wiki/tree/master/tutorials/howToPublishService) to learn how to publish a service and open a payment channel to be able to call it):
+Through SingularityNET (follow this [link](https://github.com/singnet/wiki/blob/master/tutorials/howToPublishService/README.md) to learn how to publish a service and open a payment channel to be able to call it):
 
 Assuming that you have an open channel (`id: 0`) to this service:
 

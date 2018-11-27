@@ -100,7 +100,7 @@ Image (Link): https://cdn2-www.dogtime.com/assets/uploads/2011/01/file_22950_sta
 {1: '99.83%: Miniature_schnauzer', 2: '00.09%: Alaskan_malamute', 3: '00.05%: Giant_schnauzer', 4: '00.01%: Bouvier_des_flandres', 5: '00.01%: Lowchen'}
 ```
 
-Through SingularityNET (follow this [link](https://github.com/singnet/wiki/tree/master/tutorials/howToPublishService) to learn how to publish a service and open a payment channel to be able to call it):
+Through SingularityNET (follow this [link](https://github.com/singnet/wiki/blob/master/tutorials/howToPublishService/README.md) to learn how to publish a service and open a payment channel to be able to call it):
 
 Assuming that you have an open channel (`id: 0`) to this service:
 

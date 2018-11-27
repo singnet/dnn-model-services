@@ -22,7 +22,7 @@ Clone this repository:
 
 ```
 $ git clone https://github.com/singnet/dnn-model-services.git
-$ cd dnn-model-services/Services/gRPC/i3c-video-action-recognition
+$ cd dnn-model-services/Services/gRPC/i3d-video-action-recognition
 ```
 
 ### Running the service:
@@ -42,7 +42,7 @@ $ cat snetd_video_action_recon_service_config.json
    "DAEMON_END_POINT": "http://54.203.198.53:7005",
    "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
    "ORGANIZATION_NAME": "snet",
-   "SERVICE_NAME": "cntk-image-recon",
+   "SERVICE_NAME": "i3d-video-action-recognition",
    "LOG": {
        "LEVEL": "debug",
        "OUTPUT": {
@@ -88,7 +88,7 @@ Url: http://crcv.ucf.edu/THUMOS14/UCF101/UCF101/v_MoppingFloor_g25_c01.avi
 {'Action': 'mopping floor\t54.51%\nsweeping floor\t41.16%\ncurling (sport)\t4.13%\ngolf driving\t0.05%\nplaying ice hockey\t0.03%\n'}
 ```
 
-Through SingularityNET (follow this [link](https://github.com/singnet/wiki/tree/master/tutorials/howToPublishService) to learn how to publish a service and open a payment channel to be able to call it):
+Through SingularityNET (follow this [link](https://github.com/singnet/wiki/blob/master/tutorials/howToPublishService/README.md) to learn how to publish a service and open a payment channel to be able to call it):
 
 Assuming that you have an open channel (`id: 0`) to this service:
 
