@@ -1,7 +1,6 @@
 registry = {
     "object_detection_service": {
         "grpc": 7003,
-        "snetd": 7005
     }
 }
 

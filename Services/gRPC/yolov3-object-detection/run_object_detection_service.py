@@ -30,7 +30,7 @@ def main():
         try:
             time.sleep(1)
         except Exception as e:
-            print(e)
+            log.error(e)
             exit(0)
 
 
@@ -43,7 +43,7 @@ def start_all_services(cwd, service_modules):
     try:
         for i, service_module in enumerate(service_modules):
             service_name = service_module.split(".")[-1]
-            print("Launching", service_module, "on ports", str(registry[service_name]))
+            log.info("Launching", service_module, "on ports", str(registry[service_name]))
 
             process_th = threading.Thread(target=start_service, args=(cwd, service_module))
 
@@ -52,7 +52,7 @@ def start_all_services(cwd, service_modules):
             process_th.start()
 
     except Exception as e:
-        print(e)
+        log.error(e)
         return False
     return True
 

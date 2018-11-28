@@ -1,7 +1,6 @@
 registry = {
     "ObjectDetection_ImageRecon_service": {
         "grpc": 7003,
-        "snetd": 7009
     }
 }
 

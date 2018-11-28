@@ -39,7 +39,7 @@ class VideoActionRecognizer:
                 return False
             return True
         except Exception as e:
-            print(e)
+            log.error(e)
             return False
 
     @staticmethod
@@ -116,7 +116,7 @@ class VideoActionRecognizer:
                 result = {"Fail": "Fail at '_download_video()'"}
 
         except Exception as e:
-            print(e)
+            log.error(e)
             result = {"Fail": e}
 
         # Deletes video folder.

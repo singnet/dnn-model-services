@@ -54,7 +54,7 @@ class VideoCaptioner:
                 return False
             return True
         except Exception as e:
-            print(e)
+            log.error(e)
             return False
 
     # Main method, it gets the url, start_time and stop_time and returns a Caption.
@@ -102,7 +102,7 @@ class VideoCaptioner:
                 result = {"Fail": "Fail at '_download_yt_video()'"}
 
         except Exception as e:
-            print(e)
+            log.error(e)
             result = {"Fail": e}
 
         # Deletes video folder.
