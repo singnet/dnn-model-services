@@ -9,7 +9,7 @@ import threading
 from service import registry
 
 logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s")
-log = logging.getLogger("run_basic_service")
+log = logging.getLogger("run_video_action")
 
 
 def main():
@@ -17,7 +17,7 @@ def main():
     root_path = pathlib.Path(__file__).absolute().parent
 
     # All services modules go here
-    service_modules = ["service.basic_service_one"]
+    service_modules = ["service.video_action_recon_service"]
 
     # Removing all previous snetd .db file
     os.system("rm snetd*.db")

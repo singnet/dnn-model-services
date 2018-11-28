@@ -22,7 +22,7 @@ The service makes prediction using computer vision and machine learning techniqu
 The service outputs its best guess to describe an action on the specified time interval from 
 a video (accordingly to confidence).
 
-The output is delivered usgin `SRT` format.
+The output is delivered using `SRT` format.
 
 ### How does it work?
 
