@@ -58,20 +58,44 @@ total 882120
 
 ### Running the service:
 
-To get the `YOUR_AGENT_ADDRESS` you must have already published a service (check this [link](https://github.com/singnet/wiki/tree/master/tutorials/howToPublishService)).
+To get the `ORGANIZATION_NAME` and `SERVICE_NAME` you must have already published a service (check this [link](https://github.com/singnet/wiki/tree/master/tutorials/howToPublishService)).
 
-Create the `SNET Daemon`'s config JSON file. It must looks like this:
+Create the `SNET Daemon`'s config JSON file (`snetd.config.json`).
+
 ```
-# cat snetd_video_cap_service_config.json
+{
+   "PRIVATE_KEY": "1000000000000000000000000000000000000000000000000000000000000000",
+   "DAEMON_LISTENING_PORT": DAEMON_PORT,
+   "DAEMON_END_POINT": "DAEMON_HOST:DAEMON_PORT",
+   "ETHEREUM_JSON_RPC_ENDPOINT": "https://kovan.infura.io",
+   "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
+   "REGISTRY_ADDRESS_KEY": "0x2e4b2f2b72402b9b2d6a7851e37c856c329afe38",
+   "PASSTHROUGH_ENABLED": true,
+   "PASSTHROUGH_ENDPOINT": "SERVICE_GRPC_HOST:SERVICE_GRPC_PORT",  
+   "ORGANIZATION_NAME": "ORGANIZATION_NAME",
+   "SERVICE_NAME": "SERVICE_NAME",
+   "LOG": {
+       "LEVEL": "debug",
+       "OUTPUT": {
+            "TYPE": "stdout"
+           }
+   }
+}
+```
+
+For example:
+
+```
+$ cat snetd.config.json
 {
    "PRIVATE_KEY": "1000000000000000000000000000000000000000000000000000000000000000",
    "DAEMON_LISTENING_PORT": 7007,
+   "DAEMON_END_POINT": "http://54.203.198.53:7007",
    "ETHEREUM_JSON_RPC_ENDPOINT": "https://kovan.infura.io",
+   "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
+   "REGISTRY_ADDRESS_KEY": "0x2e4b2f2b72402b9b2d6a7851e37c856c329afe38",
    "PASSTHROUGH_ENABLED": true,
    "PASSTHROUGH_ENDPOINT": "http://localhost:7003",
-   "REGISTRY_ADDRESS_KEY": "0x2e4b2f2b72402b9b2d6a7851e37c856c329afe38",
-   "DAEMON_END_POINT": "http://54.203.198.53:7007",
-   "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
    "ORGANIZATION_NAME": "snet",
    "SERVICE_NAME": "s2vt-video-captioning",
    "LOG": {

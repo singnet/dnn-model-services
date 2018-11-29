@@ -43,7 +43,7 @@ def start_all_services(cwd, service_modules):
     try:
         for i, service_module in enumerate(service_modules):
             service_name = service_module.split(".")[-1]
-            log.info("Launching", service_module, "on ports", str(registry[service_name]))
+            log.info("Launching {} on port {}".format(str(registry[service_name]), service_module))
 
             process_th = threading.Thread(target=start_service, args=(cwd, service_module))
 
