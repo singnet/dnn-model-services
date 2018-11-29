@@ -7,7 +7,7 @@
 
 This service uses [S2VT](https://vsubhashini.github.io/s2vt.html) to describe video content with natural language text.
 
-It is part of our third party [DNN Model Services](../../..).
+It is part of our third party [DNN Model Services](https://github.com/singnet/dnn-model-services).
 
 ## Getting Started
 

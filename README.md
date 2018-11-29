@@ -17,8 +17,8 @@ A collection of services using third party DNN models.
 For more details on how to publish and test a service, select it from the list below:
 
 ### Images:
-- [CNTK_ImageRecon](Services/gRPC/CNTK_ImageRecon) ([User's Guide](docs/users_guide/CNTK_ImageRecon.md)) - This service uses ResNet152 model, trained to recognize different types of flowers and dog breeds. [[Reference](https://cntk.ai/pythondocs/CNTK_301_Image_Recognition_with_Deep_Transfer_Learning.html)]
-- [YOLOv3_ObjectDetection](Services/gRPC/YOLOv3_ObjectDetection) ([User's Guide](docs/users_guide/YOLOv3_ObjectDetection.md)) - This service uses YOLOv3 model to detect objects on images. [[Reference](https://pjreddie.com/darknet/yolo/)]
+- [cntk-image-recon](Services/gRPC/cntk-image-recon) ([User's Guide](docs/users_guide/cntk-image-recon.md)) - This service uses ResNet152 model, trained to recognize different types of flowers and dog breeds. [[Reference](https://cntk.ai/pythondocs/CNTK_301_Image_Recognition_with_Deep_Transfer_Learning.html)]
+- [yolov3-object-detection](Services/gRPC/yolov3-object-detection) ([User's Guide](docs/users_guide/yolov3-object-detection.md)) - This service uses YOLOv3 model to detect objects on images. [[Reference](https://pjreddie.com/darknet/yolo/)]
     ```
       @article{yolov3,
           title={YOLOv3: An Incremental Improvement},
@@ -27,13 +27,13 @@ For more details on how to publish and test a service, select it from the list b
           year={2018}
       }
     ```
-- [Meta_Service](Services/gRPC/Meta_Services/ObjectDetection_ImageRecon) ([User's Guide](docs/users_guide/ObjectDetection_ImageRecon.md)) - This service uses two other services.
-    First it calls `YOLOv3_ObjectDetection` and gets all detected objects from an image.
-    Then it calls `CNTK_ImageRecon` for each object and returns its classification.
+- [meta-service-example](Services/gRPC/meta-services/object-detection-image-recon) ([User's Guide](docs/users_guide/object-detection-image-recon.md)) - This service uses two other services.
+    First it calls `yolov3-object-detection` and gets all detected objects from an image.
+    Then it calls `cntk-image-recon` for each object and returns its classification.
 
 ### Videos:
-- [I3D_VideoActionRecognition](Services/gRPC/I3D_VideoActionRecognition) ([User's Guide](docs/users_guide/I3D_VideoActionRecognition.md)) - This service uses I3D model to recognize actions on videos (with 400 or 600 labels). [[Reference](https://github.com/deepmind/kinetics-i3d)]
-- [S2VT_VideoCaptioning](Services/gRPC/S2VT_VideoCaptioning) ([User's Guide](docs/users_guide/S2VT_VideoCaptioning.md)) - This service uses "Sequence to Sequence - Video to Text" to describe video content with natural language text. [[Reference](https://vsubhashini.github.io/s2vt.html)]
+- [i3d-video-action-recognition](Services/gRPC/i3d-video-action-recognition) ([User's Guide](docs/users_guide/i3d-video-action-recognition.md)) - This service uses I3D model to recognize actions on videos (with 400 or 600 labels). [[Reference](https://github.com/deepmind/kinetics-i3d)]
+- [s2vt-video-captioning](Services/gRPC/s2vt-video-captioning) ([User's Guide](docs/users_guide/s2vt-video-captioning.md)) - This service uses "Sequence to Sequence - Video to Text" to describe video content with natural language text. [[Reference](https://vsubhashini.github.io/s2vt.html)]
     ```
       @inproceedings{venugopalan15iccv,
           title = {Sequence to Sequence -- Video to Text},
@@ -58,7 +58,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Each service is licensed as followed:
 
-- CNTK_ImageRecon - [MIT License](https://github.com/Microsoft/CNTK/blob/master/LICENSE.md)
-- YOLOv3_ObjectDetection - [Public domain](https://github.com/pjreddie/darknet/blob/master/LICENSE)
-- I3D_VideoActionRecognition - [Apache License 2.0](https://github.com/deepmind/kinetics-i3d/blob/master/LICENSE)
-- S2VT_VideoCaptioning - [Attribution 4.0 International (CC BY 4.0)](http://creativecommons.org/licenses/by/4.0/)
+- cntk-image-recon - [MIT License](https://github.com/Microsoft/CNTK/blob/master/LICENSE.md)
+- yolov3-object-detection - [Public domain](https://github.com/pjreddie/darknet/blob/master/LICENSE)
+- i3d-video-action-recognition - [Apache License 2.0](https://github.com/deepmind/kinetics-i3d/blob/master/LICENSE)
+- s2vt-video-captioning - [Attribution 4.0 International (CC BY 4.0)](http://creativecommons.org/licenses/by/4.0/)

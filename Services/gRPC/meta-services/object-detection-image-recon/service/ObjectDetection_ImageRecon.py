@@ -143,6 +143,7 @@ class DetectRecon(SnetInstance):
             return result
 
         except Exception as e:
+            log.error(e)
             traceback.print_exc()
             return {
                 "delta_time": "Fail",

@@ -5,6 +5,10 @@ import requests
 import base64
 import cv2
 import traceback
+import logging
+
+logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s")
+log = logging.getLogger("object_detection_service")
 
 resources_root = os.path.join("..", "..", "..", "utils", "Resources")
 
@@ -147,6 +151,7 @@ class ObjectDetector:
                 }
 
         except Exception as e:
+            log.error(e)
             traceback.print_exc()
             return {
                 "delta_time": "Fail",

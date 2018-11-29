@@ -7,7 +7,7 @@
 
 This service uses [I3D](https://github.com/deepmind/kinetics-i3d) to perform action recognition on videos.
 
-It is part of our third party [DNN Model Services](../../..).
+It is part of our third party [DNN Model Services](https://github.com/singnet/dnn-model-services).
 
 ## Getting Started
 
