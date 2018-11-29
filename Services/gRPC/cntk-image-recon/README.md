@@ -7,7 +7,7 @@
 
 This service uses [CNTK Image Recognition](https://cntk.ai/pythondocs/CNTK_301_Image_Recognition_with_Deep_Transfer_Learning.html) to perform image recognition on photos.
 
-It is part of our third party [DNN Model Services](../../..).
+It is part of our third party [DNN Model Services](https://github.com/singnet/dnn-model-services).
 
 ## Getting Started
 

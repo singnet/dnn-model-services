@@ -91,6 +91,7 @@ class SnetInstance:
             return False
 
         except Exception as e:
+            log.error(e)
             traceback.print_exc()
             return False
 
@@ -142,6 +143,7 @@ class SnetInstance:
             return False
 
         except Exception as e:
+            log.error(e)
             traceback.print_exc()
             self.snet_exited = True
             return False

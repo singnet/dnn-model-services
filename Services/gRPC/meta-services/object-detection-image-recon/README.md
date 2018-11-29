@@ -6,10 +6,10 @@
 # Object Detection and Image Recognition
 
 This service uses 2 other services:
-  - `YOLOv3_ObjectDetection` [[Reference](https://pjreddie.com/darknet/yolo/)] to detect objects on images and;
-  - `CNTK_ImageRecon` [[Reference](https://cntk.ai/pythondocs/CNTK_301_Image_Recognition_with_Deep_Transfer_Learning.html)] to classify these objects.
+  - `yolov3-object-detection` [[Reference](https://pjreddie.com/darknet/yolo/)] to detect objects on images and;
+  - `cntk-image-recon` [[Reference](https://cntk.ai/pythondocs/CNTK_301_Image_Recognition_with_Deep_Transfer_Learning.html)] to classify these objects.
 
-It is part of our third party [DNN Model Services](../../..).
+It is part of our third party [DNN Model Services](https://github.com/singnet/dnn-model-services).
 
 ## Getting Started
 

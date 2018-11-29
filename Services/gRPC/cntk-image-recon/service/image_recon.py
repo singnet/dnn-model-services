@@ -7,7 +7,11 @@ import os
 import time
 import requests
 import base64
+import logging
 import traceback
+
+logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s")
+log = logging.getLogger("cntk_image_recon")
 
 resources_root = os.path.join("..", "..", "..", "utils", "Resources")
 
@@ -35,7 +39,7 @@ def eval_single_image(loaded_model, image_path, image_dims):
         return sm.eval()
 
     except FileNotFoundError:
-        print("Could not open (skipping file): ", image_path)
+        log.error("Could not open (skipping file): ", image_path)
         return ["None"]
 
 
@@ -80,5 +84,6 @@ def image_recognition(method, model, map_names, img_path, image_dims):
         return {"delta_time": "{:.4f}".format(delta_time), "top_5": top_5_dict}
 
     except Exception as e:
+        log.error(e)
         traceback.print_exc()
         return {"delta_time": "Fail", "top_5": "Fail"}

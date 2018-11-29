@@ -7,7 +7,7 @@
 
 This service uses [YOLOv3](https://pjreddie.com/darknet/yolo/) to perform object detection on images.
 
-It is part of our third party [DNN Model Services](../../..).
+It is part of our third party [DNN Model Services](https://github.com/singnet/dnn-model-services).
 
 ## Getting Started
 
