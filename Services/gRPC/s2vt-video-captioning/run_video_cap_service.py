@@ -38,7 +38,7 @@ def start_all_services(cwd, service_modules):
     """
     Loop through all service_modules and start them.
     For each one, an instance of Daemon "snetd" is created.
-    snetd will start with configs from "snet.config.json"
+    snetd will start with configs from "snetd.config.json"
     """
     try:
         for i, service_module in enumerate(service_modules):
