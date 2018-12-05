@@ -14,7 +14,7 @@ if __name__ == "__main__":
     try:
         test_flag = False
         if len(sys.argv) == 2:
-            if sys.argv[1] == "test":
+            if sys.argv[1] == "auto":
                 test_flag = True
 
         # Service VideoCaptioning

@@ -47,7 +47,7 @@ RUN wget https://www.python.org/ftp/python/3.6.5/Python-3.6.5.tar.xz && \
 RUN cd ${SINGNET_REPOS} && \
     git clone https://github.com/singnet/snet-cli && \
     cd snet-cli && \
-    cat ./scripts/blockchain | sed "s/python3/python3.6/g" > ./scripts/blockchain && \
+    cat ./scripts/blockchain | sed "s/python3 /python3.6 /g" > ./scripts/blockchain && \
     ./scripts/blockchain install && \
     pip3.6 install -e .
 # ======================================================================================================================
@@ -55,9 +55,9 @@ RUN cd ${SINGNET_REPOS} && \
 RUN cd ${SINGNET_REPOS} && \
     mkdir snet-daemon && \
     cd snet-daemon && \
-    wget https://github.com/singnet/snet-daemon/releases/download/v0.1.2/snetd-0.1.2.tar.gz && \
-    tar -xvf snetd-0.1.2.tar.gz && \
-    cp snetd-0.1.2/snetd-linux-amd64 /usr/local/bin/snetd
+    wget https://github.com/singnet/snet-daemon/releases/download/v0.1.3/snetd-0.1.3.tar.gz && \
+    tar -xvf snetd-0.1.3.tar.gz && \
+    mv linux-amd64/snetd /usr/bin/snetd
 
 RUN cd ${SINGNET_REPOS} && \
     git clone https://github.com/singnet/${DNN_REPO_NAME}.git && \
@@ -65,8 +65,7 @@ RUN cd ${SINGNET_REPOS} && \
     ./get_cntk_models.sh
 
 RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \
-    sh -c "echo '{ \"PRIVATE_KEY\": \"1000000000000000000000000000000000000000000000000000000000000000\", \
-                   \"DAEMON_LISTENING_PORT\": ${SNETD_PORT}, \
+    sh -c "echo '{ \"DAEMON_LISTENING_PORT\": ${SNETD_PORT}, \
                    \"ETHEREUM_JSON_RPC_ENDPOINT\": \"https://kovan.infura.io\", \
                    \"PASSTHROUGH_ENABLED\": true, \
                    \"PASSTHROUGH_ENDPOINT\": \"http://localhost:7003\", \
