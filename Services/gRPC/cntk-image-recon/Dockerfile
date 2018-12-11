@@ -65,8 +65,7 @@ RUN cd ${SINGNET_REPOS} && \
     ./get_cntk_models.sh
 
 RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \
-    sh -c "echo '{ \"DAEMON_LISTENING_PORT\": ${SNETD_PORT}, \
-                   \"ETHEREUM_JSON_RPC_ENDPOINT\": \"https://kovan.infura.io\", \
+    sh -c "echo '{ \"ETHEREUM_JSON_RPC_ENDPOINT\": \"https://kovan.infura.io\", \
                    \"PASSTHROUGH_ENABLED\": true, \
                    \"PASSTHROUGH_ENDPOINT\": \"http://localhost:7003\", \
                    \"REGISTRY_ADDRESS_KEY\": \"0x2e4b2f2b72402b9b2d6a7851e37c856c329afe38\", \
