@@ -1,14 +1,15 @@
 # For service integration
 import logging
 import grpc
-import service
+import json
+import service.serviceUtils
 import service.service_spec.scene_recognition_pb2_grpc as grpc_bt_grpc
 from service.service_spec.scene_recognition_pb2 import SceneRecognitionResult
 import concurrent.futures as futures
 import sys
 import os
 from urllib.error import HTTPError
-from .scene_recognition import SceneRecognitionModel
+from service.scene_recognition import SceneRecognitionModel
 
 logging.basicConfig(
     level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s"
@@ -27,7 +28,7 @@ class SceneRecognitionServicer(grpc_bt_grpc.SceneRecognitionServicer):
 
         self.input_dir = "./service/temp/input"
         self.output_dir = "./service/temp/output"
-        service.initialize_diretories([self.input_dir, self.output_dir])
+        service.serviceUtils.initialize_diretories([self.input_dir, self.output_dir])
 
         self.sr_model = SceneRecognitionModel()
 
@@ -53,22 +54,21 @@ class SceneRecognitionServicer(grpc_bt_grpc.SceneRecognitionServicer):
                 log.error(e)
                 return False
 
-            print("Received request.{} = ".format(field))
-            print(arg_value)
+            log.debug("Received request.{} = {}".format(field, arg_value))
 
             # Deals with each field (or field type) separately. This is very specific to the lua command required.
             if field == "input_image":
                 assert (request.input_image != ""), "Input image field should not be empty."
                 try:
                     image_path, file_index_str = \
-                        service.treat_image_input(arg_value, self.input_dir, "{}".format(field))
-                    print("Image path: {}".format(image_path))
+                        service.serviceUtils.treat_image_input(arg_value, self.input_dir, "{}".format(field))
+                    log.debug("Field: {}. Image path: {}".format(field, image_path))
                     created_images.append(image_path)
                 except Exception as e:
                     log.error(e)
                     raise
             elif field == "predict":
-                predict = [word.strip() for word in request.predict.tolower().split(',')]
+                predict = [word.strip() for word in request.predict.lower().split(',')]
                 if predict == [""]:
                     predict = default
                 else:
@@ -105,21 +105,21 @@ class SceneRecognitionServicer(grpc_bt_grpc.SceneRecognitionServicer):
 
         # Get cam (color activation mappings) file path
         input_filename = os.path.split(created_images[0])[1]
-        print("Input file name: {}".format(input_filename))
+        log.debug("Input file name: {}".format(input_filename))
         output_image_path = self.output_dir + '/' + input_filename
+        log.debug("Output image path (cam_path): {}".format(output_image_path))
         created_images.append(output_image_path)
 
         result_dict = self.sr_model.reconize(image_path, predict, output_image_path)
 
         # Prepare gRPC output message
         self.result = SceneRecognitionResult()
-        for field in predict:
-            self.result[field] = result_dict[field]
+        log.debug("Got result.")
+        self.result.data = json.dumps(result_dict)
         log.debug("Output generated. Service successfully completed.")
 
-        # TODO: Clear temp images even if an error occurs
         for image in created_images:
-            service.clear_file(image)
+            service.serviceUtils.clear_file(image)
 
         return self.result
 
@@ -143,6 +143,6 @@ def serve(max_workers=5, port=7777):
 
 if __name__ == '__main__':
     """Runs the gRPC server to communicate with the Snet Daemon."""
-    parser = service.common_parser(__file__)
+    parser = service.serviceUtils.common_parser(__file__)
     args = parser.parse_args(sys.argv[1:])
-    service.main_loop(serve, args)
+    service.serviceUtils.main_loop(serve, args)

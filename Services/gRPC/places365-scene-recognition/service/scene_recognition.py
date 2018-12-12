@@ -13,6 +13,7 @@ import cv2
 from PIL import Image
 import logging
 import service
+from service.serviceUtils import jpg_to_base64
 
 logging.basicConfig(
     level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s"
@@ -85,7 +86,7 @@ class SceneRecognitionModel:
 
         return classes, labels_io, labels_attribute, w_attribute
 
-    def hook_feature(self, output):
+    def hook_feature(self, module, input, output):
         self.features_blobs.append(np.squeeze(output.data.cpu().numpy()))
 
     @staticmethod
@@ -139,11 +140,11 @@ class SceneRecognitionModel:
     def reconize(self, input_image_path, predict, cam_path):
         """ Performs scene recognition: predicts scene attributes, category, indoor/outdoor and class activation
         mappings. """
+        log.debug("Input image path : {}".format(input_image_path))
         result = {}
 
         # load the test image
-        os.system('wget %s -q -O test.jpg' % input_image_path)
-        img = Image.open('test.jpg')
+        img = Image.open(input_image_path)
         input_img = V(self.tf(img).unsqueeze(0))
 
         # forward pass
@@ -170,8 +171,8 @@ class SceneRecognitionModel:
             result["categories"] = ""
             log.debug('--SCENE CATEGORIES:')
             for i in range(0, 5):
-                category = '{:.3f} -> {}'.format(probs[i], self.classes[idx[i]])
-                result["categories"].append(category)
+                category = ' {:.3f} -> {},'.format(probs[i], self.classes[idx[i]])
+                result["categories"] += category
                 log.debug(category)
 
         # output the scene attributes
@@ -185,15 +186,12 @@ class SceneRecognitionModel:
 
         # generate class activation mapping
         if "cam" in predict:
-            log.debug('Class activation map is saved as cam.jpg')
             cams = self.return_cam(self.features_blobs[0], self.weight_softmax, [idx[0]])
-
-            # render the CAM and output
             img = cv2.imread(input_image_path)
             height, width, _ = img.shape
             heatmap = cv2.applyColorMap(cv2.resize(cams[0], (width, height)), cv2.COLORMAP_JET)
-            result = heatmap * 0.4 + img * 0.5
-            cv2.imwrite(cam_path, result)
-            result["cam"] = service.jpg_to_base64(cam_path, open_file=True).decode("utf-8")
-
+            cam_result = heatmap * 0.4 + img * 0.5
+            cv2.imwrite(cam_path, cam_result)
+            log.debug('Class activation mapping is saved at {}'.format(cam_path))
+            result["cam"] = service.serviceUtils.jpg_to_base64(cam_path, open_file=True).decode("utf-8")
         return result

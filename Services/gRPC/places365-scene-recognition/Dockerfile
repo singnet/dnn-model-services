@@ -4,6 +4,7 @@ ENV SINGNET_REPOS=/opt/singnet
 ENV DNN_REPO_NAME=dnn-model-services
 ENV SERVICES_FOLDER=${SINGNET_REPOS}/${DNN_REPO_NAME}/Services/gRPC
 ENV SERVICE_NAME=places365-scene-recognition
+ENV SNETD_HOST=http://54.203.198.53
 ENV SNETD_PORT=7019
 ENV GRPC_HOST=http://localhost
 ENV GRPC_PORT=7018
@@ -56,7 +57,7 @@ RUN apt-get install -y \
     libxrender1 \
     libxext6
 RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \
-    pip3 install -r requirements.txt && \
+    pip install -r requirements.txt && \
     sh buildproto.sh
 
 WORKDIR ${SERVICES_FOLDER}/${SERVICE_NAME}

@@ -1,6 +1,6 @@
 registry = {
-    "super_resolution_service": {
-        "grpc": 7003,
+    "scene_recognition_service": {
+        "grpc": 7018,
         "snetd": 7019
     },
 }

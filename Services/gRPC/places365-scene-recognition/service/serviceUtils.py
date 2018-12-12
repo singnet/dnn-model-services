@@ -7,10 +7,23 @@ import io
 from PIL import Image
 import time
 import re
+import argparse
+from service import registry
 
 logging.basicConfig(
     level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s")
 log = logging.getLogger(os.path.basename(__file__))
+
+
+def common_parser(script_name):
+    parser = argparse.ArgumentParser(prog=script_name)
+    service_name = os.path.splitext(os.path.basename(script_name))[0]
+    parser.add_argument("--grpc-port",
+                        help="port to bind gRPC service to",
+                        default=registry[service_name]["grpc"],
+                        type=int,
+                        required=False)
+    return parser
 
 
 def main_loop(grpc_handler, args):
@@ -46,9 +59,17 @@ def jpg_to_base64(jpgimg, open_file=False):
     """Encodes a jpg file into base64. Can receive either the already open jpg PIL Image or its path as input."""
 
     if open_file:
-        jpgimg = Image.open(jpgimg)
+        try:
+            jpgimg = Image.open(jpgimg)
+        except Exception as e:
+            log.error(e)
+            raise
     imgbuffer = io.BytesIO()
-    jpgimg.save(imgbuffer, format='JPEG')
+    try:
+        jpgimg.save(imgbuffer, format='JPEG')
+    except Exception as e:
+        log.error(e)
+        raise
     imgbytes = imgbuffer.getvalue()
     return base64.b64encode(imgbytes)
 
@@ -108,7 +129,7 @@ def get_file_index(save_dir, prefix):
     04 as the index of the next file to be saved. This number resets to 0 at 99."""
 
     file_index = 0
-    regex = prefix + '([0-9]{2})\.([a-z]{3})'
+    regex = prefix + r'([0-9]{2})\.([a-z]{3})'
     files = [f for f in os.listdir(save_dir) if os.path.isfile(os.path.join(save_dir, f))]
     if files:
         for file_name in files:
@@ -124,7 +145,20 @@ def get_file_index(save_dir, prefix):
     return file_index_str
 
 
-def treat_image_input(input_argument, save_dir, image_type):
+def png_to_jpg(png_path, jpg_quality=95, delete_original=True):
+    """Opens a png image, creates a jpg image of the same name and optionally deletes the original png image.
+    Returns: path to the jpg image."""
+    png_img = Image.open(png_path)
+    jpg_img = png_img.convert('RGB')
+    stripped_file_name = os.path.splitext(png_path)[0]
+    jpg_path = stripped_file_name + ".jpg"
+    jpg_img.save(jpg_path, jpg_quality)
+    if delete_original:
+        clear_file(png_path)
+    return jpg_path
+
+
+def treat_image_input(input_argument, save_dir, image_type, convert_to_jpg=True):
     """ Gets image save path, downloads links or saves local images to temporary folder, deals with base64 inputs."""
 
     # Gets index (numerical suffix) to save the image (so it multiple calls are allowed)
@@ -176,5 +210,8 @@ def treat_image_input(input_argument, save_dir, image_type):
     else:
         log.debug("Treating image input as base64.")
         base64_to_jpg(input_argument, save_path)
+
+    if convert_to_jpg:
+        save_path = png_to_jpg(save_path)
 
     return save_path, file_index_str

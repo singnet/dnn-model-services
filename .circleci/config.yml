@@ -220,9 +220,9 @@ workflows:
   version: 2
   build-and-deploy:
     jobs:
-      - deploy-cntk-image-recon
-      - deploy-i3d-video-action-recognition
+      #- deploy-cntk-image-recon
+      #- deploy-i3d-video-action-recognition
       #- deploy-object-detection-image-recon
       - deploy-places365-scene-recognition
-      - deploy-s2vt-video-captioning
-      - deploy-yolov3-object-detection
+      #- deploy-s2vt-video-captioning
+      #- deploy-yolov3-object-detection
