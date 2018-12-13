@@ -5,6 +5,7 @@ import service.service_spec.scene_recognition_pb2_grpc as grpc_bt_grpc
 import service.service_spec.scene_recognition_pb2 as grpc_bt_pb2
 
 from service import registry
+import json
 from service.serviceUtils import base64_to_jpg
 
 TEST_URL = "https://cdn.the961.com/wp-content/uploads/2017/06/beach-in-lebanon-1.png"
@@ -24,7 +25,7 @@ if __name__ == "__main__":
             # Fill request
             grpc_method = "recognize_scene"
             input_image = TEST_URL
-            predict = "IO, Attributes"
+            predict = "IO, Attributes, Categories, CAM"
         else:
             endpoint = raw_input("Endpoint (localhost:{})".format(registry["scene_recognition_service"]["grpc"]))
             grpc_method = "recognize_scene"
@@ -44,14 +45,14 @@ if __name__ == "__main__":
             response = stub.recognize_scene(request)
 
             # Print and treat response
-            response_dict = response.data
+            response_dict = json.loads(response.data)
             print("TEST RESULT: ")
-            for key in response_dict:
+            for key, value in response_dict.items():
                 if key == "cam":
-                    base64_to_jpg(response_dict["cam"], "./test_cam.jpg")
+                    base64_to_jpg(value, "./test_cam.jpg")
                     print("CAM saved to ./test_cam.jpg")
                 else:
-                    print("{}: {}".format(key, response_dict[key]))
+                    print("{}: {}".format(key, value))
             print("Service completed!")
         else:
             print("Invalid method!")
