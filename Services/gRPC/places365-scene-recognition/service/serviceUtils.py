@@ -145,14 +145,14 @@ def get_file_index(save_dir, prefix):
     return file_index_str
 
 
-def png_to_jpg(png_path, jpg_quality=95, delete_original=True):
+def png_to_jpg(png_path, delete_original=True):
     """Opens a png image, creates a jpg image of the same name and optionally deletes the original png image.
     Returns: path to the jpg image."""
-    png_img = Image.open(png_path)
-    jpg_img = png_img.convert('RGB')
-    stripped_file_name = os.path.splitext(png_path)[0]
-    jpg_path = stripped_file_name + ".jpg"
-    jpg_img.save(jpg_path, jpg_quality)
+    with Image.open(png_path) as png_img:
+        jpg_img = png_img.convert('RGB')
+        stripped_file_name = os.path.splitext(png_path)[0]
+        jpg_path = stripped_file_name + ".jpg"
+        jpg_img.save(jpg_path)
     if delete_original:
         clear_file(png_path)
     return jpg_path
@@ -160,6 +160,8 @@ def png_to_jpg(png_path, jpg_quality=95, delete_original=True):
 
 def treat_image_input(input_argument, save_dir, image_type, convert_to_jpg=True):
     """ Gets image save path, downloads links or saves local images to temporary folder, deals with base64 inputs."""
+
+    file_ext = ""
 
     # Gets index (numerical suffix) to save the image (so it multiple calls are allowed)
     file_index_str = get_file_index(save_dir, image_type + "_")
@@ -211,7 +213,7 @@ def treat_image_input(input_argument, save_dir, image_type, convert_to_jpg=True)
         log.debug("Treating image input as base64.")
         base64_to_jpg(input_argument, save_path)
 
-    if convert_to_jpg:
+    if file_ext == ".png" and convert_to_jpg:
         save_path = png_to_jpg(save_path)
 
     return save_path, file_index_str
