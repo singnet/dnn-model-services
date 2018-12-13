@@ -14,7 +14,7 @@ if __name__ == "__main__":
     try:
         test_flag = False
         if len(sys.argv) == 2:
-            if sys.argv[1] == "test":
+            if sys.argv[1] == "auto":
                 test_flag = True
 
         endpoint = input("Endpoint (localhost:{}): ".format(registry["image_recon_service"]["grpc"])) if not test_flag else ""
