@@ -32,9 +32,7 @@ RUN cd ${SINGNET_REPOS} && \
 
 # Writing snetd.config.json
 RUN cd ${PROJECT_ROOT} &&\
-    sh -c "echo '{ \"PRIVATE_KEY\": \"1000000000000000000000000000000000000000000000000000000000000000\", \
-                   \"DAEMON_LISTENING_PORT\": ${SNETD_PORT}, \
-                   \"ETHEREUM_JSON_RPC_ENDPOINT\": \"https://kovan.infura.io\", \
+    sh -c "echo '{ \"ETHEREUM_JSON_RPC_ENDPOINT\": \"https://kovan.infura.io\", \
                    \"PASSTHROUGH_ENABLED\": true, \
                    \"PASSTHROUGH_ENDPOINT\": \"${GRPC_HOST}:${GRPC_PORT}\", \
                    \"REGISTRY_ADDRESS_KEY\": \"0x2e4b2f2b72402b9b2d6a7851e37c856c329afe38\", \
@@ -43,9 +41,9 @@ RUN cd ${PROJECT_ROOT} &&\
                    \"ORGANIZATION_NAME\": \"snet\", \
                    \"SERVICE_NAME\": \"${SERVICE_NAME}\", \
                    \"LOG\": { \
-                   \"LEVEL\": \"debug\", \
-                   \"OUTPUT\": { \
-                       \"TYPE\": \"stdout\" \
+                       \"LEVEL\": \"debug\", \
+                       \"OUTPUT\": { \
+                           \"TYPE\": \"stdout\" \
                        } \
                    } \
                 }'" > ${SNETD_CONFIG}
