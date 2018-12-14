@@ -4,11 +4,14 @@ ENV SINGNET_REPOS=/opt/singnet
 ENV DNN_REPO_NAME=dnn-model-services
 ENV SERVICES_FOLDER=${SINGNET_REPOS}/${DNN_REPO_NAME}/Services/gRPC
 ENV SERVICE_NAME=places365-scene-recognition
+ENV SERVICE_ROOT=${SERVICES_FOLDER}/${SERVICE_NAME}
 ENV SNETD_HOST=http://54.203.198.53
 ENV SNETD_PORT=7019
 ENV GRPC_HOST=http://localhost
 ENV GRPC_PORT=7018
 ENV SNETD_CONFIG=snetd.config.json
+ENV REPOSITORY=ramongduraes
+ENV BRANCH=scene-recognition
 
 RUN mkdir -p ${SINGNET_REPOS}
 
@@ -26,12 +29,10 @@ RUN git clone https://github.com/ramongduraes/snet.git &&\
 
 # Cloning service repository and downloading models
 RUN cd ${SINGNET_REPOS} && \
-    git clone https://github.com/singnet/${DNN_REPO_NAME}.git && \
-    cd ${DNN_REPO_NAME}/utils && \
-    ./get_cntk_models.sh
+    git clone -b $BRANCH --single-branch https://github.com/${REPOSITORY}/${DNN_REPO_NAME}.git
 
 # Writing snetd.config.json
-RUN cd ${PROJECT_ROOT} &&\
+RUN cd ${SERVICE_ROOT} &&\
     sh -c "echo '{ \"ETHEREUM_JSON_RPC_ENDPOINT\": \"https://kovan.infura.io\", \
                    \"PASSTHROUGH_ENABLED\": true, \
                    \"PASSTHROUGH_ENDPOINT\": \"${GRPC_HOST}:${GRPC_PORT}\", \
@@ -54,8 +55,8 @@ RUN apt-get install -y \
     libsm6 \
     libxrender1 \
     libxext6
-RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \
+RUN cd ${SERVICE_ROOT} && \
     pip install -r requirements.txt && \
     sh buildproto.sh
 
-WORKDIR ${SERVICES_FOLDER}/${SERVICE_NAME}
+WORKDIR ${SERVICE_ROOT}
