@@ -21,10 +21,11 @@ Use this service to predict scene-related properties according to which flags to
 
 ### How does it work?
 
-The service takes as inputs:
+The service takes as **inputs**:
 - `input_image`: the URL for a `.jpg` or `.png` input image over which the predictions will be made. This is a required field.
-- `predict`: a string of comma-separated words describing what you want the service to return. Possible values are `io`, `categories`, `attributes` and `cam`. If left empty, it will return all possible predictions. See some example calls below.
-And returns:
+- `predict`: a string of comma-separated words describing what you want the service to return. Possible values are `io`, `categories`, `attributes` and `cam`. These can appear at any order and are case-insensitive (e.g.: `"predict": "CAM, Categories"` is a valid example, as is `"predict":"io,attributes,cam"`). If left empty, it will return all possible predictions. See some example calls below.
+
+And returns as **output**:
 - a json-encoded string in which the keys are the words you use as inputs in the `predict` field and the values are their respective returns as strings. In the case of the class activation mappings (`cam`), it will be a base64-encoded `.jpg` image.
 
 You can call the `places365-scene-recognition` service by installing the [SingularityNET Cli](https://github.com/snet-cli) through its `snet client call` command. Assuming you have an open channel to this service:
@@ -32,7 +33,7 @@ You can call the `places365-scene-recognition` service by installing the [Singul
 1. Use its CHANNEL_ID (e.g.: `270`); 
 2. Specify a price in AGIs (e.g.: `0`, since its a free service);
 3. Point to the endpoint at which this service's [SNET Daemon](https://github.com/singnet/snet-daemon) listens to the blockchain waiting for client calls: `54.203.198.53:7019`. You can obtain this and other information about registered services by running `snet service print_metadata ORGANIZATION SERVICE_NAME`.
-4. Filling in some input data.
+4. Filling in the method and some input data as defined in the service's `.proto` file.
 
 Example call:
 ```
@@ -45,23 +46,54 @@ _You'll soon also be able to call this service using a user interface through Si
 
 ### What to expect from this service?
 
-Example 1:
+#### Example 1
 
-- Input:
+- **Input**
 
-`input_image`: ![beach_input](../assets/users_guide/places365_example1_beach.png)
-`predict`: "IO, Attributes, Categories, CAM"
+    `input_image`: ![salon_input](../assets/users_guide/places365_salon.jpg)
+    
+    `predict`: "io, categories"
 
-- Output:
+- **Output**
 
-- `io`: 
-- `categories`:
-- `attributes`: 
-- `cam`: ![beach_cam](../assets/users_guide/places365_example1_cam.jpg)
+    `io`: "indoor"
+    
+    `categories`: " 0.924 -> beauty_salon, 0.006 -> gymnasium/indoor, 0.005 -> clean_room, 0.005 -> biology_laboratory, 0.004 -> chemistry_lab,"
+    
+#### Example 2
 
-Example 2:
+- **Input**
 
-- Input:
+    `input_image`: ![beach_input](../assets/users_guide/places365_beach.png)
+    
+    `predict`: "IO, Attributes, Categories, CAM"
+    
+- **Output**
+    
+    `io`: "outdoor"
+    
+    `categories`: "0.660 -> volleyball_court/outdoor, 0.102 -> beach, 0.085 -> beach_house, 0.027 -> lagoon, 0.021 -> promenade,"
+    
+    `attributes`: "open area, natural light, sunny, far-away horizon, warm, man-made, clouds, sand, touring"
+    
+    `cam`: ![beach_cam](../assets/users_guide/places365_beach_cam.jpg)
 
-- Output:
+#### Example 3
 
+The following image was found under [Google Images](http://images.google.com) by searching for "park". _The `predict` field was intentionally left empty: service will output all the possibilities._
+
+- **Input**
+
+    `input_image`: ![beach_input](../assets/users_guide/places365_park.jpg)
+    
+    `predict`: ""
+
+- **Output**
+
+    `io`: "outdoor"
+    
+    `categories`:  "0.192 -> golf_course, 0.101 -> park, 0.096 -> picnic_area, 0.079 -> lawn, 0.066 -> volleyball_court/outdoor,"
+    
+    `attributes`: "open area, natural light, sunny, far-away horizon, warm, man-made, clouds, sand, touring"
+    
+    `cam`: ![park_cam](../assets/users_guide/places365_park_cam.jpg)

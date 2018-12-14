@@ -27,7 +27,7 @@ $ cd dnn-model-services/Services/gRPC/places365-scene-recognition
 
 ### Running the service:
 
-To get the `ORGANIZATION_NAME` and `SERVICE_NAME` you must have already published this code as a SingularityNET service (check this [link](https://github.com/singnet/wiki/tree/master/tutorials/howToPublishService)).
+To get the `ORGANIZATION_NAME` and `SERVICE_NAME` you must have already published this code as a SingularityNET service (check this [link](https://github.com/singnet/wiki/blob/master/tutorials/howToPublishService)).
 
 Create `SNET Daemon`'s config JSON file (`snetd.config.json`).
 
@@ -56,7 +56,7 @@ In which:
 - *REGISTRY_ADDRESS_KEY* is SNET's current Registry address on Kovan (where all the services and organizations are listed);
 - *PASSTHROUGH_ENABLED* should be kept as `true` so that the SNET Daemon forwards the data it receives to your service's endpoint. If set to `false` it will simply echo its inputs for testing purposes;
 - *PASSTHROUGH_ENDPOINT* is the endpoint at which your service awaits for Daemon input. In this case we're using gRPC for Daemon-service communication so the service's endpoint should be a specific http host (`http://ip:port`). You're likely going to use `localhost` as you ip and specify a port;
-- *ORGANIZATION_NAME* and *SERVICE_NAME* are the names of your organzation and service, respectively, under SingularityNET. [Click here](https://github.com/singnet/wiki/tree/master/tutorials/howToPublishService) to learn more about creating an organization and publishing a service;
+- *ORGANIZATION_NAME* and *SERVICE_NAME* are the names of your organzation and service, respectively, under SingularityNET. [Click here](https://github.com/singnet/wiki/blob/master/tutorials/howToPublishService/README.md) to learn more about creating an organization and publishing a service;
 - *LOG* specifies logging information.
 
 For example:
@@ -104,8 +104,9 @@ $ python3 run_object_detection_service.py
     - "attributes": to output a prediction of a series of adjectives related to the scene;
     - "cam": to output "class activation mappings", a _base64 encoded_ heatmap image that shows which regions of the input image were more relevant for the prediction.
 
-#### Local Call (testing purpose):
+#### Local Call (for testing purpose):
 
+Run the test script provided. You can input the gRPC request fields manually or use the flag `auto` to automatically fill them in using default values.
 ```
 $ python3 test_scene_recognition_service.py auto
 ...
