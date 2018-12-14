@@ -27,7 +27,7 @@ if __name__ == "__main__":
             input_image = TEST_URL
             predict = "IO, Attributes, Categories, CAM"
         else:
-            endpoint = input("Endpoint (localhost:{})".format(registry["scene_recognition_service"]["grpc"]))
+            endpoint = input("Endpoint")
             grpc_method = "recognize_scene"
             input_image = input("Image URL: ")
             predict = input("Pick what to predict (csv: io, attributes, categories, cam): ")

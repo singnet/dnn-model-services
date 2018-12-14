@@ -36,12 +36,12 @@ def start_all_services(cwd, service_modules, run_daemon):
     """
     Loop through all service_modules and start them.
     For each one, an instance of Daemon 'snetd' is created.
-    snetd will start with configs from 'snet_SERVICENAME_config.json'.
+    snetd will start with configs from 'snetd.config.json'.
     """
     all_p = []
     for i, service_module in enumerate(service_modules):
         service_name = service_module.split(".")[-1]
-        log.info("Launching {} on port {}".format(str(registry[service_name]), service_module))
+        log.info("Launching {} on port {}".format(service_name, registry[service_name]["grpc"]))
         all_p += start_service(cwd, service_module, run_daemon)
     return all_p
 

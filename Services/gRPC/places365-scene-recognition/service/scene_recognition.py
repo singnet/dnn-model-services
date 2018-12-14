@@ -14,11 +14,14 @@ from PIL import Image
 import logging
 import service
 from service.serviceUtils import jpg_to_base64
+from service import wideresnet as wideresnet
 
 logging.basicConfig(
     level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s"
 )
 log = logging.getLogger("places365_scene_recognition_service")
+
+models_root = os.path.join("..", "..", "..", "utils", "Resources", "Models")
 
 
 class SceneRecognitionModel:
@@ -47,10 +50,11 @@ class SceneRecognitionModel:
 
         # prepare all the labels
         # scene category relevant
-        file_name_category = 'categories_places365.txt'
+        file_name_category = os.path.join(models_root, 'categories_places365.txt')
         if not os.access(file_name_category, os.W_OK):
-            synset_url = 'https://raw.githubusercontent.com/csailvision/places365/master/categories_places365.txt'
-            os.system('wget ' + synset_url)
+            log.error("Categories file not found under its path ({}). Please run the model downloading script provided."
+                      .format(file_name_category))
+            exit(1)
         classes = list()
         with open(file_name_category) as class_file:
             for line in class_file:
@@ -58,10 +62,11 @@ class SceneRecognitionModel:
         classes = tuple(classes)
 
         # indoor and outdoor relevant
-        file_name_io = 'IO_places365.txt'
+        file_name_io = os.path.join(models_root, 'IO_places365.txt')
         if not os.access(file_name_io, os.W_OK):
-            synset_url = 'https://raw.githubusercontent.com/csailvision/places365/master/IO_places365.txt'
-            os.system('wget ' + synset_url)
+            log.error("IO file not found under its path ({}). Please run the model downloading script provided."
+                      .format(file_name_io))
+            exit(1)
         with open(file_name_io) as f:
             lines = f.readlines()
             labels_io = []
@@ -71,17 +76,20 @@ class SceneRecognitionModel:
         labels_io = np.array(labels_io)
 
         # scene attribute relevant
-        file_name_attribute = 'labels_sunattribute.txt'
+        file_name_attribute = os.path.join(models_root, 'labels_sunattribute.txt')
         if not os.access(file_name_attribute, os.W_OK):
-            synset_url = 'https://raw.githubusercontent.com/csailvision/places365/master/labels_sunattribute.txt'
-            os.system('wget ' + synset_url)
+            log.error("Attributes file not found under its path ({}). Please run the model downloading script provided."
+                      .format(file_name_attribute))
+            exit(1)
         with open(file_name_attribute) as f:
             lines = f.readlines()
             labels_attribute = [item.rstrip() for item in lines]
-        file_name_w = 'W_sceneattribute_wideresnet18.npy'
+        file_name_w = os.path.join(models_root, 'W_sceneattribute_wideresnet18.npy')
         if not os.access(file_name_w, os.W_OK):
-            synset_url = 'http://places2.csail.mit.edu/models_places365/W_sceneattribute_wideresnet18.npy'
-            os.system('wget ' + synset_url)
+            log.error("Attributes file not found under its path ({}). Please run the model downloading script provided."
+                      .format(file_name_w))
+            exit(1)
+
         w_attribute = np.load(file_name_w)
 
         return classes, labels_io, labels_attribute, w_attribute
@@ -120,13 +128,14 @@ class SceneRecognitionModel:
         """ Loads CNN model. """
         # this model has a last conv feature map as 14x14
         model_file = 'wideresnet18_places365.pth.tar'
-        if not os.access(model_file, os.W_OK):
-            os.system('wget http://places2.csail.mit.edu/models_places365/' + model_file)
-            os.system('wget https://raw.githubusercontent.com/csailvision/places365/master/wideresnet.py')
+        model_path = os.path.join(models_root, model_file)
+        if not os.access(model_path, os.W_OK):
+            log.error("Model file not found under its path ({}). Please run the model downloading script provided.".
+                      format(model_path))
+            exit(1)
 
-        import wideresnet
         model = wideresnet.resnet18(num_classes=365)
-        checkpoint = torch.load(model_file, map_location=lambda storage, loc: storage)
+        checkpoint = torch.load(model_path, map_location=lambda storage, loc: storage)
         state_dict = {str.replace(k, 'module.', ''): v for k, v in checkpoint['state_dict'].items()}
         model.load_state_dict(state_dict)
         model.eval()

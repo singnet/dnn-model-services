@@ -15,9 +15,14 @@ ENV BRANCH=scene-recognition
 
 RUN mkdir -p ${SINGNET_REPOS}
 
-# Updating and installing common dependencies
+# Updating and installing common and project dependencies
 RUN apt-get update
-RUN apt-get install -y git
+RUN apt-get install -y \
+    git \
+    libglib2.0-0 \
+    libsm6 \
+    libxrender1 \
+    libxext6
 RUN pip install --upgrade pip
 
 # Installing SNET (snet-cli and snet-daemon + dependencies)
@@ -27,9 +32,11 @@ RUN git clone https://github.com/ramongduraes/snet.git &&\
     cd ../.. &&\
     rm -rf snet
 
-# Cloning service repository and downloading models
+# Cloning service repository, downloading models
 RUN cd ${SINGNET_REPOS} && \
-    git clone -b $BRANCH --single-branch https://github.com/${REPOSITORY}/${DNN_REPO_NAME}.git
+    git clone -b $BRANCH --single-branch https://github.com/${REPOSITORY}/${DNN_REPO_NAME}.git &&\
+    cd dnn-model-services/utils && \
+    ./get_places365_models.sh
 
 # Writing snetd.config.json
 RUN cd ${SERVICE_ROOT} &&\
@@ -49,12 +56,7 @@ RUN cd ${SERVICE_ROOT} &&\
                    } \
                 }'" > ${SNETD_CONFIG}
 
-# Installing projects's original dependencies and building protobuf messages
-RUN apt-get install -y \
-    libglib2.0-0 \
-    libsm6 \
-    libxrender1 \
-    libxext6
+# Building protobuf messages
 RUN cd ${SERVICE_ROOT} && \
     pip install -r requirements.txt && \
     sh buildproto.sh
