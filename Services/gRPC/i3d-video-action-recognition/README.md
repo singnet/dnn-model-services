@@ -33,8 +33,6 @@ Create the `SNET Daemon`'s config JSON file (`snetd.config.json`).
 
 ```
 {
-   "PRIVATE_KEY": "1000000000000000000000000000000000000000000000000000000000000000",
-   "DAEMON_LISTENING_PORT": DAEMON_PORT,
    "DAEMON_END_POINT": "DAEMON_HOST:DAEMON_PORT",
    "ETHEREUM_JSON_RPC_ENDPOINT": "https://kovan.infura.io",
    "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
@@ -57,8 +55,6 @@ For example:
 ```
 $ cat snetd.config.json
 {
-   "PRIVATE_KEY": "1000000000000000000000000000000000000000000000000000000000000000",
-   "DAEMON_LISTENING_PORT": 7005,
    "DAEMON_END_POINT": "http://54.203.198.53:7005",
    "ETHEREUM_JSON_RPC_ENDPOINT": "https://kovan.infura.io",
    "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
