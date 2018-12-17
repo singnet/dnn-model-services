@@ -117,8 +117,8 @@ jobs:
       SERVICE_RUN_SCRIPT: run_scene_recognition_service.py
       SERVICE_TEST_SCRIPT: test_scene_recognition_service.py
       SNETD_PORT: 7019
-      REPOSITORY: ramongduraes
-      BRANCH: scene-recognition
+      ACCOUNT: singnet
+      BRANCH: master
     steps:
       - run:
           name: Deploy Over SSH
@@ -126,7 +126,7 @@ jobs:
             ssh -o "StrictHostKeyChecking no" $SSH_USER@$SSH_HOST << EOF
               nvidia-docker stop $DOCKER_CONTAINER_NAME_PLACES365 || true && nvidia-docker rename $DOCKER_CONTAINER_NAME_PLACES365 ${DOCKER_CONTAINER_NAME_PLACES365}_old || true
               nvidia-docker build \
-                -t $DOCKER_IMAGE_NAME_PLACES365 https://github.com/${REPOSITORY}/dnn-model-services.git#${BRANCH}:/Services/gRPC/$SERVICE_NAME
+                -t $DOCKER_IMAGE_NAME_PLACES365 https://github.com/${ACCOUNT}/dnn-model-services.git#${BRANCH}:/Services/gRPC/$SERVICE_NAME
               nvidia-docker run --runtime=nvidia \
                 --name $DOCKER_CONTAINER_NAME_PLACES365 \
                 --restart unless-stopped \
@@ -222,12 +222,9 @@ workflows:
   version: 2
   build-and-deploy:
     jobs:
-      #- deploy-cntk-image-recon
-      #- deploy-i3d-video-action-recognition
+      - deploy-cntk-image-recon
+      - deploy-i3d-video-action-recognition
       #- deploy-object-detection-image-recon
-      - deploy-places365-scene-recognition:
-          filters:
-            branches:
-              only: scene-recognition
-      #- deploy-s2vt-video-captioning
-      #- deploy-yolov3-object-detection
+      - deploy-places365-scene-recognition
+      - deploy-s2vt-video-captioning
+      - deploy-yolov3-object-detection

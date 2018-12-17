@@ -10,8 +10,8 @@ ENV SNETD_PORT=7019
 ENV GRPC_HOST=http://localhost
 ENV GRPC_PORT=7018
 ENV SNETD_CONFIG=snetd.config.json
-ENV REPOSITORY=ramongduraes
-ENV BRANCH=scene-recognition
+ENV ACCOUNT=singnet
+ENV BRANCH=master
 
 RUN mkdir -p ${SINGNET_REPOS}
 
@@ -34,7 +34,7 @@ RUN git clone https://github.com/ramongduraes/snet.git &&\
 
 # Cloning service repository, downloading models
 RUN cd ${SINGNET_REPOS} && \
-    git clone -b $BRANCH --single-branch https://github.com/${REPOSITORY}/${DNN_REPO_NAME}.git &&\
+    git clone -b $BRANCH --single-branch https://github.com/${ACCOUNT}/${DNN_REPO_NAME}.git &&\
     cd dnn-model-services/utils && \
     ./get_places365_models.sh
 
