@@ -30,6 +30,16 @@ For more details on how to publish and test a service, select it from the list b
 - [meta-service-example](Services/gRPC/meta-services/object-detection-image-recon) ([User's Guide](docs/users_guide/object-detection-image-recon.md)) - This service uses two other services.
     First it calls `yolov3-object-detection` and gets all detected objects from an image.
     Then it calls `cntk-image-recon` for each object and returns its classification.
+- [places365-scene-recognition](Services/gRPC/places365-scene-recognition) ([User's Guide](docs/users_guide/places365-scene-recognition.md)) - This service uses various convolutional neural networks trained on Places365 to perform scene recognition. [[Reference](https://github.com/CSAILVision/places365)]
+    ```
+      @article{zhou2017places,
+           title={Places: A 10 million Image Database for Scene Recognition},
+           author={Zhou, Bolei and Lapedriza, Agata and Khosla, Aditya and Oliva, Aude and Torralba, Antonio},
+           journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
+           year={2017},
+           publisher={IEEE}
+      }
+    ```
 
 ### Videos:
 - [i3d-video-action-recognition](Services/gRPC/i3d-video-action-recognition) ([User's Guide](docs/users_guide/i3d-video-action-recognition.md)) - This service uses I3D model to recognize actions on videos (with 400 or 600 labels). [[Reference](https://github.com/deepmind/kinetics-i3d)]
@@ -51,6 +61,7 @@ Please read our [guidelines](https://github.com/singnet/wiki/blob/master/guideli
 ## Authors
 
 * **Artur Gontijo** - *Maintainer* - [SingularityNET](https://www.singularitynet.io)
+* **Ramon Durães** - *Maintainer* - [SingularityNET](https://www.singularitynet.io)
 
 ## Licenses
 
@@ -60,5 +71,6 @@ Each service is licensed as followed:
 
 - cntk-image-recon - [MIT License](https://github.com/Microsoft/CNTK/blob/master/LICENSE.md)
 - yolov3-object-detection - [Public domain](https://github.com/pjreddie/darknet/blob/master/LICENSE)
+- places365-scene-recognition - [MIT License](https://github.com/CSAILVision/places365/blob/master/LICENSE)
 - i3d-video-action-recognition - [Apache License 2.0](https://github.com/deepmind/kinetics-i3d/blob/master/LICENSE)
 - s2vt-video-captioning - [Attribution 4.0 International (CC BY 4.0)](http://creativecommons.org/licenses/by/4.0/)

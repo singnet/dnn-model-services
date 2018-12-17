@@ -108,6 +108,44 @@ jobs:
             nvidia-docker exec -i $DOCKER_CONTAINER_NAME_META python3 $SERVICE_TEST_SCRIPT auto
           EOF
 
+  deploy-places365-scene-recognition:
+    docker:
+      - image: circleci/python:3.6.6-node
+    working_directory: ~/singnet
+    environment:
+      SERVICE_NAME: places365-scene-recognition
+      SERVICE_RUN_SCRIPT: run_scene_recognition_service.py
+      SERVICE_TEST_SCRIPT: test_scene_recognition_service.py
+      SNETD_PORT: 7019
+      ACCOUNT: singnet
+      BRANCH: master
+    steps:
+      - run:
+          name: Deploy Over SSH
+          command: |
+            ssh -o "StrictHostKeyChecking no" $SSH_USER@$SSH_HOST << EOF
+              nvidia-docker stop $DOCKER_CONTAINER_NAME_PLACES365 || true && nvidia-docker rename $DOCKER_CONTAINER_NAME_PLACES365 ${DOCKER_CONTAINER_NAME_PLACES365}_old || true
+              nvidia-docker build \
+                -t $DOCKER_IMAGE_NAME_PLACES365 https://github.com/${ACCOUNT}/dnn-model-services.git#${BRANCH}:/Services/gRPC/$SERVICE_NAME
+              nvidia-docker run --runtime=nvidia \
+                --name $DOCKER_CONTAINER_NAME_PLACES365 \
+                --restart unless-stopped \
+                -p $SNETD_PORT:$SNETD_PORT \
+                -di $DOCKER_IMAGE_NAME_PLACES365 sh -c "git pull;python3 $SERVICE_RUN_SCRIPT"
+            EOF
+      - run:
+          name: Remove Old Docker Container
+          command: |
+            ssh -o "StrictHostKeyChecking no" $SSH_USER@$SSH_HOST << EOF
+              nvidia-docker stop ${DOCKER_CONTAINER_NAME_PLACES365}_old || true && nvidia-docker rm ${DOCKER_CONTAINER_NAME_PLACES365}_old || true
+            EOF
+      - run:
+          name: Test local
+          command: |
+            ssh -o "StrictHostKeyChecking no" $SSH_USER@$SSH_HOST << EOF
+              nvidia-docker exec -i $DOCKER_CONTAINER_NAME_PLACES365 python3 $SERVICE_TEST_SCRIPT auto
+            EOF
+
   deploy-s2vt-video-captioning:
     docker:
     - image: circleci/python:3.6.6-node
@@ -187,5 +225,6 @@ workflows:
       - deploy-cntk-image-recon
       - deploy-i3d-video-action-recognition
       #- deploy-object-detection-image-recon
+      - deploy-places365-scene-recognition
       - deploy-s2vt-video-captioning
       - deploy-yolov3-object-detection
