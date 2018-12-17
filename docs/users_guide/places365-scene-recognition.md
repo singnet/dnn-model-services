@@ -28,7 +28,7 @@ The service takes as **inputs**:
 And returns as **output**:
 - a json-encoded string in which the keys are the words you use as inputs in the `predict` field and the values are their respective returns as strings. In the case of the class activation mappings (`cam`), it will be a base64-encoded `.jpg` image.
 
-You can call the `places365-scene-recognition` service by installing the [SingularityNET Cli](https://github.com/snet-cli) through its `snet client call` command. Assuming you have an open channel to this service:
+You can call the `places365-scene-recognition` service by installing the [SingularityNET Cli](https://github.com/singnet/snet-cli) through its `snet client call` command. Assuming you have an open channel to this service:
 
 1. Use its CHANNEL_ID (e.g.: `270`); 
 2. Specify a price in AGIs (e.g.: `0`, since its a free service);
@@ -84,7 +84,7 @@ The following image was found under [Google Images](http://images.google.com) by
 
 - **Input**
 
-    `input_image`: ![beach_input](../assets/users_guide/places365_park.jpg)
+    `input_image`: ![park_input](../assets/users_guide/places365_park.jpg)
     
     `predict`: ""
 

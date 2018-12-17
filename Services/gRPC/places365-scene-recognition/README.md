@@ -94,7 +94,7 @@ $ python3 run_object_detection_service.py
 ```
 
 ### Calling the service:
-> Go to this service's [User's Guide](../../../docs/users_guide/places365-scene-recognition.html) to see example calls and its outputs. 
+> Go to this service's [User's Guide](../../../docs/users_guide/places365-scene-recognition.md) to see example calls and its outputs. 
 
 #### Inputs:
   - `input_image`:  The URL for an input `.jpg` or `.png` image.
