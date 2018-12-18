@@ -1,7 +1,11 @@
 FROM microsoft/cntk:latest
 
+ARG git_owner
+ARG git_repo
+ARG git_branch
+
 ENV SINGNET_REPOS=/opt/singnet
-ENV DNN_REPO_NAME=dnn-model-services
+ENV DNN_REPO_NAME=${git_repo}
 ENV SERVICES_FOLDER=${SINGNET_REPOS}/${DNN_REPO_NAME}/Services/gRPC
 ENV SERVICE_NAME=cntk-image-recon
 ENV SNETD_PORT=7004
@@ -13,54 +17,17 @@ RUN apt-get update && \
     apt-get install -y \
     git \
     wget \
-    nano \
-    libudev-dev \
-    libusb-1.0-0-dev
-
-RUN apt-get install -y python3 python3-pip
-RUN apt-get install -y nodejs npm
-
-# Python 3.6.5 for snet-cli ============================================================================================
-RUN apt-get install -y \
-    build-essential \
-    checkinstall \
-    zlib1g-dev \
-    libreadline-gplv2-dev \
-	libncursesw5-dev \
-	libssl-dev \
-	libsqlite3-dev \
-	tk-dev \
-	libgdbm-dev \
-	libc6-dev \
-	libbz2-dev
-
-RUN wget https://www.python.org/ftp/python/3.6.5/Python-3.6.5.tar.xz && \
-    tar xvf Python-3.6.5.tar.xz && \
-    cd Python-3.6.5 && \
-    ./configure && \
-    make -j8 && \
-    make altinstall && \
-    cd .. && \
-    rm -rf Python-3.6.5 && \
-    rm -f Python-3.6.5.tar.xz
-
-RUN cd ${SINGNET_REPOS} && \
-    git clone https://github.com/singnet/snet-cli && \
-    cd snet-cli && \
-    cat ./scripts/blockchain | sed "s/python3 /python3.6 /g" > ./scripts/blockchain && \
-    ./scripts/blockchain install && \
-    pip3.6 install -e .
-# ======================================================================================================================
+    nano
 
 RUN cd ${SINGNET_REPOS} && \
     mkdir snet-daemon && \
     cd snet-daemon && \
-    wget https://github.com/singnet/snet-daemon/releases/download/v0.1.3/snetd-0.1.3.tar.gz && \
-    tar -xvf snetd-0.1.3.tar.gz && \
-    mv linux-amd64/snetd /usr/bin/snetd
+    wget https://github.com/singnet/snet-daemon/releases/download/v0.1.4/snetd-0.1.4.tar.gz && \
+    tar -xvf snetd-0.1.4.tar.gz && \
+    mv snetd-0.1.4/snetd-linux-amd64 /usr/bin/snetd
 
 RUN cd ${SINGNET_REPOS} && \
-    git clone https://github.com/singnet/${DNN_REPO_NAME}.git && \
+    git clone https://github.com/${git_owner}/${DNN_REPO_NAME}.git && \
     cd ${DNN_REPO_NAME}/utils && \
     ./get_cntk_models.sh
 
@@ -68,11 +35,11 @@ RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \
     sh -c "echo '{ \"ETHEREUM_JSON_RPC_ENDPOINT\": \"https://kovan.infura.io\", \
                    \"PASSTHROUGH_ENABLED\": true, \
                    \"PASSTHROUGH_ENDPOINT\": \"http://localhost:7003\", \
-                   \"REGISTRY_ADDRESS_KEY\": \"0x2e4b2f2b72402b9b2d6a7851e37c856c329afe38\", \
+                   \"REGISTRY_ADDRESS_KEY\": \"0xe331bf20044a5b24c1a744abc90c1fd711d2c08d\", \
                    \"DAEMON_END_POINT\": \"http://54.203.198.53:${SNETD_PORT}\", \
                    \"IPFS_END_POINT\": \"http://ipfs.singularitynet.io:80\", \
-                   \"ORGANIZATION_NAME\": \"snet\", \
-                   \"SERVICE_NAME\": \"${SERVICE_NAME}\", \
+                   \"ORGANIZATION_ID\": \"snet\", \
+                   \"SERVICE_ID\": \"${SERVICE_NAME}\", \
                    \"LOG\": { \
                    \"LEVEL\": \"debug\", \
                    \"OUTPUT\": { \
@@ -82,7 +49,7 @@ RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \
                 }'" > ${SNETD_CONFIG}
 
 RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \
-    pip3 install -r requirements.txt && \
+    /root/anaconda3/envs/cntk-py35/bin/python -m pip install -r requirements.txt && \
     sh buildproto.sh
 
 WORKDIR ${SERVICES_FOLDER}/${SERVICE_NAME}

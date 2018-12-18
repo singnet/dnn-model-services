@@ -99,7 +99,7 @@ class VideoCaptioner:
                 else:
                     result = {"Fail": "Fail at 'get_video_frames()'"}
             else:
-                result = {"Fail": "Fail at '_download_yt_video()'"}
+                result = {"Fail": "Fail at '_download_video()'"}
 
         except Exception as e:
             log.error(e)
