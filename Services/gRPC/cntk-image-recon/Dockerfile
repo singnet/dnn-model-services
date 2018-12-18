@@ -27,7 +27,7 @@ RUN cd ${SINGNET_REPOS} && \
     mv snetd-0.1.4/snetd-linux-amd64 /usr/bin/snetd
 
 RUN cd ${SINGNET_REPOS} && \
-    git clone https://github.com/${git_owner}/${DNN_REPO_NAME}.git && \
+    git clone -b ${git_branch} https://github.com/${git_owner}/${DNN_REPO_NAME}.git && \
     cd ${DNN_REPO_NAME}/utils && \
     ./get_cntk_models.sh
 

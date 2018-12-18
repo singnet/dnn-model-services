@@ -15,14 +15,12 @@ commands:
             echo "==================================================== Configs ==================================================="
             export DOCKER_IMAGE_NAME=<< parameters.docker_image_name >>
             export DOCKER_CONTAINER_NAME=<< parameters.docker_container_name >>
-            SNETD_PORT=$([ "$CIRCLE_USERNAME" = "singnet" ] && echo "$SNETD_PORT_PRODUCTION" || echo "$SNETD_PORT_TESTING")
             PROD_TAG=$([ "$CIRCLE_USERNAME" = "singnet" ] && echo "PROD_" || echo "")
             echo            git_user  : $CIRCLE_USERNAME
             echo            git_repo  : $CIRCLE_PROJECT_REPONAME
             echo            git_branch: $CIRCLE_BRANCH
             echo DOCKER_IMAGE_NAME    : $DOCKER_IMAGE_NAME
             echo DOCKER_CONTAINER_NAME: $DOCKER_CONTAINER_NAME
-            echo DOCKER_SNETD_PORT    : $SNETD_PORT
             echo "================================================================================================================"
 
             ssh -o "StrictHostKeyChecking no" $SSH_USER@$SSH_HOST \<< EOF
@@ -35,7 +33,7 @@ commands:
               nvidia-docker run --runtime=nvidia \
                 --name ${PROD_TAG}${DOCKER_CONTAINER_NAME} \
                 --restart unless-stopped \
-                -p $SNETD_PORT:$SNETD_PORT \
+                $([ "$CIRCLE_USERNAME" = "singnet" ] && echo "-p $SNETD_PORT:$SNETD_PORT" || echo "") \
                 -di ${DOCKER_IMAGE_NAME}:${CIRCLE_USERNAME} $SERVICE_RUN_COMMAND
             EOF
       - run:
@@ -69,8 +67,7 @@ jobs:
       SERVICE_NAME: cntk-image-recon
       SERVICE_RUN_COMMAND: bash -c "source '/cntk/activate-cntk';git pull;python3 run_image_recon_service.py"
       SERVICE_TEST_COMMAND: bash -c "source '/cntk/activate-cntk';python3 test_image_recon_service.py auto"
-      SNETD_PORT_PRODUCTION: 7004
-      SNETD_PORT_TESTING: 7064
+      SNETD_PORT: 7004
     steps:
       - bnd_cmd:
           docker_image_name: cntk_image_recognition
@@ -84,8 +81,7 @@ jobs:
       SERVICE_NAME: i3d-video-action-recognition
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_video_action_recon_service.py"
       SERVICE_TEST_COMMAND: python3 test_video_action_recon_service.py auto
-      SNETD_PORT_PRODUCTION: 7005
-      SNETD_PORT_TESTING: 7065
+      SNETD_PORT: 7005
     steps:
       - bnd_cmd:
           docker_image_name: i3d_video_action_recognition
@@ -99,8 +95,7 @@ jobs:
       SERVICE_NAME: places365-scene-recognition
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_scene_recognition_service.py"
       SERVICE_TEST_COMMAND: python3 test_scene_recognition_service.py auto
-      SNETD_PORT_PRODUCTION: 7019
-      SNETD_PORT_TESTING: 7069
+      SNETD_PORT: 7019
     steps:
       - bnd_cmd:
           docker_image_name: places365_scene_recognition
@@ -114,8 +109,7 @@ jobs:
       SERVICE_NAME: s2vt-video-captioning
       SERVICE_RUN_COMMAND: bash -c "git pull;python run_video_cap_service.py"
       SERVICE_TEST_COMMAND: python test_video_cap_service.py auto
-      SNETD_PORT_PRODUCTION: 7007
-      SNETD_PORT_TESTING: 7067
+      SNETD_PORT: 7007
     steps:
       - bnd_cmd:
           docker_image_name: s2vt_video_captioning
@@ -129,8 +123,7 @@ jobs:
       SERVICE_NAME: yolov3-object-detection
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_object_detection_service.py"
       SERVICE_TEST_COMMAND: python3 test_object_detection_service.py auto
-      SNETD_PORT_PRODUCTION: 7008
-      SNETD_PORT_TESTING: 7068
+      SNETD_PORT: 7008
     steps:
       - bnd_cmd:
           docker_image_name: yolov3_object_detection

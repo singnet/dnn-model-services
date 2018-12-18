@@ -29,7 +29,7 @@ RUN cd ${SINGNET_REPOS} && \
     mv snetd-0.1.4/snetd-linux-amd64 /usr/bin/snetd
 
 RUN cd ${SINGNET_REPOS} && \
-    git clone https://github.com/${git_owner}/${DNN_REPO_NAME}.git
+    git clone -b ${git_branch} https://github.com/${git_owner}/${DNN_REPO_NAME}.git
 
 RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \
     sh -c "echo '{ \"ETHEREUM_JSON_RPC_ENDPOINT\": \"https://kovan.infura.io\", \

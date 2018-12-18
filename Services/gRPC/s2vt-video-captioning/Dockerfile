@@ -31,7 +31,7 @@ RUN cd ${SINGNET_REPOS} && \
     mv snetd-0.1.4/snetd-linux-amd64 /usr/bin/snetd
 
 RUN cd ${SINGNET_REPOS} && \
-    git clone https://github.com/${git_owner}/${DNN_REPO_NAME}.git && \
+    git clone -b ${git_branch} https://github.com/${git_owner}/${DNN_REPO_NAME}.git && \
     cd dnn-model-services/Services/gRPC/s2vt-video-captioning && \
     cd service/utils && \
     ./get_s2vt.sh
