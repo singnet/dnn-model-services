@@ -15,35 +15,35 @@ commands:
             echo "==================================================== Configs ==================================================="
             export DOCKER_IMAGE_NAME=<< parameters.docker_image_name >>
             export DOCKER_CONTAINER_NAME=<< parameters.docker_container_name >>
-            PROD_TAG=$([ "$CIRCLE_USERNAME" = "singnet" ] && echo "PROD_" || echo "")
-            echo            git_user  : $CIRCLE_USERNAME
-            echo            git_repo  : $CIRCLE_PROJECT_REPONAME
-            echo            git_branch: $CIRCLE_BRANCH
-            echo DOCKER_IMAGE_NAME    : $DOCKER_IMAGE_NAME
-            echo DOCKER_CONTAINER_NAME: $DOCKER_CONTAINER_NAME
+            PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
+            echo            git_user  : ${CIRCLE_PROJECT_USERNAME}
+            echo            git_repo  : ${CIRCLE_PROJECT_REPONAME}
+            echo            git_branch: ${CIRCLE_BRANCH}
+            echo DOCKER_IMAGE_NAME    : ${DOCKER_IMAGE_NAME}
+            echo DOCKER_CONTAINER_NAME: ${DOCKER_CONTAINER_NAME}
             echo "================================================================================================================"
 
-            ssh -o "StrictHostKeyChecking no" $SSH_USER@$SSH_HOST \<< EOF
+            ssh -o "StrictHostKeyChecking no" ${SSH_USER}@${SSH_HOST} \<< EOF
               nvidia-docker stop ${PROD_TAG}${DOCKER_CONTAINER_NAME} || true && nvidia-docker rename ${PROD_TAG}${DOCKER_CONTAINER_NAME} ${PROD_TAG}${DOCKER_CONTAINER_NAME}_old || true
               nvidia-docker build \
-                --build-arg git_owner=$CIRCLE_USERNAME \
-                --build-arg git_repo=$CIRCLE_PROJECT_REPONAME \
-                --build-arg git_branch=$CIRCLE_BRANCH \
-                -t $DOCKER_IMAGE_NAME:${CIRCLE_USERNAME} https://github.com/$CIRCLE_USERNAME/$CIRCLE_PROJECT_REPONAME.git#$CIRCLE_BRANCH:/Services/gRPC/$SERVICE_NAME
+                --build-arg git_owner=${CIRCLE_PROJECT_USERNAME} \
+                --build-arg git_repo=${CIRCLE_PROJECT_REPONAME} \
+                --build-arg git_branch=${CIRCLE_BRANCH} \
+                -t ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME} https://github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}.git#${CIRCLE_BRANCH}:/Services/gRPC/${SERVICE_NAME}
               nvidia-docker run --runtime=nvidia \
                 --name ${PROD_TAG}${DOCKER_CONTAINER_NAME} \
                 --restart unless-stopped \
-                $([ "$CIRCLE_USERNAME" = "singnet" ] && echo "-p $SNETD_PORT:$SNETD_PORT" || echo "") \
-                -di ${DOCKER_IMAGE_NAME}:${CIRCLE_USERNAME} $SERVICE_RUN_COMMAND
+                $([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "-p ${SNETD_PORT}:${SNETD_PORT}" || echo "") \
+                -di ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME} ${SERVICE_RUN_COMMAND}
             EOF
       - run:
           name: Remove Old Docker Container
           command: |
             export DOCKER_IMAGE_NAME=<< parameters.docker_image_name >>
             export DOCKER_CONTAINER_NAME=<< parameters.docker_container_name >>
-            PROD_TAG=$([ "$CIRCLE_USERNAME" = "singnet" ] && echo "PROD_" || echo "")
+            PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
 
-            ssh -o "StrictHostKeyChecking no" $SSH_USER@$SSH_HOST \<< EOF
+            ssh -o "StrictHostKeyChecking no" ${SSH_USER}@${SSH_HOST} \<< EOF
             nvidia-docker stop ${PROD_TAG}${DOCKER_CONTAINER_NAME}_old || true && nvidia-docker rm ${PROD_TAG}${DOCKER_CONTAINER_NAME}_old || true
             EOF
       - run:
@@ -51,10 +51,10 @@ commands:
           command: |
             export DOCKER_IMAGE_NAME=<< parameters.docker_image_name >>
             export DOCKER_CONTAINER_NAME=<< parameters.docker_container_name >>
-            PROD_TAG=$([ "$CIRCLE_USERNAME" = "singnet" ] && echo "PROD_" || echo "")
+            PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
 
-            ssh -o "StrictHostKeyChecking no" $SSH_USER@$SSH_HOST \<< EOF
-              nvidia-docker exec -i ${PROD_TAG}${DOCKER_CONTAINER_NAME} $SERVICE_TEST_COMMAND
+            ssh -o "StrictHostKeyChecking no" ${SSH_USER}@${SSH_HOST} \<< EOF
+              nvidia-docker exec -i ${PROD_TAG}${DOCKER_CONTAINER_NAME} ${SERVICE_TEST_COMMAND}
             EOF
 
 version: 2.1
