@@ -36,7 +36,7 @@ $ cd ../Services/gRPC/cntk-image-recon
 
 ### Running the service:
 
-To get the `ORGANIZATION_NAME` and `SERVICE_NAME` you must have already published a service (check this [link](https://github.com/singnet/wiki/tree/master/tutorials/howToPublishService)).
+To get the `ORGANIZATION_ID` and `SERVICE_ID` you must have already published a service (check this [link](https://dev.singularitynet.io/tutorials/publish/)).
 
 Create the `SNET Daemon`'s config JSON file (`snetd.config.json`).
 
@@ -48,8 +48,8 @@ Create the `SNET Daemon`'s config JSON file (`snetd.config.json`).
    "REGISTRY_ADDRESS_KEY": "0xe331bf20044a5b24c1a744abc90c1fd711d2c08d",
    "PASSTHROUGH_ENABLED": true,
    "PASSTHROUGH_ENDPOINT": "SERVICE_GRPC_HOST:SERVICE_GRPC_PORT",  
-   "ORGANIZATION_NAME": "ORGANIZATION_NAME",
-   "SERVICE_NAME": "SERVICE_NAME",
+   "ORGANIZATION_ID": "ORGANIZATION_ID",
+   "SERVICE_ID": "SERVICE_ID",
    "LOG": {
        "LEVEL": "debug",
        "OUTPUT": {
@@ -70,8 +70,8 @@ $ cat snetd.config.json
    "REGISTRY_ADDRESS_KEY": "0xe331bf20044a5b24c1a744abc90c1fd711d2c08d",
    "PASSTHROUGH_ENABLED": true,
    "PASSTHROUGH_ENDPOINT": "http://localhost:7003",
-   "ORGANIZATION_NAME": "snet",
-   "SERVICE_NAME": "cntk-image-recon",
+   "ORGANIZATION_ID": "snet",
+   "SERVICE_ID": "cntk-image-recon",
    "LOG": {
        "LEVEL": "debug",
        "OUTPUT": {
@@ -120,7 +120,7 @@ Image (Link): https://cdn2-www.dogtime.com/assets/uploads/2011/01/file_22950_sta
 {1: '99.83%: Miniature_schnauzer', 2: '00.09%: Alaskan_malamute', 3: '00.05%: Giant_schnauzer', 4: '00.01%: Bouvier_des_flandres', 5: '00.01%: Lowchen'}
 ```
 
-Through SingularityNET (follow this [link](https://github.com/singnet/wiki/blob/master/tutorials/howToPublishService/README.md) to learn how to publish a service and open a payment channel to be able to call it):
+Through SingularityNET (follow this [link](https://dev.singularitynet.io/tutorials/publish/) to learn how to publish a service and open a payment channel to be able to call it):
 
 Assuming that you have an open channel (`id: 0`) to this service:
 
@@ -139,7 +139,7 @@ Calling service...
 
 ## Contributing and Reporting Issues
 
-Please read our [guidelines](https://github.com/singnet/wiki/blob/master/guidelines/CONTRIBUTING.md#submitting-an-issue) before submitting an issue. If your issue is a bug, please use the bug template pre-populated [here][issue-template]. For feature requests and queries you can use [this template][feature-template].
+Please read our [guidelines](https://dev.singularitynet.io/docs/contribute/contribution-guidelines/#submitting-an-issue) before submitting an issue. If your issue is a bug, please use the bug template pre-populated [here][issue-template]. For feature requests and queries you can use [this template][feature-template].
 
 ## Authors
 

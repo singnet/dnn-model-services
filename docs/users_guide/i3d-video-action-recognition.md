@@ -29,7 +29,7 @@ Inputs:
   - `model`: kinetics-i3d model ("400" or "600").
   - `url`: A video URL.
 
-You can use this service from [SingularityNET DApp](http://alpha.singularitynet.io/), clicking on `SNET/VideoActionRecognition`.
+You can use this service from [SingularityNET DApp](http://beta.singularitynet.io/), clicking on `SNET/VideoActionRecognition`.
 
 You can also call the service from SingularityNET CLI (`snet`).
 

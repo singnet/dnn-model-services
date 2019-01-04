@@ -33,7 +33,7 @@ Inputs:
   - `model`: DNN Model ("ResNet152").
   - `img_path`: An image URL.
 
-You can use this service from [SingularityNET DApp](http://alpha.singularitynet.io/), clicking on `SNET/ImageRecon`.
+You can use this service from [SingularityNET DApp](http://beta.singularitynet.io/), clicking on `SNET/ImageRecon`.
 
 You can also call the service from SingularityNET CLI (`snet`).
 

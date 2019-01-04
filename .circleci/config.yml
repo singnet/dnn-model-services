@@ -8,6 +8,15 @@ commands:
       docker_container_name:
         type: string
         default: ""
+      docker_mount_volumes:
+        type: boolean
+        default: false
+      docker_mount_src:
+        type: string
+        default: ""
+      docker_mount_dest:
+        type: string
+        default: ""
     steps:
       - run:
           name: Build docker image
@@ -15,12 +24,18 @@ commands:
             echo "==================================================== Configs ==================================================="
             export DOCKER_IMAGE_NAME=<< parameters.docker_image_name >>
             export DOCKER_CONTAINER_NAME=<< parameters.docker_container_name >>
+            export DOCKER_MOUNT_VOLUMES=<< parameters.docker_mount_volumes >>
+            export DOCKER_MOUNT_SRC=<< parameters.docker_mount_src >>
+            export DOCKER_MOUNT_DEST=<< parameters.docker_mount_dest >>
             PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
             echo            git_user  : ${CIRCLE_PROJECT_USERNAME}
             echo            git_repo  : ${CIRCLE_PROJECT_REPONAME}
             echo            git_branch: ${CIRCLE_BRANCH}
             echo DOCKER_IMAGE_NAME    : ${DOCKER_IMAGE_NAME}
             echo DOCKER_CONTAINER_NAME: ${DOCKER_CONTAINER_NAME}
+            echo DOCKER_MOUNT_VOLUMES : ${DOCKER_MOUNT_VOLUMES}
+            echo DOCKER_MOUNT_SRC     : ${DOCKER_MOUNT_SRC}
+            echo DOCKER_MOUNT_DEST    : ${DOCKER_MOUNT_DEST}
             echo "================================================================================================================"
 
             ssh -o "StrictHostKeyChecking no" ${SSH_USER}@${SSH_HOST} \<< EOF
@@ -34,6 +49,7 @@ commands:
                 --name ${PROD_TAG}${DOCKER_CONTAINER_NAME} \
                 --restart unless-stopped \
                 $([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "-p ${SNETD_PORT}:${SNETD_PORT}" || echo "") \
+                $([ "${DOCKER_MOUNT_VOLUMES}" = "true" ] && echo "-v ${DOCKER_MOUNT_SRC}:${DOCKER_MOUNT_DEST}" || echo "") \
                 -di ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME} ${SERVICE_RUN_COMMAND}
             EOF
       - run:
