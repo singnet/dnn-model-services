@@ -8,6 +8,7 @@ ENV SINGNET_REPOS=/opt/singnet
 ENV DNN_REPO_NAME=${git_repo}
 ENV SERVICES_FOLDER=${SINGNET_REPOS}/${DNN_REPO_NAME}/Services/gRPC
 ENV SERVICE_NAME=s2vt-video-captioning
+ENV SNETD_HOST=54.203.198.53
 ENV SNETD_PORT=7007
 ENV SNETD_CONFIG=snetd.config.json
 
@@ -41,7 +42,7 @@ RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \
                    \"PASSTHROUGH_ENABLED\": true, \
                    \"PASSTHROUGH_ENDPOINT\": \"http://localhost:7003\", \
                    \"REGISTRY_ADDRESS_KEY\": \"0xe331bf20044a5b24c1a744abc90c1fd711d2c08d\", \
-                   \"DAEMON_END_POINT\": \"http://54.203.198.53:${SNETD_PORT}\", \
+                   \"DAEMON_END_POINT\": \"http://${SNETD_HOST}:${SNETD_PORT}\", \
                    \"IPFS_END_POINT\": \"http://ipfs.singularitynet.io:80\", \
                    \"ORGANIZATION_ID\": \"snet\", \
                    \"SERVICE_ID\": \"${SERVICE_NAME}\", \
