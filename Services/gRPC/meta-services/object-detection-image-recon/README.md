@@ -28,7 +28,7 @@ $ cd dnn-model-services/Services/gRPC/meta-services/object-detection-image-recon
 
 ### Running the service:
 
-To get the `ORGANIZATION_NAME` and `SERVICE_NAME` you must have already published a service (check this [link](https://github.com/singnet/wiki/tree/master/tutorials/howToPublishService)).
+To get the `ORGANIZATION_ID` and `SERVICE_ID` you must have already published a service (check this [link](https://github.com/singnet/wiki/tree/master/tutorials/howToPublishService)).
 
 Create the `SNET Daemon`'s config JSON file (`snetd.config.json`).
 
@@ -40,8 +40,8 @@ Create the `SNET Daemon`'s config JSON file (`snetd.config.json`).
    "REGISTRY_ADDRESS_KEY": "0xe331bf20044a5b24c1a744abc90c1fd711d2c08d",
    "PASSTHROUGH_ENABLED": true,
    "PASSTHROUGH_ENDPOINT": "SERVICE_GRPC_HOST:SERVICE_GRPC_PORT",  
-   "ORGANIZATION_NAME": "ORGANIZATION_NAME",
-   "SERVICE_NAME": "SERVICE_NAME",
+   "ORGANIZATION_ID": "ORGANIZATION_ID",
+   "SERVICE_ID": "SERVICE_ID",
    "LOG": {
        "LEVEL": "debug",
        "OUTPUT": {
@@ -62,8 +62,8 @@ $ cat snetd.config.json
    "REGISTRY_ADDRESS_KEY": "0xe331bf20044a5b24c1a744abc90c1fd711d2c08d",
    "PASSTHROUGH_ENABLED": true,
    "PASSTHROUGH_ENDPOINT": "http://localhost:7003",
-   "ORGANIZATION_NAME": "snet",
-   "SERVICE_NAME": "object-detection-image-recon",
+   "ORGANIZATION_ID": "snet",
+   "SERVICE_ID": "object-detection-image-recon",
    "LOG": {
        "LEVEL": "debug",
        "OUTPUT": {

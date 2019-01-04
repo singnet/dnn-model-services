@@ -30,7 +30,7 @@ Inputs:
   - `img_path`: An image URL.
   - `confidence`: Confidence of object detection (between 0 and 1).
 
-You can use this service from [SingularityNET DApp](http://alpha.singularitynet.io/), clicking on `SNET/MetaService`.
+You can use this service from [SingularityNET DApp](http://beta.singularitynet.io/), clicking on `SNET/MetaService`.
 
 You can also call the service from SingularityNET CLI (`snet`).
 

@@ -34,7 +34,7 @@ Inputs:
   - `stop_time_sec`: Stop time position, in seconds.
   - The time interval (stop-start) must be <= 20 seconds.
 
-You can use this service from [SingularityNET DApp](http://alpha.singularitynet.io/), clicking on `SNET/VideoCaptioning`.
+You can use this service from [SingularityNET DApp](http://beta.singularitynet.io/), clicking on `SNET/VideoCaptioning`.
 
 You can also call the service from SingularityNET CLI (`snet`).
 
