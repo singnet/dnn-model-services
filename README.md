@@ -54,6 +54,10 @@ For more details on how to publish and test a service, select it from the list b
       }
     ```
 
+### Game AI:
+- [zeta36-chess-alpha-zero](Services/gRPC/zeta36-chess-alpha-zero) ([User's Guide](docs/users_guide/zeta36-chess-alpha-zero.md)) - This service uses [AlphaGo Zero methods](https://deepmind.com/blog/alphago-zero-learning-scratch/)
+ to learn and play chess. [[Reference](https://github.com/Zeta36/chess-alpha-zero)]
+
 ## Contributing and Reporting Issues
 
 Please read our [guidelines](https://dev.singularitynet.io/docs/contribute/contribution-guidelines/#submitting-an-issue) before submitting an issue. If your issue is a bug, please use the bug template pre-populated [here][issue-template]. For feature requests and queries you can use [this template][feature-template].
@@ -70,7 +74,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 Each service is licensed as followed:
 
 - cntk-image-recon - [MIT License](https://github.com/Microsoft/CNTK/blob/master/LICENSE.md)
-- yolov3-object-detection - [Public domain](https://github.com/pjreddie/darknet/blob/master/LICENSE)
-- places365-scene-recognition - [MIT License](https://github.com/CSAILVision/places365/blob/master/LICENSE)
 - i3d-video-action-recognition - [Apache License 2.0](https://github.com/deepmind/kinetics-i3d/blob/master/LICENSE)
+- places365-scene-recognition - [MIT License](https://github.com/CSAILVision/places365/blob/master/LICENSE)
 - s2vt-video-captioning - [Attribution 4.0 International (CC BY 4.0)](http://creativecommons.org/licenses/by/4.0/)
+- yolov3-object-detection - [Public domain](https://github.com/pjreddie/darknet/blob/master/LICENSE)
+- zeta36-chess-alpha-zero - [MIT License](https://github.com/Zeta36/chess-alpha-zero/blob/master/LICENSE.txt)
