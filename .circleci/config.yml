@@ -145,13 +145,42 @@ jobs:
           docker_image_name: yolov3_object_detection
           docker_container_name: ARTUR_YOLOv3_OBJECT_DETECTION
 
+  deploy-zeta36-chess-alpha-zero:
+    docker:
+      - image: circleci/python:3.6.6-node
+    working_directory: ~/singnet
+    environment:
+      SERVICE_NAME: zeta36-chess-alpha-zero
+      SERVICE_RUN_COMMAND: bash -c "git pull;python3.6 run_alpha_zero_service.py"
+      SERVICE_TEST_COMMAND: bash -c "sleep 20;python3.6 test_alpha_zero_service.py auto"
+      SNETD_PORT: 7077
+    steps:
+      - bnd_cmd:
+          docker_image_name: zeta36_chess_alpha_zero
+          docker_container_name: ARTUR_CHESS_ALPHA_ZERO
+
 workflows:
   version: 2.1
-  build-and-deploy:
+  wf-cntk-image-recon:
     jobs:
       - deploy-cntk-image-recon
+
+  wf-i3d-video-action-recognition:
+    jobs:
       - deploy-i3d-video-action-recognition
-      #- deploy-object-detection-image-recon
-      #- deploy-places365-scene-recognition
+
+#  wf-places365-scene-recognition:
+#    jobs:
+#      - deploy-places365-scene-recognition
+
+  wf-s2vt-video-captioning:
+    jobs:
       - deploy-s2vt-video-captioning
+
+  wf-yolov3-object-detection:
+    jobs:
       - deploy-yolov3-object-detection
+
+  wf-zeta36-chess-alpha-zero:
+    jobs:
+      - deploy-zeta36-chess-alpha-zero
