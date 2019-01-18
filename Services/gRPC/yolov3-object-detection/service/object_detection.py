@@ -5,6 +5,8 @@ import requests
 import base64
 import cv2
 import traceback
+import datetime
+import hashlib
 import logging
 
 logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s")
@@ -22,8 +24,9 @@ class ObjectDetector:
         self.colors = []
         self.classes = []
 
+    @staticmethod
     # Get the names of the output layers
-    def get_output_layers(self, net):
+    def get_output_layers(net):
         layer_names = net.getLayerNames()
         output_layers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
         return output_layers
@@ -39,25 +42,23 @@ class ObjectDetector:
         cv2.putText(img, label, (left, top + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(255, 255, 255))
 
     def detect(self):
+        tmp_img_file = generate_uid() + ".jpg"
         try:
             start_time = time.time()
-
             # Link
             if "http://" in self.img_path or "https://" in self.img_path:
-                header = {
-                    'User-Agent': 'Mozilla/5.0 (Windows NT x.y; Win64; x64; rv:9.0) Gecko/20100101 Firefox/10.0'
-                }
+                header = {'User-Agent': 'Mozilla/5.0 (Windows NT x.y; Win64; x64; rv:9.0) Gecko/20100101 Firefox/10.0'}
                 r = requests.get(self.img_path, headers=header, allow_redirects=True)
-                with open("temp_img.jpg", "wb") as my_f:
+                with open(tmp_img_file, "wb") as my_f:
                     my_f.write(r.content)
-                    self.img_path = "temp_img.jpg"
+                    self.img_path = tmp_img_file
 
             # Base64
             elif len(self.img_path) > 500:
                 img_data = base64.b64decode(self.img_path)
-                with open("temp_img.jpg", "wb") as f:
+                with open(tmp_img_file, "wb") as f:
                     f.write(img_data)
-                    self.img_path = "temp_img.jpg"
+                    self.img_path = tmp_img_file
 
             if self.model.upper() == "YOLOV3":
                 model_file = os.path.join(resources_root, "Models", "yolov3.weights")
@@ -130,8 +131,8 @@ class ObjectDetector:
 
                 delta_time = time.time() - start_time
 
-                if os.path.exists("temp_img.jpg"):
-                    os.remove("temp_img.jpg")
+                if os.path.exists(tmp_img_file):
+                    os.remove(tmp_img_file)
 
                 return {
                     "delta_time": "{:.4f}".format(delta_time),
@@ -142,6 +143,8 @@ class ObjectDetector:
                 }
 
             else:
+                if os.path.exists(tmp_img_file):
+                    os.remove(tmp_img_file)
                 return {
                     "delta_time": "Fail",
                     "boxes": [],
@@ -153,6 +156,8 @@ class ObjectDetector:
         except Exception as e:
             log.error(e)
             traceback.print_exc()
+            if os.path.exists(tmp_img_file):
+                os.remove(tmp_img_file)
             return {
                 "delta_time": "Fail",
                 "boxes": [],
@@ -160,3 +165,13 @@ class ObjectDetector:
                 "confidences": [],
                 "img_base64": "Fail",
             }
+
+
+def generate_uid():
+    # Setting a hash accordingly to the timestamp
+    seed = "{}".format(datetime.datetime.now())
+    m = hashlib.sha256()
+    m.update(seed.encode("utf-8"))
+    m = m.hexdigest()
+    # Returns only the first and the last 10 hex
+    return m[:10] + m[-10:]

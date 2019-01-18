@@ -2,7 +2,6 @@ import os
 import shutil
 import time
 import logging
-from random import randint
 import requests
 
 from utils.extract_features import extractor
@@ -14,15 +13,17 @@ log = logging.getLogger("video_cap_service")
 
 
 class VideoCaptioner:
-    def __init__(self, url, video_name, start_time, stop_time, pace, batch_size):
+    def __init__(self, url, uid, start_time, stop_time, pace, batch_size):
         self.url = url
         self.video_path = ""
-        self.video_name = video_name
-        self.video_folder = "./service/utils/videos/{}_{:03}".format(self.video_name, randint(0, 99))
+        self.uid = uid
+        self.video_folder = "./service/utils/videos/{}".format(self.uid)
         self.start_time = start_time
         self.stop_time = stop_time
         self.pace = pace
         self.batch_size = batch_size
+
+        self.response = dict()
 
     # Returns the caption in SRT format.
     # 1
@@ -58,13 +59,13 @@ class VideoCaptioner:
             return False
 
     # Main method, it gets the url, start_time and stop_time and returns a Caption.
-    def get_captions(self):
+    def get_video_captions(self):
         if not os.path.exists("./service/utils/videos"):
             os.makedirs("./service/utils/videos")
         if not os.path.exists(self.video_folder):
             os.makedirs(self.video_folder)
 
-        result = "Fail"
+        self.response = {"Caption": "Fail"}
         try:
             # Download the video from YouTube.
             if self._download_video():
@@ -80,33 +81,29 @@ class VideoCaptioner:
                         self.batch_size = len(frames_list)
                         if self.batch_size > 60:
                             log.error("batch_size is too high! (max: 20s)")
-                            return {"Fail": "batch_size is too high! (max: 20s)"}
+                            self.response["Caption"] = "Fail: batch_size is too high! (max: 20s)"
 
                     # Extracts features from frames.
-                    features_file = "{}/output_{}.csv".format(self.video_folder, self.video_name)
+                    features_file = "{}/output_{}.csv".format(self.video_folder, self.uid)
                     if extractor("./service/utils/data/VGG_ILSVRC_16_layers.caffemodel",
                                  "./service/utils/data/VGG_ILSVRC_16_layers_deploy.prototxt",
                                  frames_list,
                                  features_file,
                                  self.batch_size):
                         model_name = "s2vt_vgg_rgb"
-                        output_path = "{}/{}_captions.txt".format(self.video_folder, self.video_name)
+                        output_path = "{}/{}_captions.txt".format(self.video_folder, self.uid)
                         # Gets caption from frames (featured).
                         get_captions(model_name, features_file, output_path)
                         with open(output_path, "r") as f:
                             result = f.readlines()
-                        result = {"Caption": self._create_srt(result)}
-                else:
-                    result = {"Fail": "Fail at 'get_video_frames()'"}
-            else:
-                result = {"Fail": "Fail at '_download_video()'"}
+                        self.response["Caption"] = self._create_srt(result)
 
         except Exception as e:
             log.error(e)
-            result = {"Fail": e}
+            self.response["Caption"] = "Fail"
 
         # Deletes video folder.
         if os.path.exists(self.video_folder):
             shutil.rmtree(self.video_folder)
 
-        return result
+        return self.response

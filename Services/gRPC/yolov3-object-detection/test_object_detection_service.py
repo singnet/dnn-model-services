@@ -33,7 +33,7 @@ if __name__ == "__main__":
         img_path = input("Image (Link): ") if not test_flag else TEST_URL
 
         stub = grpc_bt_grpc.DetectStub(channel)
-        request = grpc_bt_pb2.ObjectDetectionRequest(model=model, confidence=confidence, img_path=img_path)
+        request = grpc_bt_pb2.Input(model=model, confidence=confidence, img_path=img_path)
         response = stub.detect(request)
         print(response)
 

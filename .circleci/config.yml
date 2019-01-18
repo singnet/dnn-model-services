@@ -8,6 +8,12 @@ commands:
       docker_container_name:
         type: string
         default: ""
+      docker_etcd_host_folder:
+        type: string
+        default: ""
+      docker_etcd_container_folder:
+        type: string
+        default: ""
       docker_mount_volumes:
         type: boolean
         default: false
@@ -27,6 +33,8 @@ commands:
             export DOCKER_MOUNT_VOLUMES=<< parameters.docker_mount_volumes >>
             export DOCKER_MOUNT_SRC=<< parameters.docker_mount_src >>
             export DOCKER_MOUNT_DEST=<< parameters.docker_mount_dest >>
+            export ETCD_HOST_FOLDER=<< parameters.docker_etcd_host_folder >>
+            export ETCD_CONTAINER_FOLDER=<< parameters.docker_etcd_container_folder >>
             PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
             echo            git_user  : ${CIRCLE_PROJECT_USERNAME}
             echo            git_repo  : ${CIRCLE_PROJECT_REPONAME}
@@ -36,6 +44,8 @@ commands:
             echo DOCKER_MOUNT_VOLUMES : ${DOCKER_MOUNT_VOLUMES}
             echo DOCKER_MOUNT_SRC     : ${DOCKER_MOUNT_SRC}
             echo DOCKER_MOUNT_DEST    : ${DOCKER_MOUNT_DEST}
+            echo ETCD_HOST_FOLDER     : ${ETCD_HOST_FOLDER}
+            echo ETCD_CONTAINER_FOLDER: ${ETCD_CONTAINER_FOLDER}
             echo "================================================================================================================"
 
             ssh -o "StrictHostKeyChecking no" ${SSH_USER}@${SSH_HOST} \<< EOF
@@ -44,11 +54,12 @@ commands:
                 --build-arg git_owner=${CIRCLE_PROJECT_USERNAME} \
                 --build-arg git_repo=${CIRCLE_PROJECT_REPONAME} \
                 --build-arg git_branch=${CIRCLE_BRANCH} \
-                -t ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME} https://github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}.git#${CIRCLE_BRANCH}:/Services/gRPC/${SERVICE_NAME}
+                -t ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME} https://github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}.git#${CIRCLE_BRANCH}:${SERVICE_FOLDER}
               nvidia-docker run --runtime=nvidia \
                 --name ${PROD_TAG}${DOCKER_CONTAINER_NAME} \
                 --restart unless-stopped \
                 $([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "-p ${SNETD_PORT}:${SNETD_PORT}" || echo "") \
+                $([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "-v ~/${ETCD_HOST_FOLDER}:/${ETCD_CONTAINER_FOLDER}" || echo "") \
                 $([ "${DOCKER_MOUNT_VOLUMES}" = "true" ] && echo "-v ${DOCKER_MOUNT_SRC}:${DOCKER_MOUNT_DEST}" || echo "") \
                 -di ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME} ${SERVICE_RUN_COMMAND}
             EOF
@@ -81,6 +92,7 @@ jobs:
     working_directory: ~/singnet
     environment:
       SERVICE_NAME: cntk-image-recon
+      SERVICE_FOLDER: Services/gRPC/cntk-image-recon
       SERVICE_RUN_COMMAND: bash -c "source '/cntk/activate-cntk';git pull;python3 run_image_recon_service.py"
       SERVICE_TEST_COMMAND: bash -c "source '/cntk/activate-cntk';python3 test_image_recon_service.py auto"
       SNETD_PORT: 7004
@@ -88,6 +100,8 @@ jobs:
       - bnd_cmd:
           docker_image_name: cntk_image_recognition
           docker_container_name: ARTUR_CNTK_IMAGE_RECON
+          docker_etcd_host_folder: singnet/etcd/${SERVICE_NAME}/
+          docker_etcd_container_folder: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/storage-data-dir-1.etcd/
 
   deploy-i3d-video-action-recognition:
     docker:
@@ -95,6 +109,7 @@ jobs:
     working_directory: ~/singnet
     environment:
       SERVICE_NAME: i3d-video-action-recognition
+      SERVICE_FOLDER: Services/gRPC/i3d-video-action-recognition
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_video_action_recon_service.py"
       SERVICE_TEST_COMMAND: python3 test_video_action_recon_service.py auto
       SNETD_PORT: 7005
@@ -102,6 +117,8 @@ jobs:
       - bnd_cmd:
           docker_image_name: i3d_video_action_recognition
           docker_container_name: ARTUR_I3D_VIDEO_ACTION_RECON
+          docker_etcd_host_folder: singnet/etcd/${SERVICE_NAME}/
+          docker_etcd_container_folder: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/storage-data-dir-1.etcd/
 
   deploy-places365-scene-recognition:
     docker:
@@ -109,6 +126,7 @@ jobs:
     working_directory: ~/singnet
     environment:
       SERVICE_NAME: places365-scene-recognition
+      SERVICE_FOLDER: Services/gRPC/places365-scene-recognition
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_scene_recognition_service.py"
       SERVICE_TEST_COMMAND: python3 test_scene_recognition_service.py auto
       SNETD_PORT: 7019
@@ -116,6 +134,8 @@ jobs:
       - bnd_cmd:
           docker_image_name: places365_scene_recognition
           docker_container_name: RAMON_PLACES365_SCENE_RECON
+          docker_etcd_host_folder: singnet/etcd/${SERVICE_NAME}/
+          docker_etcd_container_folder: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/storage-data-dir-1.etcd/
 
   deploy-s2vt-video-captioning:
     docker:
@@ -123,6 +143,7 @@ jobs:
     working_directory: ~/singnet
     environment:
       SERVICE_NAME: s2vt-video-captioning
+      SERVICE_FOLDER: Services/gRPC/s2vt-video-captioning
       SERVICE_RUN_COMMAND: bash -c "git pull;python run_video_cap_service.py"
       SERVICE_TEST_COMMAND: python test_video_cap_service.py auto
       SNETD_PORT: 7007
@@ -130,6 +151,8 @@ jobs:
       - bnd_cmd:
           docker_image_name: s2vt_video_captioning
           docker_container_name: ARTUR_S2VT_VIDEO_CAPTIONING
+          docker_etcd_host_folder: singnet/etcd/${SERVICE_NAME}/
+          docker_etcd_container_folder: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/storage-data-dir-1.etcd/
 
   deploy-yolov3-object-detection:
     docker:
@@ -137,6 +160,7 @@ jobs:
     working_directory: ~/singnet
     environment:
       SERVICE_NAME: yolov3-object-detection
+      SERVICE_FOLDER: Services/gRPC/yolov3-object-detection
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_object_detection_service.py"
       SERVICE_TEST_COMMAND: python3 test_object_detection_service.py auto
       SNETD_PORT: 7008
@@ -144,6 +168,8 @@ jobs:
       - bnd_cmd:
           docker_image_name: yolov3_object_detection
           docker_container_name: ARTUR_YOLOv3_OBJECT_DETECTION
+          docker_etcd_host_folder: singnet/etcd/${SERVICE_NAME}/
+          docker_etcd_container_folder: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/storage-data-dir-1.etcd/
 
   deploy-zeta36-chess-alpha-zero:
     docker:
@@ -151,6 +177,7 @@ jobs:
     working_directory: ~/singnet
     environment:
       SERVICE_NAME: zeta36-chess-alpha-zero
+      SERVICE_FOLDER: Services/gRPC/zeta36-chess-alpha-zero
       SERVICE_RUN_COMMAND: bash -c "git pull;python3.6 run_alpha_zero_service.py"
       SERVICE_TEST_COMMAND: bash -c "sleep 20;python3.6 test_alpha_zero_service.py auto"
       SNETD_PORT: 7077
@@ -158,6 +185,8 @@ jobs:
       - bnd_cmd:
           docker_image_name: zeta36_chess_alpha_zero
           docker_container_name: ARTUR_CHESS_ALPHA_ZERO
+          docker_etcd_host_folder: singnet/etcd/${SERVICE_NAME}/
+          docker_etcd_container_folder: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/storage-data-dir-1.etcd/
 
 workflows:
   version: 2.1

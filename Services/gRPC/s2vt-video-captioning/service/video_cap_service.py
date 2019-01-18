@@ -1,5 +1,7 @@
 import sys
 import logging
+import datetime
+import hashlib
 
 import grpc
 import concurrent.futures as futures
@@ -9,7 +11,7 @@ from video_captioner import VideoCaptioner
 
 # Importing the generated codes from buildproto.sh
 from service_spec import video_cap_pb2_grpc as grpc_bt_grpc
-from service_spec.video_cap_pb2 import Result
+from service_spec.video_cap_pb2 import Output
 
 logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s")
 log = logging.getLogger("video_cap")
@@ -19,10 +21,13 @@ log = logging.getLogger("video_cap")
 # derived from the protobuf codes.
 class VideoCaptioningServicer(grpc_bt_grpc.VideoCaptioningServicer):
     def __init__(self):
-        self.url = ''
+        self.url = ""
         self.start_time_sec = 0
         self.stop_time_sec = 0
-        self.result = 'Fail'
+        self.uid = ""
+
+        self.response = "Fail"
+
         # Just for debugging purpose.
         log.debug("VideoCaptioningServicer created")
 
@@ -33,16 +38,28 @@ class VideoCaptioningServicer(grpc_bt_grpc.VideoCaptioningServicer):
         self.url = request.url
         self.start_time_sec = int(request.start_time_sec)
         self.stop_time_sec = int(request.stop_time_sec)
+        self.uid = generate_uid()
 
-        # To respond we need to create a Result() object (from .proto file)
-        self.result = Result()
+        # To respond we need to create a Output() object (from .proto file)
+        self.response = Output()
 
-        video_cap_instance = VideoCaptioner(self.url, 'tmp_video', self.start_time_sec, self.stop_time_sec, 0, 0)
-        self.result.value = str(video_cap_instance.get_captions())
+        video_cap_instance = VideoCaptioner(self.url, self.uid, self.start_time_sec, self.stop_time_sec, 0, 0)
+        tmp_response = video_cap_instance.get_video_captions()
+        self.response.value = tmp_response["Caption"].encode("utf-8")
 
-        log.debug("video_cap({},{},{})={}".format(self.url, self.start_time_sec, self.stop_time_sec, self.result.value))
+        log.debug("video_cap({},{},{})={}".format(self.url, self.start_time_sec, self.stop_time_sec, self.response.value))
 
-        return self.result
+        return self.response
+
+
+def generate_uid():
+    # Setting a hash accordingly to the timestamp
+    seed = "{}".format(datetime.datetime.now())
+    m = hashlib.sha256()
+    m.update(seed.encode("utf-8"))
+    m = m.hexdigest()
+    # Returns only the first and the last 10 hex
+    return m[:10] + m[-10:]
 
 
 # The gRPC serve function.

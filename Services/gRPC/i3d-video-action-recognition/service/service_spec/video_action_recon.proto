@@ -5,10 +5,10 @@ message Input {
     string url = 2;
 }
 
-message Result {
+message Output {
     string value = 1;
 }
 
 service VideoActionRecognition {
-    rpc video_action_recon(Input) returns (Result) {}
+    rpc video_action_recon(Input) returns (Output) {}
 }

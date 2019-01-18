@@ -13,7 +13,7 @@ It is part of our third party [DNN Model Services](https://github.com/singnet/dn
 
 The service receives a video and uses it as an input for a `I3D` models trained on Kinetics.
 
-One model was trained, using Kinetics-400 and the other usgin Kinetics-600, to predict action on videos.
+One model was trained, using Kinetics-400 and the other using Kinetics-600, to predict action on videos.
 
 ### What’s the point?
 

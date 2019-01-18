@@ -6,10 +6,10 @@ message Input {
     string stop_time_sec = 3;
 }
 
-message Result {
+message Output {
     string value = 1;
 }
 
 service VideoCaptioning {
-    rpc video_cap(Input) returns (Result) {}
+    rpc video_cap(Input) returns (Output) {}
 }
