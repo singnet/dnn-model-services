@@ -32,24 +32,19 @@ if __name__ == "__main__":
 
         img_path = input("Image (Link): ") if not test_flag else TEST_URL
 
+        stub = grpc_bt_grpc.RecognizerStub(channel)
+        number = grpc_bt_pb2.Input(model=model, img_path=img_path)
+
         if grpc_method == "flowers":
-            stub = grpc_bt_grpc.FlowersStub(channel)
-            number = grpc_bt_pb2.ImageReconRequest(model=model, img_path=img_path)
             response = stub.flowers(number)
             print(response.delta_time)
             print(response.top_5)
 
-        elif grpc_method == "dogs":
-            stub = grpc_bt_grpc.DogsStub(channel)
-            number = grpc_bt_pb2.ImageReconRequest(model=model, img_path=img_path)
-            response = stub.dogs(number)
-            print(response.delta_time)
-            print(response.top_5)
+            if response.top_5 == "Fail":
+                exit(1)
 
-        elif grpc_method == "cars":
-            stub = grpc_bt_grpc.CarsStub(channel)
-            number = grpc_bt_pb2.ImageReconRequest(model=model, img_path=img_path)
-            response = stub.cars(number)
+        elif grpc_method == "dogs":
+            response = stub.dogs(number)
             print(response.delta_time)
             print(response.top_5)
 

@@ -1,12 +1,12 @@
 syntax = "proto3";
 
-message ObjectDetectionRequest {
+message Input {
     string model = 1;
     string img_path = 2;
     string confidence = 3;
 }
 
-message Result {
+message Output {
     string delta_time = 1;
     string boxes = 2;
     string class_ids = 3;
@@ -15,5 +15,5 @@ message Result {
 }
 
 service Detect {
-    rpc detect(ObjectDetectionRequest) returns (Result) {}
+    rpc detect(Input) returns (Output) {}
 }

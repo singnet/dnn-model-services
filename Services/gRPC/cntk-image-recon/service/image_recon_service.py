@@ -6,11 +6,11 @@ import concurrent.futures as futures
 
 import service.common
 import service.image_recon as img_recon
-from service import flowers_map_names, dogs_map_names, cars_map_names
+from service import flowers_map_names, dogs_map_names
 
 # Importing the generated codes from buildproto.sh
 import service.service_spec.image_recon_pb2_grpc as grpc_bt_grpc
-from service.service_spec.image_recon_pb2 import Result
+from service.service_spec.image_recon_pb2 import Output
 
 logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s")
 log = logging.getLogger("image_recon_service")
@@ -18,14 +18,15 @@ log = logging.getLogger("image_recon_service")
 
 # Create a class to be added to the gRPC server
 # derived from the protobuf codes.
-class FlowersServicer(grpc_bt_grpc.FlowersServicer):
+class RecognizerServicer(grpc_bt_grpc.RecognizerServicer):
     def __init__(self):
         self.model = "ResNet152"
         self.img_path = ""
-        self.result = "Fail"
+
+        self.response = "Fail"
 
         # Just for debugging purpose.
-        log.debug("FlowersServicer created")
+        log.debug("RecognizerServicer created")
 
     # The method that will be exposed to the snet-cli call command.
     # request: incoming data
@@ -39,20 +40,12 @@ class FlowersServicer(grpc_bt_grpc.FlowersServicer):
         image_dims = (3, 224, 224)
         json_result = img_recon.image_recognition("flowers", self.model, map_names, self.img_path, image_dims)
 
-        # To respond we need to create a Result() object (from .proto file)
-        self.result = Result()
-        self.result.top_5 = str(json_result["top_5"]).encode("utf-8")
-        self.result.delta_time = str(json_result["delta_time"]).encode("utf-8")
-        log.debug("flowers({},{})={}".format(self.model, self.img_path, self.result.top_5))
-        return self.result
-
-
-class DogsServicer(grpc_bt_grpc.DogsServicer):
-    def __init__(self):
-        self.model = "ResNet152"
-        self.img_path = ""
-        self.result = "Fail"
-        log.debug("DogsServicer created")
+        # To respond we need to create a Output() object (from .proto file)
+        self.response = Output()
+        self.response.top_5 = str(json_result["top_5"]).encode("utf-8")
+        self.response.delta_time = str(json_result["delta_time"]).encode("utf-8")
+        log.debug("flowers({},{})={}".format(self.model, self.img_path, self.response.top_5))
+        return self.response
 
     def dogs(self, request, context):
 
@@ -63,34 +56,12 @@ class DogsServicer(grpc_bt_grpc.DogsServicer):
         image_dims = (3, 224, 224)
         json_result = img_recon.image_recognition("dogs", self.model, map_names, self.img_path, image_dims)
 
-        self.result = Result()
-        self.result.top_5 = str(json_result["top_5"]).encode("utf-8")
-        self.result.delta_time = str(json_result["delta_time"]).encode("utf-8")
-        log.debug("dogs({},{})={}".format(self.model, self.img_path, self.result.top_5))
-        return self.result
-
-
-class CarsServicer(grpc_bt_grpc.CarsServicer):
-    def __init__(self):
-        self.model = "ResNet152"
-        self.img_path = ""
-        self.result = "Fail"
-        log.debug("CarsServicer created")
-
-    def cars(self, request, context):
-
-        self.img_path = request.img_path
-        self.model = request.model
-
-        map_names = cars_map_names
-        image_dims = (3, 224, 224)
-        json_result = img_recon.image_recognition("cars", self.model, map_names, self.img_path, image_dims)
-
-        self.result = Result()
-        self.result.top_5 = str(json_result["top_5"]).encode("utf-8")
-        self.result.delta_time = str(json_result["delta_time"]).encode("utf-8")
-        log.debug("cars({},{})={}".format(self.model, self.img_path, self.result.top_5))
-        return self.result
+        # To respond we need to create a Output() object (from .proto file)
+        self.response = Output()
+        self.response.top_5 = str(json_result["top_5"]).encode("utf-8")
+        self.response.delta_time = str(json_result["delta_time"]).encode("utf-8")
+        log.debug("dogs({},{})={}".format(self.model, self.img_path, self.response.top_5))
+        return self.response
 
 
 # The gRPC serve function.
@@ -102,9 +73,7 @@ class CarsServicer(grpc_bt_grpc.CarsServicer):
 # Add all your classes to the server here.
 def serve(max_workers=10, port=7777):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=max_workers))
-    grpc_bt_grpc.add_FlowersServicer_to_server(FlowersServicer(), server)
-    grpc_bt_grpc.add_DogsServicer_to_server(DogsServicer(), server)
-    grpc_bt_grpc.add_CarsServicer_to_server(CarsServicer(), server)
+    grpc_bt_grpc.add_RecognizerServicer_to_server(RecognizerServicer(), server)
     server.add_insecure_port("[::]:{}".format(port))
     return server
 
