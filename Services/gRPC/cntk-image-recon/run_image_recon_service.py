@@ -2,6 +2,7 @@ import sys
 import subprocess
 import logging
 import pathlib
+import glob
 import argparse
 
 from service import registry
@@ -52,7 +53,8 @@ def start_service(cwd, service_module, run_daemon):
     """
     all_p = []
     if run_daemon:
-        all_p.append(start_snetd(str(cwd)))
+        for idx, config_file in enumerate(glob.glob("./snetd_configs/*.json")):
+            all_p.append(start_snetd(str(cwd), config_file))
     service_name = service_module.split(".")[-1]
     grpc_port = registry[service_name]["grpc"]
     p = subprocess.Popen([sys.executable, "-m", service_module, "--grpc-port", str(grpc_port)], cwd=str(cwd))
@@ -60,11 +62,13 @@ def start_service(cwd, service_module, run_daemon):
     return all_p
 
 
-def start_snetd(cwd):
+def start_snetd(cwd, config_file=None):
     """
     Starts the Daemon "snetd":
     """
     cmd = ["snetd", "serve"]
+    if config_file:
+        cmd = ["snetd", "serve", "--config", config_file]
     return subprocess.Popen(cmd, cwd=str(cwd))
 
 
