@@ -12,6 +12,6 @@ config/
 **/service/*.json
 **/service_spec/*.py
 !/Services/gRPC/s2vt-video-captioning/service/service_spec/__init__.py
-.idea/
+**/etcd/
 !/docs/assets/*.jpg
 !/docs/assets/users_guide/*.jpg
