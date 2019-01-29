@@ -1,5 +1,5 @@
 {
-  "daemon_end_point": "https://54.203.198.53:7054",
+  "daemon_end_point": "http://54.203.198.53:7054",
   "ethereum_json_rpc_endpoint": "https://ropsten.infura.io",
   "ipfs_end_point": "http://ipfs.singularitynet.io:80",
   "registry_address_key": "0x5156fde2ca71da4398f8c76763c41bc9633875e4",
