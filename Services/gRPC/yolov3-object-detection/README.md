@@ -63,7 +63,7 @@ For example (using the Kovan testnet):
 ```
 $ cat snetd.config.json
 {
-   "DAEMON_END_POINT": "54.203.198.53:7007",
+   "DAEMON_END_POINT": "0.0.0.0:7007",
    "ETHEREUM_JSON_RPC_ENDPOINT": "https://kovan.infura.io",
    "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
    "REGISTRY_ADDRESS_KEY": "0xe331bf20044a5b24c1a744abc90c1fd711d2c08d",
@@ -79,6 +79,9 @@ $ cat snetd.config.json
    }
 }
 ```
+
+Note that we set `DAEMON_HOST = 0.0.0.0` because this service will run inside a Docker container.
+
 Install all dependencies:
 ```
 $ pip3 install -r requirements.txt
