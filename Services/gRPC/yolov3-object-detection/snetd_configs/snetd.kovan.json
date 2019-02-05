@@ -1,5 +1,5 @@
 {
-  "daemon_end_point": "54.203.198.53:7007",
+  "daemon_end_point": "0.0.0.0:7007",
   "ethereum_json_rpc_endpoint": "https://kovan.infura.io",
   "ipfs_end_point": "http://ipfs.singularitynet.io:80",
   "registry_address_key": "0xe331bf20044a5b24c1a744abc90c1fd711d2c08d",
