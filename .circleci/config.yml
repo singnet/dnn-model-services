@@ -31,6 +31,7 @@ commands:
             export DOCKER_MOUNT_VOLUMES=<< parameters.docker_mount_volumes >>
             export DOCKER_MOUNT_SRC=<< parameters.docker_mount_src >>
             export DOCKER_MOUNT_DEST=<< parameters.docker_mount_dest >>
+            export PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
             echo            git_user  : ${CIRCLE_PROJECT_USERNAME}
             echo            git_repo  : ${CIRCLE_PROJECT_REPONAME}
             echo            git_branch: ${CIRCLE_BRANCH}
@@ -45,7 +46,7 @@ commands:
             echo "======================================================================================================================"
 
             ssh -o "StrictHostKeyChecking no" ${SSH_USER}@${SSH_HOST} \<< EOF
-              docker stop ${DOCKER_CONTAINER_NAME} || true && docker rename ${DOCKER_CONTAINER_NAME} ${DOCKER_CONTAINER_NAME}_old || true
+              docker stop ${PROD_TAG}${DOCKER_CONTAINER_NAME} || true && docker rename ${PROD_TAG}${DOCKER_CONTAINER_NAME} ${PROD_TAG}${DOCKER_CONTAINER_NAME}_old || true
               docker build \
                 --build-arg git_owner=${CIRCLE_PROJECT_USERNAME} \
                 --build-arg git_repo=${CIRCLE_PROJECT_REPONAME} \
@@ -53,7 +54,7 @@ commands:
                 -t ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME} https://raw.githubusercontent.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}/${SERVICE_FOLDER}/Dockerfile
               docker run \
                 $([ "${DOCKER_NVIDIA}" = "true" ] && echo "--runtime=nvidia" || echo "") \
-                --name ${DOCKER_CONTAINER_NAME} \
+                --name ${PROD_TAG}${DOCKER_CONTAINER_NAME} \
                 $([ "${DOCKER_MOUNT_VOLUMES}" = "true" ] && echo "-v ${DOCKER_MOUNT_SRC}:${DOCKER_MOUNT_DEST}" || echo "") \
                 -di ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME} ${SERVICE_RUN_COMMAND}
             EOF
@@ -62,18 +63,20 @@ commands:
           command: |
             export DOCKER_IMAGE_NAME=<< parameters.docker_image_name >>
             export DOCKER_CONTAINER_NAME=<< parameters.docker_container_name >>
+            export PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
 
             ssh -o "StrictHostKeyChecking no" ${SSH_USER}@${SSH_HOST} \<< EOF
-              docker stop ${DOCKER_CONTAINER_NAME}_old || true && docker rm ${DOCKER_CONTAINER_NAME}_old || true
+              docker stop ${PROD_TAG}${DOCKER_CONTAINER_NAME}_old || true && docker rm ${PROD_TAG}${DOCKER_CONTAINER_NAME}_old || true
             EOF
       - run:
           name: Testing local
           command: |
             export DOCKER_IMAGE_NAME=<< parameters.docker_image_name >>
             export DOCKER_CONTAINER_NAME=<< parameters.docker_container_name >>
+            export PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
 
             ssh -o "StrictHostKeyChecking no" ${SSH_USER}@${SSH_HOST} \<< EOF
-              docker exec -i ${DOCKER_CONTAINER_NAME} ${SERVICE_TEST_COMMAND}
+              docker exec -i ${PROD_TAG}${DOCKER_CONTAINER_NAME} ${SERVICE_TEST_COMMAND}
             EOF
 
   deploy_command:
@@ -117,6 +120,7 @@ commands:
             export DOCKER_MOUNT_DEST=<< parameters.docker_mount_dest >>
             export ETCD_HOST_FOLDER=<< parameters.docker_etcd_host_folder >>
             export ETCD_CONTAINER_FOLDER=<< parameters.docker_etcd_container_folder >>
+            export PROD_TAG=$([ "${DOCKER_DEPLOY}" = "true" ] && echo "PROD_" || echo "")
             echo            git_user  : ${CIRCLE_PROJECT_USERNAME}
             echo            git_repo  : ${CIRCLE_PROJECT_REPONAME}
             echo            git_branch: ${CIRCLE_BRANCH}
@@ -136,7 +140,7 @@ commands:
             if [ "$DOCKER_DEPLOY" = "true" ]; then
             	echo "Status: Deploying..."
             	ssh -o "StrictHostKeyChecking no" ${SSH_USER}@${SSH_HOST} \<<-EOF
-                    docker stop PROD_${DOCKER_CONTAINER_NAME} || true && docker rename PROD_${DOCKER_CONTAINER_NAME} PROD_${DOCKER_CONTAINER_NAME}_old || true
+                    docker stop ${PROD_TAG}${DOCKER_CONTAINER_NAME} || true && docker rename ${PROD_TAG}${DOCKER_CONTAINER_NAME} ${PROD_TAG}${DOCKER_CONTAINER_NAME}_old || true
                     docker build \
                     --build-arg git_owner=${CIRCLE_PROJECT_USERNAME} \
                     --build-arg git_repo=${CIRCLE_PROJECT_REPONAME} \
@@ -144,7 +148,7 @@ commands:
                     -t ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME} https://raw.githubusercontent.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}/${SERVICE_FOLDER}/Dockerfile
                     docker run \
                     $([ "${DOCKER_NVIDIA}" = "true" ] && echo "--runtime=nvidia" || echo "") \
-                    --name PROD_${DOCKER_CONTAINER_NAME} \
+                    --name ${PROD_TAG}${DOCKER_CONTAINER_NAME} \
                     --restart unless-stopped \
                     $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-p ${SNETD_PORT_KOVAN}:${SNETD_PORT_KOVAN}" || echo "") \
                     $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-p ${SNETD_PORT_ROPSTEN}:${SNETD_PORT_ROPSTEN}" || echo "") \
@@ -160,12 +164,13 @@ commands:
           name: Removing old Docker Container
           command: |
             export DOCKER_DEPLOY=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "true" || echo "false")
+            export PROD_TAG=$([ "${DOCKER_DEPLOY}" = "true" ] && echo "PROD_" || echo "")
             if [ "$DOCKER_DEPLOY" = "true" ]; then
             	echo "Status: Deploying..."
             	export DOCKER_IMAGE_NAME=<< parameters.docker_image_name >>
             	export DOCKER_CONTAINER_NAME=<< parameters.docker_container_name >>
             	ssh -o "StrictHostKeyChecking no" ${SSH_USER}@${SSH_HOST} \<<-EOF
-                    docker stop PROD_${DOCKER_CONTAINER_NAME}_old || true && docker rm PROD_${DOCKER_CONTAINER_NAME}_old || true
+                    docker stop ${PROD_TAG}${DOCKER_CONTAINER_NAME}_old || true && docker rm ${PROD_TAG}${DOCKER_CONTAINER_NAME}_old || true
             	EOF
             else
             	echo "Status: Not deploying..."
@@ -175,12 +180,13 @@ commands:
           name: Testing local
           command: |
             export DOCKER_DEPLOY=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "true" || echo "false")
+            export PROD_TAG=$([ "${DOCKER_DEPLOY}" = "true" ] && echo "PROD_" || echo "")
             if [ "$DOCKER_DEPLOY" = "true" ]; then
             	echo "Status: Deploying..."
             	export DOCKER_IMAGE_NAME=<< parameters.docker_image_name >>
             	export DOCKER_CONTAINER_NAME=<< parameters.docker_container_name >>
             	ssh -o "StrictHostKeyChecking no" ${SSH_USER}@${SSH_HOST} \<<-EOF
-                    docker exec -i PROD_${DOCKER_CONTAINER_NAME} ${SERVICE_TEST_COMMAND}
+                    docker exec -i ${PROD_TAG}${DOCKER_CONTAINER_NAME} ${SERVICE_TEST_COMMAND}
             	EOF
             else
             	echo "Status: Not deploying..."
