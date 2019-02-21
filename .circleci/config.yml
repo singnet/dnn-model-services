@@ -135,6 +135,7 @@ commands:
             echo DOCKER_MOUNT_DEST    : ${DOCKER_MOUNT_DEST}
             echo ETCD_HOST_FOLDER     : ${ETCD_HOST_FOLDER}
             echo ETCD_CONTAINER_FOLDER: ${ETCD_CONTAINER_FOLDER}
+            echo CERTS_FOLDER         : ${CERTS_FOLDER}
             echo "======================================================================================================================"
 
             if [ "$DOCKER_DEPLOY" = "true" ]; then
@@ -152,6 +153,7 @@ commands:
                     --restart unless-stopped \
                     $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-p ${SNETD_PORT_KOVAN}:${SNETD_PORT_KOVAN}" || echo "") \
                     $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-p ${SNETD_PORT_ROPSTEN}:${SNETD_PORT_ROPSTEN}" || echo "") \
+                    $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-v ~/${CERTS_FOLDER}:/opt/singnet/.certs" || echo "") \
                     $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-v ~/${ETCD_HOST_FOLDER}:/${ETCD_CONTAINER_FOLDER}" || echo "") \
                     $([ "${DOCKER_MOUNT_VOLUMES}" = "true" ] && echo "-v ${DOCKER_MOUNT_SRC}:${DOCKER_MOUNT_DEST}" || echo "") \
                     -di ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME} ${SERVICE_RUN_COMMAND}
@@ -216,7 +218,8 @@ jobs:
     environment:
       SERVICE_NAME: cntk-image-recon
       SERVICE_FOLDER: Services/gRPC/cntk-image-recon
-      SERVICE_RUN_COMMAND: bash -c "source '/cntk/activate-cntk';git pull;python3 run_image_recon_service.py"
+      CERTS_FOLDER: singnet/.certs
+      SERVICE_RUN_COMMAND: bash -c "source '/cntk/activate-cntk';git pull;python3 run_image_recon_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "source '/cntk/activate-cntk';python3 test_image_recon_service.py auto"
       SNETD_PORT_KOVAN: 7004
       SNETD_PORT_ROPSTEN: 7054
@@ -250,7 +253,8 @@ jobs:
     environment:
       SERVICE_NAME: i3d-video-action-recognition
       SERVICE_FOLDER: Services/gRPC/i3d-video-action-recognition
-      SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_video_action_recon_service.py"
+      CERTS_FOLDER: singnet/.certs
+      SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_video_action_recon_service.py --ssl"
       SERVICE_TEST_COMMAND: python3 test_video_action_recon_service.py auto
       SNETD_PORT_KOVAN: 7005
       SNETD_PORT_ROPSTEN: 7055
@@ -284,7 +288,8 @@ jobs:
     environment:
       SERVICE_NAME: s2vt-video-captioning
       SERVICE_FOLDER: Services/gRPC/s2vt-video-captioning
-      SERVICE_RUN_COMMAND: bash -c "git pull;python run_video_cap_service.py"
+      CERTS_FOLDER: singnet/.certs
+      SERVICE_RUN_COMMAND: bash -c "git pull;python run_video_cap_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 10;python test_video_cap_service.py auto"
       SNETD_PORT_KOVAN: 7006
       SNETD_PORT_ROPSTEN: 7056
@@ -318,7 +323,8 @@ jobs:
     environment:
       SERVICE_NAME: yolov3-object-detection
       SERVICE_FOLDER: Services/gRPC/yolov3-object-detection
-      SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_object_detection_service.py"
+      CERTS_FOLDER: singnet/.certs
+      SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_object_detection_service.py --ssl"
       SERVICE_TEST_COMMAND: python3 test_object_detection_service.py auto
       SNETD_PORT_KOVAN: 7007
       SNETD_PORT_ROPSTEN: 7057
@@ -352,7 +358,8 @@ jobs:
     environment:
       SERVICE_NAME: zeta36-chess-alpha-zero
       SERVICE_FOLDER: Services/gRPC/zeta36-chess-alpha-zero
-      SERVICE_RUN_COMMAND: bash -c "git pull;python3.6 run_alpha_zero_service.py"
+      CERTS_FOLDER: singnet/.certs
+      SERVICE_RUN_COMMAND: bash -c "git pull;python3.6 run_alpha_zero_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 10;python3.6 test_alpha_zero_service.py auto"
       SNETD_PORT_KOVAN: 7008
       SNETD_PORT_ROPSTEN: 7058
@@ -386,6 +393,7 @@ jobs:
     environment:
       SERVICE_NAME: places365-scene-recognition
       SERVICE_FOLDER: Services/gRPC/places365-scene-recognition
+      CERTS_FOLDER: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_scene_recognition_service.py"
       SERVICE_TEST_COMMAND: python3 test_scene_recognition_service.py auto
       SNETD_PORT_KOVAN: 7019
