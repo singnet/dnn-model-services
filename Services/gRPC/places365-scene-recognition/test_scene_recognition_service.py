@@ -1,6 +1,7 @@
 import sys
 import grpc
 
+# import the generated classes
 import service.service_spec.scene_recognition_pb2_grpc as grpc_bt_grpc
 import service.service_spec.scene_recognition_pb2 as grpc_bt_pb2
 

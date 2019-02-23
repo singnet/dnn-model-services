@@ -384,7 +384,7 @@ jobs:
       - build_command:
           docker_nvidia: true
           docker_image_name: places365_scene_recognition
-          docker_container_name: RAMON_PLACES365_SCENE_RECON
+          docker_container_name: PLACES365_SCENE_RECOGNITION
 
   deploy-places365-scene-recognition:
     docker:
@@ -394,15 +394,15 @@ jobs:
       SERVICE_NAME: places365-scene-recognition
       SERVICE_FOLDER: Services/gRPC/places365-scene-recognition
       CERTS_FOLDER: singnet/.certs
-      SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_scene_recognition_service.py"
+      SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_scene_recognition_service.py --ssl"
       SERVICE_TEST_COMMAND: python3 test_scene_recognition_service.py auto
       SNETD_PORT_KOVAN: 7019
-      SNETD_PORT_ROPSTEN: 7069
+      SNETD_PORT_ROPSTEN: 7079
     steps:
       - deploy_command:
           docker_nvidia: true
           docker_image_name: places365_scene_recognition
-          docker_container_name: RAMON_PLACES365_SCENE_RECON
+          docker_container_name: PLACES365_SCENE_RECOGNITION
           docker_etcd_host_folder: singnet/etcd/${SERVICE_NAME}/
           docker_etcd_container_folder: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
 
@@ -450,10 +450,10 @@ workflows:
             branches:
               only: master
 
-#      - build-places365-scene-recognition
-#      - deploy-places365-scene-recognition:
-#          requires:
-#            - build-places365-scene-recognition
-#          filters:
-#            branches:
-#              only: master
+      - build-places365-scene-recognition
+      - deploy-places365-scene-recognition:
+          requires:
+            - build-places365-scene-recognition
+          filters:
+            branches:
+              only: master
