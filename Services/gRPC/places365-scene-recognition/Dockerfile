@@ -14,11 +14,13 @@ RUN mkdir -p ${SINGNET_REPOS}
 # Updating and installing common and project dependencies
 RUN apt-get update && \
     apt-get install -y \
+    wget \
     git \
     libglib2.0-0 \
     libsm6 \
     libxrender1 \
     libxext6 && \
+    pip install cython && \
     pip install --upgrade pip
 
 # Installing SNET Daemon
