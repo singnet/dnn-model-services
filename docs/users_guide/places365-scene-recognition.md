@@ -98,4 +98,3 @@ The following image was found under [Google Images](http://images.google.com) by
     
     `cam`: <img width="100%" src="../assets/users_guide/places365_park_cam.jpg">
     
-    
