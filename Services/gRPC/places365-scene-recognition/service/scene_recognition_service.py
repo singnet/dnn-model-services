@@ -110,7 +110,7 @@ class SceneRecognitionServicer(grpc_bt_grpc.SceneRecognitionServicer):
         log.debug("Output image path (cam_path): {}".format(output_image_path))
         created_images.append(output_image_path)
 
-        result_dict = self.sr_model.reconize(image_path, predict, output_image_path)
+        result_dict = self.sr_model.recognize(image_path, predict, output_image_path)
 
         # Prepare gRPC output message
         self.result = SceneRecognitionResult()

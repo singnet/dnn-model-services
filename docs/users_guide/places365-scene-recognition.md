@@ -50,7 +50,7 @@ _You'll soon also be able to call this service using a user interface through Si
 
 - **Input**
 
-    `input_image`: ![salon_input](../assets/users_guide/places365_salon.jpg)
+    `input_image`: <img width="100%" src="../assets/users_guide/places365_salon.jpg">
     
     `predict`: "io, categories"
 
@@ -64,7 +64,7 @@ _You'll soon also be able to call this service using a user interface through Si
 
 - **Input**
 
-    `input_image`: ![beach_input](../assets/users_guide/places365_beach.png)
+    `input_image`: <img width="100%" src="../assets/users_guide/places365_beach.png">
     
     `predict`: "IO, Attributes, Categories, CAM"
     
@@ -76,7 +76,7 @@ _You'll soon also be able to call this service using a user interface through Si
     
     `attributes`: "open area, natural light, sunny, far-away horizon, warm, man-made, clouds, sand, touring"
     
-    `cam`: ![beach_cam](../assets/users_guide/places365_beach_cam.jpg)
+    `cam`: <img width="100%" src="../assets/users_guide/places365_beach_cam.jpg"> 
 
 #### Example 3
 
@@ -84,7 +84,7 @@ The following image was found under [Google Images](http://images.google.com) by
 
 - **Input**
 
-    `input_image`: ![park_input](../assets/users_guide/places365_park.jpg)
+    `input_image`: <img width="100%" src="../assets/users_guide/places365_park.jpg">
     
     `predict`: ""
 
@@ -96,4 +96,5 @@ The following image was found under [Google Images](http://images.google.com) by
     
     `attributes`: "open area, natural light, sunny, far-away horizon, warm, man-made, clouds, sand, touring"
     
-    `cam`: ![park_cam](../assets/users_guide/places365_park_cam.jpg)
+    `cam`: <img width="100%" src="../assets/users_guide/places365_park_cam.jpg">
+    

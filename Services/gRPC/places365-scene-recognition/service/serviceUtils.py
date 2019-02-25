@@ -158,10 +158,8 @@ def png_to_jpg(png_path, delete_original=True):
     return jpg_path
 
 
-def treat_image_input(input_argument, save_dir, image_type, convert_to_jpg=True):
+def treat_image_input(input_argument, save_dir, image_type):
     """ Gets image save path, downloads links or saves local images to temporary folder, deals with base64 inputs."""
-
-    file_ext = ""
 
     # Gets index (numerical suffix) to save the image (so it multiple calls are allowed)
     file_index_str = get_file_index(save_dir, image_type + "_")
@@ -173,14 +171,18 @@ def treat_image_input(input_argument, save_dir, image_type, convert_to_jpg=True)
     if urlparse(input_argument).scheme in ('http', 'https'):
         log.debug("Treating image input as a url.")
         path = urlparse(input_argument).path
-        file_ext = os.path.splitext(path)[1]
-        if file_ext.lower() not in ['.jpg', '.jpeg', '.png']:
-            log.error('URL image extension not recognized. Should be .jpg, .jpeg or .png. Got {}'.format(file_ext))
-            return False
-        save_path += file_ext
+        file_ext = os.path.splitext(path)[1].lower()
+        if file_ext not in ['.jpg', '.jpeg', '.png']:
+            log.error('URL image extension not recognized. Should be .jpg, .jpeg or .png. '
+                      'Got {}. Trying to treat image as .jpg.'.format(file_ext))
+            save_path += ".jpg"
+        else:
+            save_path += file_ext
         log.debug("Downloading image under the path: {}".format(save_path))
         try:
             download(input_argument, save_path)
+            if file_ext == ".png":
+                save_path = png_to_jpg(save_path, True)
             Image.open(save_path)
         except Exception:
             clear_file(save_path)
@@ -210,10 +212,15 @@ def treat_image_input(input_argument, save_dir, image_type, convert_to_jpg=True)
 
     # If it's not a local file, try to decode from base64 to jpg and save
     else:
+        # TODO : check if always decoding base64 to JPG works.
         log.debug("Treating image input as base64.")
+        # Extracting header if present
+        if input_argument[0:4] == "data":
+            file_ext = '.' + input_argument.split('/')[1].split(';')[0].lower()
+            input_argument = input_argument.split(',')[1]
+        else:
+            file_ext = '.jpg'
+        save_path += file_ext
         base64_to_jpg(input_argument, save_path)
-
-    if file_ext == ".png" and convert_to_jpg:
-        save_path = png_to_jpg(save_path)
 
     return save_path, file_index_str
