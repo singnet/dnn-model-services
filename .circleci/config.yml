@@ -410,45 +410,45 @@ workflows:
   version: 2.1
   build_deploy_dnn_services:
     jobs:
-#      - build-cntk-image-recon
-#      - deploy-cntk-image-recon:
-#          requires:
-#            - build-cntk-image-recon
-#          filters:
-#            branches:
-#              only: master
-#
-#      - build-i3d-video-action-recognition
-#      - deploy-i3d-video-action-recognition:
-#          requires:
-#            - build-i3d-video-action-recognition
-#          filters:
-#            branches:
-#              only: master
-#
-#      - build-s2vt-video-captioning
-#      - deploy-s2vt-video-captioning:
-#          requires:
-#            - build-s2vt-video-captioning
-#          filters:
-#            branches:
-#              only: master
-#
-#      - build-yolov3-object-detection
-#      - deploy-yolov3-object-detection:
-#          requires:
-#            - build-yolov3-object-detection
-#          filters:
-#            branches:
-#              only: master
-#
-#      - build-zeta36-chess-alpha-zero
-#      - deploy-zeta36-chess-alpha-zero:
-#          requires:
-#            - build-zeta36-chess-alpha-zero
-#          filters:
-#            branches:
-#              only: master
+      - build-cntk-image-recon
+      - deploy-cntk-image-recon:
+          requires:
+            - build-cntk-image-recon
+          filters:
+            branches:
+              only: master
+
+      - build-i3d-video-action-recognition
+      - deploy-i3d-video-action-recognition:
+          requires:
+            - build-i3d-video-action-recognition
+          filters:
+            branches:
+              only: master
+
+      - build-s2vt-video-captioning
+      - deploy-s2vt-video-captioning:
+          requires:
+            - build-s2vt-video-captioning
+          filters:
+            branches:
+              only: master
+
+      - build-yolov3-object-detection
+      - deploy-yolov3-object-detection:
+          requires:
+            - build-yolov3-object-detection
+          filters:
+            branches:
+              only: master
+
+      - build-zeta36-chess-alpha-zero
+      - deploy-zeta36-chess-alpha-zero:
+          requires:
+            - build-zeta36-chess-alpha-zero
+          filters:
+            branches:
+              only: master
 
       - build-places365-scene-recognition
       - deploy-places365-scene-recognition:
