@@ -171,8 +171,8 @@ def treat_image_input(input_argument, save_dir, image_type):
     if urlparse(input_argument).scheme in ('http', 'https'):
         log.debug("Treating image input as a url.")
         path = urlparse(input_argument).path
-        file_ext = os.path.splitext(path)[1]
-        if file_ext.lower() not in ['.jpg', '.jpeg', '.png']:
+        file_ext = os.path.splitext(path)[1].lower()
+        if file_ext not in ['.jpg', '.jpeg', '.png']:
             log.error('URL image extension not recognized. Should be .jpg, .jpeg or .png. '
                       'Got {}. Trying to treat image as .jpg.'.format(file_ext))
             save_path += ".jpg"
@@ -181,6 +181,8 @@ def treat_image_input(input_argument, save_dir, image_type):
         log.debug("Downloading image under the path: {}".format(save_path))
         try:
             download(input_argument, save_path)
+            if file_ext == ".png":
+                save_path = png_to_jpg(save_path, True)
             Image.open(save_path)
         except Exception:
             clear_file(save_path)
