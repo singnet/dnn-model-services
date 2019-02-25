@@ -212,7 +212,12 @@ def treat_image_input(input_argument, save_dir, image_type, convert_to_jpg=True)
     else:
         # TODO : check if always decoding base64 to JPG works.
         log.debug("Treating image input as base64.")
-        file_ext = '.jpg'
+        # Extracting header if present
+        if input_argument[0:4] == "data":
+            file_ext = '.' + input_argument.split('/')[1].split(';')[0].lower()
+            input_argument = input_argument.split(',')[1]
+        else
+            file_ext = '.jpg'
         save_path += file_ext
         base64_to_jpg(input_argument, save_path)
 
