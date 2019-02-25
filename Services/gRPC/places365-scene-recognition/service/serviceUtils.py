@@ -77,15 +77,12 @@ def jpg_to_base64(jpgimg, open_file=False):
 def base64_to_jpg(base64img, output_file_path=""):
     """Decodes from base64 to jpg. If output_file_path is defined, saves the decoded image."""
 
-    decoded_jpg = base64.b64decode(base64img)
-    jpg_bytes = io.BytesIO(decoded_jpg)
-    image = Image.open(jpg_bytes)
+    # Get base64 image type
+    decoded_img = base64.b64decode(base64img)
     if output_file_path != "":
-        # If image is PNG, convert to JPG
-        if image.format == 'PNG':
-            image = image.convert('RGB')
-        image.save(output_file_path, format='JPEG')
-    return decoded_jpg
+        with open(output_file_path, "wb") as f:
+            f.write(decoded_img)
+    return decoded_img
 
 
 def clear_path(path):
@@ -210,10 +207,10 @@ def treat_image_input(input_argument, save_dir, image_type, convert_to_jpg=True)
 
     # If it's not a local file, try to decode from base64 to jpg and save
     else:
+        # TODO : check if always decoding base64 to JPG works.
         log.debug("Treating image input as base64.")
+        file_ext = '.jpg'
+        save_path += file_ext
         base64_to_jpg(input_argument, save_path)
-
-    if file_ext == ".png" and convert_to_jpg:
-        save_path = png_to_jpg(save_path)
 
     return save_path, file_index_str
