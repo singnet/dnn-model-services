@@ -45,7 +45,7 @@ Create the `SNET Daemon`'s config JSON file (`snetd.config.json`).
    "DAEMON_END_POINT": "DAEMON_HOST:DAEMON_PORT",
    "ETHEREUM_JSON_RPC_ENDPOINT": "JSON_RPC_ENDPOINT",
    "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
-   "REGISTRY_ADDRESS_KEY": "0xe331bf20044a5b24c1a744abc90c1fd711d2c08d",
+   "REGISTRY_ADDRESS_KEY": "0x5156fde2ca71da4398f8c76763c41bc9633875e4",
    "PASSTHROUGH_ENABLED": true,
    "PASSTHROUGH_ENDPOINT": "http://SERVICE_GRPC_HOST:SERVICE_GRPC_PORT",  
    "ORGANIZATION_ID": "ORGANIZATION_ID",
@@ -59,15 +59,15 @@ Create the `SNET Daemon`'s config JSON file (`snetd.config.json`).
 }
 ```
 
-For example (using the Kovan testnet):
+For example (using the Ropsten testnet):
 
 ```
 $ cat snetd.config.json
 {
-   "DAEMON_END_POINT": "0.0.0.0:7004",
-   "ETHEREUM_JSON_RPC_ENDPOINT": "https://kovan.infura.io",
+   "DAEMON_END_POINT": "0.0.0.0:7054",
+   "ETHEREUM_JSON_RPC_ENDPOINT": "https://ropsten.infura.io",
    "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
-   "REGISTRY_ADDRESS_KEY": "0xe331bf20044a5b24c1a744abc90c1fd711d2c08d",
+   "REGISTRY_ADDRESS_KEY": "0x5156fde2ca71da4398f8c76763c41bc9633875e4",
    "PASSTHROUGH_ENABLED": true,
    "PASSTHROUGH_ENDPOINT": "http://localhost:7003",
    "ORGANIZATION_ID": "snet",
@@ -128,7 +128,7 @@ Through SingularityNET (follow this [link](https://dev.singularitynet.io/tutoria
 Assuming that you have an open channel (`id: 0`) to this service:
 
 ```
-$ snet client call 0 0.00000001 54.203.198.53:7004 flowers '{"model": "ResNet152", "img_path": "https://www.fiftyflowers.com/site_files/FiftyFlowers/Image/Product/Mini-Black-Eye-bloom-350_c7d02e72.jpg"}'
+$ snet client call snet cntk-image-recon flowers '{"model": "ResNet152", "img_path": "https://www.fiftyflowers.com/site_files/FiftyFlowers/Image/Product/Mini-Black-Eye-bloom-350_c7d02e72.jpg"}'
 ...
 Read call params from cmdline...
 
