@@ -454,6 +454,6 @@ workflows:
       - deploy-places365-scene-recognition:
           requires:
             - build-places365-scene-recognition
-#          filters:
-#            branches:
-#              only: master
+          filters:
+            branches:
+              only: master
