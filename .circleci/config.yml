@@ -396,7 +396,7 @@ jobs:
       CERTS_FOLDER: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_scene_recognition_service.py --ssl"
       SERVICE_TEST_COMMAND: python3 test_scene_recognition_service.py auto
-      SNETD_PORT_KOVAN: 7019
+      SNETD_PORT_MAINNET: 7019
       SNETD_PORT_ROPSTEN: 7079
     steps:
       - deploy_command:
