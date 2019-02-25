@@ -89,7 +89,6 @@ class SceneRecognitionModel:
             log.error("Attributes file not found under its path ({}). Please run the model downloading script provided."
                       .format(file_name_w))
             exit(1)
-
         w_attribute = np.load(file_name_w)
 
         return classes, labels_io, labels_attribute, w_attribute
@@ -146,7 +145,7 @@ class SceneRecognitionModel:
             model._modules.get(name).register_forward_hook(self.hook_feature)
         return model
 
-    def reconize(self, input_image_path, predict, cam_path):
+    def recognize(self, input_image_path, predict, cam_path):
         """ Performs scene recognition: predicts scene attributes, category, indoor/outdoor and class activation
         mappings. """
         log.debug("Input image path : {}".format(input_image_path))
