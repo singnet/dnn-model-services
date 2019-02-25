@@ -158,10 +158,8 @@ def png_to_jpg(png_path, delete_original=True):
     return jpg_path
 
 
-def treat_image_input(input_argument, save_dir, image_type, convert_to_jpg=True):
+def treat_image_input(input_argument, save_dir, image_type):
     """ Gets image save path, downloads links or saves local images to temporary folder, deals with base64 inputs."""
-
-    file_ext = ""
 
     # Gets index (numerical suffix) to save the image (so it multiple calls are allowed)
     file_index_str = get_file_index(save_dir, image_type + "_")
@@ -216,7 +214,7 @@ def treat_image_input(input_argument, save_dir, image_type, convert_to_jpg=True)
         if input_argument[0:4] == "data":
             file_ext = '.' + input_argument.split('/')[1].split(';')[0].lower()
             input_argument = input_argument.split(',')[1]
-        else
+        else:
             file_ext = '.jpg'
         save_path += file_ext
         base64_to_jpg(input_argument, save_path)
