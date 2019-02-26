@@ -234,7 +234,7 @@ jobs:
     working_directory: ~/singnet
     environment:
       SERVICE_NAME: cntk-image-recon
-      SERVICE_FOLDER: Services/gRPC/cntk-image-recon
+      SERVICE_FOLDER: services/cntk-image-recon
       SERVICE_RUN_COMMAND: bash -c "source '/cntk/activate-cntk';git pull;python3 run_image_recon_service.py"
       SERVICE_TEST_COMMAND: bash -c "source '/cntk/activate-cntk';python3 test_image_recon_service.py auto"
     steps:
@@ -250,7 +250,7 @@ jobs:
     working_directory: ~/singnet
     environment:
       SERVICE_NAME: cntk-image-recon
-      SERVICE_FOLDER: Services/gRPC/cntk-image-recon
+      SERVICE_FOLDER: services/cntk-image-recon
       CERTS_FOLDER: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "source '/cntk/activate-cntk';git pull;python3 run_image_recon_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "source '/cntk/activate-cntk';python3 test_image_recon_service.py auto"
@@ -271,7 +271,7 @@ jobs:
     working_directory: ~/singnet
     environment:
       SERVICE_NAME: i3d-video-action-recognition
-      SERVICE_FOLDER: Services/gRPC/i3d-video-action-recognition
+      SERVICE_FOLDER: services/i3d-video-action-recognition
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_video_action_recon_service.py"
       SERVICE_TEST_COMMAND: python3 test_video_action_recon_service.py auto
     steps:
@@ -287,7 +287,7 @@ jobs:
     working_directory: ~/singnet
     environment:
       SERVICE_NAME: i3d-video-action-recognition
-      SERVICE_FOLDER: Services/gRPC/i3d-video-action-recognition
+      SERVICE_FOLDER: services/i3d-video-action-recognition
       CERTS_FOLDER: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_video_action_recon_service.py --ssl"
       SERVICE_TEST_COMMAND: python3 test_video_action_recon_service.py auto
@@ -308,7 +308,7 @@ jobs:
     working_directory: ~/singnet
     environment:
       SERVICE_NAME: s2vt-video-captioning
-      SERVICE_FOLDER: Services/gRPC/s2vt-video-captioning
+      SERVICE_FOLDER: services/s2vt-video-captioning
       SERVICE_RUN_COMMAND: bash -c "git pull;python run_video_cap_service.py"
       SERVICE_TEST_COMMAND: bash -c "sleep 10;python test_video_cap_service.py auto"
     steps:
@@ -324,7 +324,7 @@ jobs:
     working_directory: ~/singnet
     environment:
       SERVICE_NAME: s2vt-video-captioning
-      SERVICE_FOLDER: Services/gRPC/s2vt-video-captioning
+      SERVICE_FOLDER: services/s2vt-video-captioning
       CERTS_FOLDER: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "git pull;python run_video_cap_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 10;python test_video_cap_service.py auto"
@@ -345,7 +345,7 @@ jobs:
     working_directory: ~/singnet
     environment:
       SERVICE_NAME: yolov3-object-detection
-      SERVICE_FOLDER: Services/gRPC/yolov3-object-detection
+      SERVICE_FOLDER: services/yolov3-object-detection
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_object_detection_service.py"
       SERVICE_TEST_COMMAND: python3 test_object_detection_service.py auto
     steps:
@@ -361,7 +361,7 @@ jobs:
     working_directory: ~/singnet
     environment:
       SERVICE_NAME: yolov3-object-detection
-      SERVICE_FOLDER: Services/gRPC/yolov3-object-detection
+      SERVICE_FOLDER: services/yolov3-object-detection
       CERTS_FOLDER: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_object_detection_service.py --ssl"
       SERVICE_TEST_COMMAND: python3 test_object_detection_service.py auto
@@ -382,7 +382,7 @@ jobs:
     working_directory: ~/singnet
     environment:
       SERVICE_NAME: zeta36-chess-alpha-zero
-      SERVICE_FOLDER: Services/gRPC/zeta36-chess-alpha-zero
+      SERVICE_FOLDER: services/zeta36-chess-alpha-zero
       SERVICE_RUN_COMMAND: bash -c "git pull;python3.6 run_alpha_zero_service.py"
       SERVICE_TEST_COMMAND: bash -c "sleep 10;python3.6 test_alpha_zero_service.py auto"
     steps:
@@ -398,7 +398,7 @@ jobs:
     working_directory: ~/singnet
     environment:
       SERVICE_NAME: zeta36-chess-alpha-zero
-      SERVICE_FOLDER: Services/gRPC/zeta36-chess-alpha-zero
+      SERVICE_FOLDER: services/zeta36-chess-alpha-zero
       CERTS_FOLDER: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "git pull;python3.6 run_alpha_zero_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 10;python3.6 test_alpha_zero_service.py auto"
@@ -419,7 +419,7 @@ jobs:
     working_directory: ~/singnet
     environment:
       SERVICE_NAME: places365-scene-recognition
-      SERVICE_FOLDER: Services/gRPC/places365-scene-recognition
+      SERVICE_FOLDER: services/places365-scene-recognition
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_scene_recognition_service.py"
       SERVICE_TEST_COMMAND: python3 test_scene_recognition_service.py auto
     steps:
@@ -434,7 +434,7 @@ jobs:
     working_directory: ~/singnet
     environment:
       SERVICE_NAME: places365-scene-recognition
-      SERVICE_FOLDER: Services/gRPC/places365-scene-recognition
+      SERVICE_FOLDER: services/places365-scene-recognition
       CERTS_FOLDER: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_scene_recognition_service.py --ssl"
       SERVICE_TEST_COMMAND: python3 test_scene_recognition_service.py auto
