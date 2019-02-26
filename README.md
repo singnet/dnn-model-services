@@ -17,8 +17,8 @@ A collection of services using third party DNN models.
 For more details on how to publish and test a service, select it from the list below:
 
 ### Images:
-- [cntk-image-recon](Services/gRPC/cntk-image-recon) ([User's Guide](docs/users_guide/cntk-image-recon.md)) - This service uses ResNet152 model, trained to recognize different types of flowers and dog breeds. [[Reference](https://cntk.ai/pythondocs/CNTK_301_Image_Recognition_with_Deep_Transfer_Learning.html)]
-- [yolov3-object-detection](Services/gRPC/yolov3-object-detection) ([User's Guide](docs/users_guide/yolov3-object-detection.md)) - This service uses YOLOv3 model to detect objects on images. [[Reference](https://pjreddie.com/darknet/yolo/)]
+- [cntk-image-recon](services/cntk-image-recon) ([User's Guide](docs/users_guide/cntk-image-recon.md)) - This service uses ResNet152 model, trained to recognize different types of flowers and dog breeds. [[Reference](https://cntk.ai/pythondocs/CNTK_301_Image_Recognition_with_Deep_Transfer_Learning.html)]
+- [yolov3-object-detection](services/yolov3-object-detection) ([User's Guide](docs/users_guide/yolov3-object-detection.md)) - This service uses YOLOv3 model to detect objects on images. [[Reference](https://pjreddie.com/darknet/yolo/)]
     ```
       @article{yolov3,
           title={YOLOv3: An Incremental Improvement},
@@ -27,10 +27,7 @@ For more details on how to publish and test a service, select it from the list b
           year={2018}
       }
     ```
-- [meta-service-example](Services/gRPC/meta-services/object-detection-image-recon) ([User's Guide](docs/users_guide/object-detection-image-recon.md)) - This service uses two other services.
-    First it calls `yolov3-object-detection` and gets all detected objects from an image.
-    Then it calls `cntk-image-recon` for each object and returns its classification.
-- [places365-scene-recognition](Services/gRPC/places365-scene-recognition) ([User's Guide](docs/users_guide/places365-scene-recognition.md)) - This service uses various convolutional neural networks trained on Places365 to perform scene recognition. [[Reference](https://github.com/CSAILVision/places365)]
+- [places365-scene-recognition](services/places365-scene-recognition) ([User's Guide](docs/users_guide/places365-scene-recognition.md)) - This service uses various convolutional neural networks trained on Places365 to perform scene recognition. [[Reference](https://github.com/CSAILVision/places365)]
     ```
       @article{zhou2017places,
            title={Places: A 10 million Image Database for Scene Recognition},
@@ -42,8 +39,8 @@ For more details on how to publish and test a service, select it from the list b
     ```
 
 ### Videos:
-- [i3d-video-action-recognition](Services/gRPC/i3d-video-action-recognition) ([User's Guide](docs/users_guide/i3d-video-action-recognition.md)) - This service uses I3D model to recognize actions on videos (with 400 or 600 labels). [[Reference](https://github.com/deepmind/kinetics-i3d)]
-- [s2vt-video-captioning](Services/gRPC/s2vt-video-captioning) ([User's Guide](docs/users_guide/s2vt-video-captioning.md)) - This service uses "Sequence to Sequence - Video to Text" to describe video content with natural language text. [[Reference](https://vsubhashini.github.io/s2vt.html)]
+- [i3d-video-action-recognition](services/i3d-video-action-recognition) ([User's Guide](docs/users_guide/i3d-video-action-recognition.md)) - This service uses I3D model to recognize actions on videos (with 400 or 600 labels). [[Reference](https://github.com/deepmind/kinetics-i3d)]
+- [s2vt-video-captioning](services/s2vt-video-captioning) ([User's Guide](docs/users_guide/s2vt-video-captioning.md)) - This service uses "Sequence to Sequence - Video to Text" to describe video content with natural language text. [[Reference](https://vsubhashini.github.io/s2vt.html)]
     ```
       @inproceedings{venugopalan15iccv,
           title = {Sequence to Sequence -- Video to Text},
@@ -55,7 +52,7 @@ For more details on how to publish and test a service, select it from the list b
     ```
 
 ### Game AI:
-- [zeta36-chess-alpha-zero](Services/gRPC/zeta36-chess-alpha-zero) ([User's Guide](docs/users_guide/zeta36-chess-alpha-zero.md)) - This service uses [AlphaGo Zero methods](https://deepmind.com/blog/alphago-zero-learning-scratch/)
+- [zeta36-chess-alpha-zero](services/zeta36-chess-alpha-zero) ([User's Guide](docs/users_guide/zeta36-chess-alpha-zero.md)) - This service uses [AlphaGo Zero methods](https://deepmind.com/blog/alphago-zero-learning-scratch/)
  to learn and play chess. [[Reference](https://github.com/Zeta36/chess-alpha-zero)]
 
 ## Contributing and Reporting Issues
