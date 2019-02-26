@@ -20,7 +20,20 @@ commands:
       docker_mount_dest:
         type: string
         default: ""
+      docker_snetd_version:
+        type: string
+        default: "v0.1.7"
     steps:
+      - run:
+          name: Removing old Docker Container (Previous Builds)
+          command: |
+            export DOCKER_IMAGE_NAME=<< parameters.docker_image_name >>
+            export DOCKER_CONTAINER_NAME=<< parameters.docker_container_name >>
+            export PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
+
+            ssh -o "StrictHostKeyChecking no" ${SSH_USER}@${SSH_HOST} \<< EOF
+              docker stop ${PROD_TAG}${DOCKER_CONTAINER_NAME}_old || true && docker rm ${PROD_TAG}${DOCKER_CONTAINER_NAME}_old || true
+            EOF
       - run:
           name: Building
           command: |
@@ -31,6 +44,7 @@ commands:
             export DOCKER_MOUNT_VOLUMES=<< parameters.docker_mount_volumes >>
             export DOCKER_MOUNT_SRC=<< parameters.docker_mount_src >>
             export DOCKER_MOUNT_DEST=<< parameters.docker_mount_dest >>
+            export SNETD_VERSION=<< parameters.docker_snetd_version >>
             export PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
             echo            git_user  : ${CIRCLE_PROJECT_USERNAME}
             echo            git_repo  : ${CIRCLE_PROJECT_REPONAME}
@@ -43,6 +57,7 @@ commands:
             echo DOCKER_MOUNT_VOLUMES : ${DOCKER_MOUNT_VOLUMES}
             echo DOCKER_MOUNT_SRC     : ${DOCKER_MOUNT_SRC}
             echo DOCKER_MOUNT_DEST    : ${DOCKER_MOUNT_DEST}
+            echo SNETD_VERSION        : ${SNETD_VERSION}
             echo "======================================================================================================================"
 
             ssh -o "StrictHostKeyChecking no" ${SSH_USER}@${SSH_HOST} \<< EOF
@@ -51,6 +66,7 @@ commands:
                 --build-arg git_owner=${CIRCLE_PROJECT_USERNAME} \
                 --build-arg git_repo=${CIRCLE_PROJECT_REPONAME} \
                 --build-arg git_branch=${CIRCLE_BRANCH} \
+                --build-arg snetd_version=${SNETD_VERSION} \
                 -t ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME} https://raw.githubusercontent.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}/${SERVICE_FOLDER}/Dockerfile
               docker run \
                 $([ "${DOCKER_NVIDIA}" = "true" ] && echo "--runtime=nvidia" || echo "") \
@@ -108,6 +124,16 @@ commands:
         default: ""
     steps:
       - run:
+          name: Removing old Docker Container (Previous Builds)
+          command: |
+            export DOCKER_IMAGE_NAME=<< parameters.docker_image_name >>
+            export DOCKER_CONTAINER_NAME=<< parameters.docker_container_name >>
+            export PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
+
+            ssh -o "StrictHostKeyChecking no" ${SSH_USER}@${SSH_HOST} \<< EOF
+              docker stop ${PROD_TAG}${DOCKER_CONTAINER_NAME}_old || true && docker rm ${PROD_TAG}${DOCKER_CONTAINER_NAME}_old || true
+            EOF
+      - run:
           name: Deploying
           command: |
             echo "=================================================== Deploy Configs ==================================================="
@@ -120,6 +146,7 @@ commands:
             export DOCKER_MOUNT_DEST=<< parameters.docker_mount_dest >>
             export ETCD_HOST_FOLDER=<< parameters.docker_etcd_host_folder >>
             export ETCD_CONTAINER_FOLDER=<< parameters.docker_etcd_container_folder >>
+            export SNETD_VERSION=<< parameters.docker_snetd_version >>
             export PROD_TAG=$([ "${DOCKER_DEPLOY}" = "true" ] && echo "PROD_" || echo "")
             echo            git_user  : ${CIRCLE_PROJECT_USERNAME}
             echo            git_repo  : ${CIRCLE_PROJECT_REPONAME}
@@ -135,6 +162,7 @@ commands:
             echo DOCKER_MOUNT_DEST    : ${DOCKER_MOUNT_DEST}
             echo ETCD_HOST_FOLDER     : ${ETCD_HOST_FOLDER}
             echo ETCD_CONTAINER_FOLDER: ${ETCD_CONTAINER_FOLDER}
+            echo SNETD_VERSION        : ${SNETD_VERSION}
             echo CERTS_FOLDER         : ${CERTS_FOLDER}
             echo "======================================================================================================================"
 
@@ -146,6 +174,7 @@ commands:
                     --build-arg git_owner=${CIRCLE_PROJECT_USERNAME} \
                     --build-arg git_repo=${CIRCLE_PROJECT_REPONAME} \
                     --build-arg git_branch=${CIRCLE_BRANCH} \
+                    --build-arg snetd_version=${SNETD_VERSION} \
                     -t ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME} https://raw.githubusercontent.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}/${SERVICE_FOLDER}/Dockerfile
                     docker run \
                     $([ "${DOCKER_NVIDIA}" = "true" ] && echo "--runtime=nvidia" || echo "") \
@@ -210,6 +239,7 @@ jobs:
           docker_nvidia: true
           docker_image_name: cntk_image_recognition
           docker_container_name: CNTK_IMAGE_RECON
+          docker_snetd_version: "v0.1.7"
 
   deploy-cntk-image-recon:
     docker:
@@ -230,6 +260,7 @@ jobs:
           docker_container_name: CNTK_IMAGE_RECON
           docker_etcd_host_folder: singnet/etcd/${SERVICE_NAME}/
           docker_etcd_container_folder: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
+          docker_snetd_version: "v0.1.7"
 
   build-i3d-video-action-recognition:
     docker:
@@ -245,6 +276,7 @@ jobs:
           docker_nvidia: true
           docker_image_name: i3d_video_action_recognition
           docker_container_name: I3D_VIDEO_ACTION_RECON
+          docker_snetd_version: "v0.1.7"
 
   deploy-i3d-video-action-recognition:
     docker:
@@ -265,6 +297,7 @@ jobs:
           docker_container_name: I3D_VIDEO_ACTION_RECON
           docker_etcd_host_folder: singnet/etcd/${SERVICE_NAME}/
           docker_etcd_container_folder: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
+          docker_snetd_version: "v0.1.7"
 
   build-s2vt-video-captioning:
     docker:
@@ -280,6 +313,7 @@ jobs:
           docker_nvidia: true
           docker_image_name: s2vt_video_captioning
           docker_container_name: S2VT_VIDEO_CAPTIONING
+          docker_snetd_version: "v0.1.7"
 
   deploy-s2vt-video-captioning:
     docker:
@@ -300,6 +334,7 @@ jobs:
           docker_container_name: S2VT_VIDEO_CAPTIONING
           docker_etcd_host_folder: singnet/etcd/${SERVICE_NAME}/
           docker_etcd_container_folder: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
+          docker_snetd_version: "v0.1.7"
 
   build-yolov3-object-detection:
     docker:
@@ -315,6 +350,7 @@ jobs:
           docker_nvidia: true
           docker_image_name: yolov3_object_detection
           docker_container_name: YOLOv3_OBJECT_DETECTION
+          docker_snetd_version: "v0.1.7"
 
   deploy-yolov3-object-detection:
     docker:
@@ -335,6 +371,7 @@ jobs:
           docker_container_name: YOLOv3_OBJECT_DETECTION
           docker_etcd_host_folder: singnet/etcd/${SERVICE_NAME}/
           docker_etcd_container_folder: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
+          docker_snetd_version: "v0.1.7"
 
   build-zeta36-chess-alpha-zero:
     docker:
@@ -350,6 +387,7 @@ jobs:
           docker_nvidia: true
           docker_image_name: zeta36_chess_alpha_zero
           docker_container_name: CHESS_ALPHA_ZERO
+          docker_snetd_version: "v0.1.7"
 
   deploy-zeta36-chess-alpha-zero:
     docker:
@@ -370,6 +408,7 @@ jobs:
           docker_container_name: CHESS_ALPHA_ZERO
           docker_etcd_host_folder: singnet/etcd/${SERVICE_NAME}/
           docker_etcd_container_folder: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
+          docker_snetd_version: "v0.1.7"
 
   build-places365-scene-recognition:
     docker:
