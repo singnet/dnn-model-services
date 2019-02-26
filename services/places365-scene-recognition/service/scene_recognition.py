@@ -21,7 +21,7 @@ logging.basicConfig(
 )
 log = logging.getLogger("places365_scene_recognition_service")
 
-models_root = os.path.join("..", "..", "..", "utils", "Resources", "Models")
+models_root = os.path.join("..", "..", "utils", "Resources", "Models")
 
 
 class SceneRecognitionModel:

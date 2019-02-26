@@ -15,7 +15,7 @@ import traceback
 logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s")
 log = logging.getLogger("cntk_image_recon")
 
-resources_root = os.path.join("..", "..", "..", "utils", "Resources")
+resources_root = os.path.join("..", "..", "utils", "Resources")
 
 
 # Evaluates a single image using the re-trained model
