@@ -122,6 +122,9 @@ commands:
       docker_mount_dest:
         type: string
         default: ""
+      docker_snetd_version:
+        type: string
+        default: "v0.1.7"
     steps:
       - run:
           name: Removing old Docker Container (Previous Builds)
