@@ -1,8 +1,9 @@
 FROM bvlc/caffe:gpu
 
-ARG git_owner
-ARG git_repo
-ARG git_branch
+ARG git_owner="singnet"
+ARG git_repo="dnn-model-services"
+ARG git_branch="master"
+ARG snetd_version="v0.1.7"
 
 ENV SINGNET_REPOS=/opt/singnet
 ENV DNN_REPO_NAME=${git_repo}
@@ -24,9 +25,9 @@ RUN apt-get install -y libsm6 libxext6 libxrender-dev
 RUN cd ${SINGNET_REPOS} && \
     mkdir snet-daemon && \
     cd snet-daemon && \
-    wget https://github.com/singnet/snet-daemon/releases/download/0.1.7/snet-daemon-v0.1.7-linux-amd64.tar && \
-    tar zxvf snet-daemon-v0.1.7-linux-amd64.tar && \
-    mv snet-daemon-v0.1.7-linux-amd64/snetd /usr/bin/snetd
+    wget https://github.com/singnet/snet-daemon/releases/download/${snetd_version}/snet-daemon-${snetd_version}-linux-amd64.tar.gz && \
+    tar -xvf snet-daemon-${snetd_version}-linux-amd64.tar.gz && \
+    mv snet-daemon-${snetd_version}-linux-amd64/snetd /usr/bin/snetd
 
 RUN cd ${SINGNET_REPOS} && \
     git clone -b ${git_branch} https://github.com/${git_owner}/${DNN_REPO_NAME}.git && \
