@@ -7,7 +7,7 @@ import service.service_spec.video_action_recon_pb2 as grpc_bt_pb2
 
 from service import registry
 
-TEST_URL = "http://crcv.ucf.edu/THUMOS14/UCF101/UCF101/v_CricketShot_g04_c02.avi"
+TEST_URL = "http://54.203.198.53:7000/Resources/v_PlayingGuitar_g03_c01.avi"
 
 if __name__ == "__main__":
 
