@@ -411,7 +411,7 @@ jobs:
       SERVICE_NAME: places365-scene-recognition
       SERVICE_FOLDER: services/places365-scene-recognition
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_scene_recognition_service.py"
-      SERVICE_TEST_COMMAND: python3 test_scene_recognition_service.py auto
+      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_scene_recognition_service.py auto"
     steps:
       - build_command:
           docker_nvidia: true
@@ -427,7 +427,7 @@ jobs:
       SERVICE_FOLDER: services/places365-scene-recognition
       CERTS_FOLDER: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_scene_recognition_service.py --ssl"
-      SERVICE_TEST_COMMAND: python3 test_scene_recognition_service.py auto
+      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_scene_recognition_service.py auto"
       SNETD_PORT_MAINNET: 7019
       SNETD_PORT_ROPSTEN: 7079
     steps:
