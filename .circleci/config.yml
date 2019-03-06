@@ -271,7 +271,7 @@ jobs:
       SERVICE_NAME: i3d-video-action-recognition
       SERVICE_FOLDER: services/i3d-video-action-recognition
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_video_action_recon_service.py"
-      SERVICE_TEST_COMMAND: python3 test_video_action_recon_service.py auto
+      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_video_action_recon_service.py auto"
     steps:
       - build_command:
           docker_nvidia: true
@@ -287,7 +287,7 @@ jobs:
       SERVICE_FOLDER: services/i3d-video-action-recognition
       CERTS_FOLDER: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_video_action_recon_service.py --ssl"
-      SERVICE_TEST_COMMAND: python3 test_video_action_recon_service.py auto
+      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_video_action_recon_service.py auto"
       SNETD_PORT_MAINNET: 7005
       SNETD_PORT_ROPSTEN: 7055
     steps:
@@ -341,7 +341,7 @@ jobs:
       SERVICE_NAME: yolov3-object-detection
       SERVICE_FOLDER: services/yolov3-object-detection
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_object_detection_service.py"
-      SERVICE_TEST_COMMAND: python3 test_object_detection_service.py auto
+      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_object_detection_service.py auto"
     steps:
       - build_command:
           docker_nvidia: true
@@ -357,7 +357,7 @@ jobs:
       SERVICE_FOLDER: services/yolov3-object-detection
       CERTS_FOLDER: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_object_detection_service.py --ssl"
-      SERVICE_TEST_COMMAND: python3 test_object_detection_service.py auto
+      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_object_detection_service.py auto"
       SNETD_PORT_MAINNET: 7007
       SNETD_PORT_ROPSTEN: 7057
     steps:
