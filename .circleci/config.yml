@@ -22,7 +22,7 @@ commands:
         default: ""
       docker_snetd_version:
         type: string
-        default: "v0.1.7"
+        default: "v0.1.8"
     steps:
       - run:
           name: Removing old Docker Container (Previous Builds)
@@ -124,7 +124,7 @@ commands:
         default: ""
       docker_snetd_version:
         type: string
-        default: "v0.1.7"
+        default: "v0.1.8"
     steps:
       - run:
           name: Removing old Docker Container (Previous Builds)
@@ -242,7 +242,6 @@ jobs:
           docker_nvidia: true
           docker_image_name: cntk_image_recognition
           docker_container_name: CNTK_IMAGE_RECON
-          docker_snetd_version: "v0.1.7"
 
   deploy-cntk-image-recon:
     docker:
@@ -263,7 +262,6 @@ jobs:
           docker_container_name: CNTK_IMAGE_RECON
           docker_etcd_host_folder: singnet/etcd/${SERVICE_NAME}/
           docker_etcd_container_folder: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
-          docker_snetd_version: "v0.1.7"
 
   build-i3d-video-action-recognition:
     docker:
@@ -273,13 +271,12 @@ jobs:
       SERVICE_NAME: i3d-video-action-recognition
       SERVICE_FOLDER: services/i3d-video-action-recognition
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_video_action_recon_service.py"
-      SERVICE_TEST_COMMAND: python3 test_video_action_recon_service.py auto
+      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_video_action_recon_service.py auto"
     steps:
       - build_command:
           docker_nvidia: true
           docker_image_name: i3d_video_action_recognition
           docker_container_name: I3D_VIDEO_ACTION_RECON
-          docker_snetd_version: "v0.1.7"
 
   deploy-i3d-video-action-recognition:
     docker:
@@ -290,7 +287,7 @@ jobs:
       SERVICE_FOLDER: services/i3d-video-action-recognition
       CERTS_FOLDER: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_video_action_recon_service.py --ssl"
-      SERVICE_TEST_COMMAND: python3 test_video_action_recon_service.py auto
+      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_video_action_recon_service.py auto"
       SNETD_PORT_MAINNET: 7005
       SNETD_PORT_ROPSTEN: 7055
     steps:
@@ -300,7 +297,6 @@ jobs:
           docker_container_name: I3D_VIDEO_ACTION_RECON
           docker_etcd_host_folder: singnet/etcd/${SERVICE_NAME}/
           docker_etcd_container_folder: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
-          docker_snetd_version: "v0.1.7"
 
   build-s2vt-video-captioning:
     docker:
@@ -316,7 +312,6 @@ jobs:
           docker_nvidia: true
           docker_image_name: s2vt_video_captioning
           docker_container_name: S2VT_VIDEO_CAPTIONING
-          docker_snetd_version: "v0.1.7"
 
   deploy-s2vt-video-captioning:
     docker:
@@ -337,7 +332,6 @@ jobs:
           docker_container_name: S2VT_VIDEO_CAPTIONING
           docker_etcd_host_folder: singnet/etcd/${SERVICE_NAME}/
           docker_etcd_container_folder: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
-          docker_snetd_version: "v0.1.7"
 
   build-yolov3-object-detection:
     docker:
@@ -347,13 +341,12 @@ jobs:
       SERVICE_NAME: yolov3-object-detection
       SERVICE_FOLDER: services/yolov3-object-detection
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_object_detection_service.py"
-      SERVICE_TEST_COMMAND: python3 test_object_detection_service.py auto
+      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_object_detection_service.py auto"
     steps:
       - build_command:
           docker_nvidia: true
           docker_image_name: yolov3_object_detection
           docker_container_name: YOLOv3_OBJECT_DETECTION
-          docker_snetd_version: "v0.1.7"
 
   deploy-yolov3-object-detection:
     docker:
@@ -364,7 +357,7 @@ jobs:
       SERVICE_FOLDER: services/yolov3-object-detection
       CERTS_FOLDER: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_object_detection_service.py --ssl"
-      SERVICE_TEST_COMMAND: python3 test_object_detection_service.py auto
+      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_object_detection_service.py auto"
       SNETD_PORT_MAINNET: 7007
       SNETD_PORT_ROPSTEN: 7057
     steps:
@@ -374,7 +367,6 @@ jobs:
           docker_container_name: YOLOv3_OBJECT_DETECTION
           docker_etcd_host_folder: singnet/etcd/${SERVICE_NAME}/
           docker_etcd_container_folder: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
-          docker_snetd_version: "v0.1.7"
 
   build-zeta36-chess-alpha-zero:
     docker:
@@ -390,7 +382,6 @@ jobs:
           docker_nvidia: true
           docker_image_name: zeta36_chess_alpha_zero
           docker_container_name: CHESS_ALPHA_ZERO
-          docker_snetd_version: "v0.1.7"
 
   deploy-zeta36-chess-alpha-zero:
     docker:
@@ -411,7 +402,6 @@ jobs:
           docker_container_name: CHESS_ALPHA_ZERO
           docker_etcd_host_folder: singnet/etcd/${SERVICE_NAME}/
           docker_etcd_container_folder: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
-          docker_snetd_version: "v0.1.7"
 
   build-places365-scene-recognition:
     docker:
@@ -421,7 +411,7 @@ jobs:
       SERVICE_NAME: places365-scene-recognition
       SERVICE_FOLDER: services/places365-scene-recognition
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_scene_recognition_service.py"
-      SERVICE_TEST_COMMAND: python3 test_scene_recognition_service.py auto
+      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_scene_recognition_service.py auto"
     steps:
       - build_command:
           docker_nvidia: true
@@ -437,7 +427,7 @@ jobs:
       SERVICE_FOLDER: services/places365-scene-recognition
       CERTS_FOLDER: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_scene_recognition_service.py --ssl"
-      SERVICE_TEST_COMMAND: python3 test_scene_recognition_service.py auto
+      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_scene_recognition_service.py auto"
       SNETD_PORT_MAINNET: 7019
       SNETD_PORT_ROPSTEN: 7079
     steps:

@@ -3,7 +3,7 @@ FROM microsoft/cntk:latest
 ARG git_owner="singnet"
 ARG git_repo="dnn-model-services"
 ARG git_branch="master"
-ARG snetd_version="v0.1.7"
+ARG snetd_version
 
 ENV SINGNET_REPOS=/opt/singnet
 ENV DNN_REPO_NAME=${git_repo}
