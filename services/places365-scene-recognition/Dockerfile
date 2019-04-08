@@ -3,7 +3,6 @@ FROM pytorch/pytorch:0.4.1-cuda9-cudnn7-runtime
 ARG git_owner="singnet"
 ARG git_repo="dnn-model-services"
 ARG git_branch="master"
-ARG snetd_version
 
 ENV SINGNET_REPOS=/opt/singnet
 ENV DNN_REPO_NAME=${git_repo}
@@ -25,12 +24,11 @@ RUN apt-get update && \
     pip install --upgrade pip
 
 # Installing SNET Daemon
-RUN cd ${SINGNET_REPOS} && \
-    mkdir snet-daemon && \
-    cd snet-daemon && \
-    wget https://github.com/singnet/snet-daemon/releases/download/${snetd_version}/snet-daemon-${snetd_version}-linux-amd64.tar.gz && \
-    tar -xvf snet-daemon-${snetd_version}-linux-amd64.tar.gz && \
-    mv snet-daemon-${snetd_version}-linux-amd64/snetd /usr/bin/snetd
+RUN SNETD_VERSION=`curl -s https://api.github.com/repos/singnet/snet-daemon/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")'` && \
+    cd /tmp && \
+    wget https://github.com/singnet/snet-daemon/releases/download/${SNETD_VERSION}/snet-daemon-${SNETD_VERSION}-linux-amd64.tar.gz && \
+    tar -xvf snet-daemon-${SNETD_VERSION}-linux-amd64.tar.gz && \
+    mv snet-daemon-${SNETD_VERSION}-linux-amd64/snetd /usr/bin/snetd
 
 # Cloning service repository, downloading models
 RUN cd ${SINGNET_REPOS} && \
