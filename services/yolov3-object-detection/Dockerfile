@@ -15,7 +15,8 @@ RUN apt-get update && \
     apt-get install -y \
     git \
     wget \
-    nano
+    nano \
+    curl
 
 # OpenCV dependencies
 RUN apt-get install -y libsm6 libxext6 libxrender-dev

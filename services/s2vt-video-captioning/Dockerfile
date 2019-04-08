@@ -16,7 +16,8 @@ RUN apt-get update && \
     git \
     wget \
     nano \
-    python-tk
+    python-tk \
+    curl
 
 # Caffe dependencies
 RUN apt-get install -y libsm6 libxext6 libxrender-dev

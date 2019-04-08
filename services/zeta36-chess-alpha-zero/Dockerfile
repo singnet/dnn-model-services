@@ -17,7 +17,8 @@ RUN apt-get update && \
     libgomp1 \
     git \
     wget \
-    nano
+    nano \
+    curl
 
 RUN add-apt-repository ppa:deadsnakes/ppa && \
     apt-get update && \

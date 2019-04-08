@@ -15,6 +15,7 @@ RUN mkdir -p ${SINGNET_REPOS}
 RUN apt-get update && \
     apt-get install -y \
     wget \
+    curl \
     git \
     libglib2.0-0 \
     libsm6 \

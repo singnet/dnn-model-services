@@ -15,7 +15,8 @@ RUN apt-get update && \
     apt-get install -y \
     git \
     wget \
-    nano
+    nano \
+    curl
 
 RUN SNETD_VERSION=`curl -s https://api.github.com/repos/singnet/snet-daemon/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")'` && \
     cd /tmp && \
