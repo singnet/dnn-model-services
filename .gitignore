@@ -16,3 +16,4 @@ config/
 **/etcd/
 !/docs/assets/*.jpg
 !/docs/assets/users_guide/*.jpg
+!/docs/assets/users_guide/*.png

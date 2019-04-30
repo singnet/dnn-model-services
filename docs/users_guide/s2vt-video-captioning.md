@@ -38,10 +38,10 @@ You can use this service from [SingularityNET DApp](http://beta.singularitynet.i
 
 You can also call the service from SingularityNET CLI (`snet`).
 
-Assuming that you have an open channel (`id: 0`) to this service:
+Assuming that you have an open channel to this service:
 
 ```
-$ snet client call 0 0.00000001 54.203.198.53:7007 video_cap '{"url": "http://crcv.ucf.edu/THUMOS14/UCF101/UCF101/v_PlayingGuitar_g05_c01.avi", "start_time_sec": "0", "stop_time_sec": "0"}'
+$ snet client call snet s2vt-video-captioning video_cap '{"url": "http://crcv.ucf.edu/THUMOS14/UCF101/UCF101/v_PlayingGuitar_g05_c01.avi", "start_time_sec": "0", "stop_time_sec": "0"}'
 ...
 Read call params from cmdline...
 

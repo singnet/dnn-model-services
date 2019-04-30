@@ -1,7 +1,7 @@
 [issue-template]: ../../../../../issues/new?template=BUG_REPORT.md
 [feature-template]: ../../../../../issues/new?template=FEATURE_REQUEST.md
 
-![singnetlogo](../../../docs/assets/singnet-logo.jpg?raw=true 'SingularityNET')
+![singnetlogo](../../docs/assets/singnet-logo.jpg 'SingularityNET')
 
 # Sequence to Sequence - Video to Text
 
@@ -14,7 +14,7 @@ It is part of our third party [DNN Model Services](https://github.com/singnet/dn
 ### Requirements
 
 - [Python 2.7](https://www.python.org/downloads/release/python-2715/)
-- [Node 8+ w/npm](https://nodejs.org/en/download/)
+- [SNET CLI](https://github.com/singnet/snet-cli)
 
 ### Development
 
@@ -140,7 +140,7 @@ StopTime (s): 0
 
 Through SingularityNET (follow this [link](https://dev.singularitynet.io/tutorials/publish/) to learn how to publish a service and open a payment channel to be able to call it):
 
-Assuming that you have an open channel (`id: 0`) to this service:
+Assuming that you have an open channel to this service:
 
 ```
 $ snet client call snet s2vt-video-captioning video_cap '{"url": "http://crcv.ucf.edu/THUMOS14/UCF101/UCF101/v_PlayingGuitar_g05_c01.avi", "start_time_sec": "0", "stop_time_sec": "0"}'

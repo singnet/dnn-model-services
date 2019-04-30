@@ -37,10 +37,10 @@ You can use this service from [SingularityNET DApp](http://beta.singularitynet.i
 
 You can also call the service from SingularityNET CLI (`snet`).
 
-Assuming that you have an open channel (`id: 0`) to this service:
+Assuming that you have an open channel to this service:
 
 ```
-$ snet client call 0 0.00000001 54.203.198.53:7004 flowers '{"model": "ResNet152", "img_path": "https://www.fiftyflowers.com/site_files/FiftyFlowers/Image/Product/Mini-Black-Eye-bloom-350_c7d02e72.jpg"}'
+$ snet client call snet cntk-image-recon flowers '{"model": "ResNet152", "img_path": "https://www.fiftyflowers.com/site_files/FiftyFlowers/Image/Product/Mini-Black-Eye-bloom-350_c7d02e72.jpg"}'
 ...
 Read call params from cmdline...
 
