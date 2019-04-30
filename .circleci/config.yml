@@ -346,7 +346,7 @@ jobs:
       CERTS_FOLDER: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_colorize_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_colorize_service.py auto"
-      SNETD_PORT_MAINNET: 7035
+      SNETD_PORT_MAINNET: 7084
       SNETD_PORT_ROPSTEN: 7085
     steps:
       - deploy_command:
