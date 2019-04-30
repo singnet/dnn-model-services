@@ -3,9 +3,10 @@
 
 ![singnetlogo](../../docs/assets/singnet-logo.jpg 'SingularityNET')
 
-# Object Detection
+# Let there be Color!
 
-This service uses [YOLOv3](https://pjreddie.com/darknet/yolo/) to perform object detection on images.
+This service uses [siggraph2016_colorization](http://iizuka.cs.tsukuba.ac.jp/projects/colorization/en/) to perform 
+automatic image colorization with simultaneous classification.
 
 It is part of our third party [DNN Model Services](https://github.com/singnet/dnn-model-services).
 
@@ -15,22 +16,22 @@ It is part of our third party [DNN Model Services](https://github.com/singnet/dn
 
 - [Python 3.6.5](https://www.python.org/downloads/release/python-365/)
 - [SNET CLI](https://github.com/singnet/snet-cli)
-- YOLOv3 files: `yolov3.weights` and `yolov3.cfg`
+- Pre-trained model (`colornet.t7`)
 
 ### Development
 
-Clone this repository and download the necessary files using the `get_yolov3.sh` script:
+Clone this repository and download the models using the `get_colorize_model.sh` script:
+
 ```
 $ git clone https://github.com/singnet/dnn-model-services.git
 $ cd dnn-model-services/utils
-$ ./get_yolov3.sh
+$ ./get_colorize_model.sh
 $ ls -la Resources/Models
-total 242420
-drwxrwxr-x 2 user user      4096 Nov  8 08:51 .
-drwxrwxr-x 3 user user      4096 Nov  8 08:51 ..
--rw-rw-r-- 1 user user    213558 Nov  8 08:47 yolov3.cfg
--rw-rw-r-- 1 user user 248007048 Mar 25  2018 yolov3.weights
-$ cd ../services/yolov3-object-detection
+total 678421
+drwxrwxr-x 2 user user      4096 Apr 25 08:49 .
+drwxrwxr-x 3 user user      4096 Apr 25 08:49 ..
+-rw-r--r-- 1 root root 694703608 Apr 22  2016 colornet.t7
+$ cd ../services/cntk-image-recon
 ```
 
 ### Running the service:
@@ -63,14 +64,14 @@ For example (using the Ropsten testnet):
 ```
 $ cat snetd.config.json
 {
-   "DAEMON_END_POINT": "0.0.0.0:7057",
+   "DAEMON_END_POINT": "0.0.0.0:7054",
    "ETHEREUM_JSON_RPC_ENDPOINT": "https://ropsten.infura.io",
    "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
    "REGISTRY_ADDRESS_KEY": "0x5156fde2ca71da4398f8c76763c41bc9633875e4",
    "PASSTHROUGH_ENABLED": true,
    "PASSTHROUGH_ENDPOINT": "http://localhost:7003",
    "ORGANIZATION_ID": "snet",
-   "SERVICE_ID": "yolov3-object-detection",
+   "SERVICE_ID": "siggraph-colorization",
    "LOG": {
        "LEVEL": "debug",
        "OUTPUT": {
@@ -92,28 +93,23 @@ $ sh buildproto.sh
 ```
 Start the service and `SNET Daemon`:
 ```
-$ python3 run_object_detection_service.py
+$ python3 run_colorize_service.py
 ```
 
 ### Calling the service:
 
 Inputs:
-  - `model`: DNN Model ("yolov3").
-  - `img_path`: An image URL.
-  - `confidence`: Confidence of object detection (between 0 and 1).
+  - `gRPC method`: colorize.
+  - `img_input`: An image URL.
 
 Local (testing purpose):
 
 ```
-$ python3 test_object_detection_service.py 
+$ python3 test_colorize_service.py 
 Endpoint (localhost:7003): 
-Confidence (0.7): 
-Image (Link): http://www.reidsitaly.com/images/planning/sightseeing/calcio.jpg
-delta_time: "2.4893"
-boxes: "[[150.5, 7.0, 31, 30], [219.5, 65.0, 73, 182], [275.0, 60.0, 212, 198]]"
-class_ids: "[32, 0, 0]"
-confidences: "[0.9988894462585449, 0.9795901775360107, 0.9754813313484192]"
-... (BASE64_BBOX_IMAGE)
+Method (colorize): colorize
+Image (Link): 
+[Base64 Image]
 ```
 
 Through SingularityNET (follow this [link](https://dev.singularitynet.io/tutorials/publish/) to learn how to publish a service and open a payment channel to be able to call it):
@@ -121,23 +117,10 @@ Through SingularityNET (follow this [link](https://dev.singularitynet.io/tutoria
 Assuming that you have an open channel to this service:
 
 ```
-$ snet client call snet yolov3-object-detection detect '{"model": "yolov3", "img_path": "https://hips.hearstapps.com/amv-prod-cad-assets.s3.amazonaws.com/images/media/51/2017-10best-lead-photo-672628-s-original.jpg", "confidence": "0.5"}'
-...
-Read call params from cmdline...
+$ snet client call snet siggraph-colorization colorize '{"img_input": "https://snet-models.s3.amazonaws.com/bh/Colorize/carnaval.jpg"}'
 
-Calling service...
+[Base64 Image]
 
-    response:
-        boxes: '[[8.5, 151.0, 223, 118], [294.0, 138.0, 78, 48], [127.0, 185.5, 250, 209],
-            [605.0, 152.5, 224, 115], [432.0, 129.5, 86, 55], [205.5, 129.0, 81, 38],
-            [18.5, 127.0, 127, 40], [439.5, 187.5, 299, 225], [525.0, 132.0, 88, 34],
-            [694.5, 126.0, 115, 40]]'
-        class_ids: '[2, 2, 2, 2, 2, 2, 2, 2, 2, 2]'
-        confidences: '[0.998349130153656, 0.9982008337974548, 0.9977825284004211, 0.995550811290741,
-            0.9875208735466003, 0.980316698551178, 0.9753901362419128, 0.969804048538208,
-            0.9632347226142883, 0.9579626321792603]'
-        delta_time: '2.0124'
-        img_base64: ... (BASE64_BBOX_IMAGE)
 ```
 
 ## Contributing and Reporting Issues

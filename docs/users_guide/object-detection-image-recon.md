@@ -34,10 +34,10 @@ You can use this service from [SingularityNET DApp](http://beta.singularitynet.i
 
 You can also call the service from SingularityNET CLI (`snet`).
 
-Assuming that you have an open channel (`id: 0`) to this service:
+Assuming that you have an open channel  to this service:
 
 ```
-$ snet client call 0 0.00000001 54.203.198.53:7006 detect_recon '{"model_detect": "yolov3", "model_recon": "ResNet152", "img_path": "https://figopetinsurance.com/sites/default/files/styles/blog_detail/public/imagedogsman-and-dog-hiking-mountainsblog.jpg", "confidence": "0.5"}'
+$ snet client call snet object-detection-image-recon detect_recon '{"model_detect": "yolov3", "model_recon": "ResNet152", "img_path": "https://figopetinsurance.com/sites/default/files/styles/blog_detail/public/imagedogsman-and-dog-hiking-mountainsblog.jpg", "confidence": "0.5"}'
 ...
 Read call params from cmdline...
 

@@ -1,7 +1,7 @@
 [issue-template]: ../../../../../issues/new?template=BUG_REPORT.md
 [feature-template]: ../../../../../issues/new?template=FEATURE_REQUEST.md
 
-![singnetlogo](../../../docs/assets/singnet-logo.jpg?raw=true 'SingularityNET')
+![singnetlogo](../../docs/assets/singnet-logo.jpg 'SingularityNET')
 
 # CNTK Image Recognition
 
@@ -14,7 +14,7 @@ It is part of our third party [DNN Model Services](https://github.com/singnet/dn
 ### Requirements
 
 - [Python 3.6.5](https://www.python.org/downloads/release/python-365/)
-- [Node 8+ w/npm](https://nodejs.org/en/download/)
+- [SNET CLI](https://github.com/singnet/snet-cli)
 - Pre-trained models (dogs and flowers)
 
 ### Development
@@ -125,19 +125,13 @@ Image (Link): https://cdn2-www.dogtime.com/assets/uploads/2011/01/file_22950_sta
 
 Through SingularityNET (follow this [link](https://dev.singularitynet.io/tutorials/publish/) to learn how to publish a service and open a payment channel to be able to call it):
 
-Assuming that you have an open channel (`id: 0`) to this service:
+Assuming that you have an open channel to this service:
 
 ```
 $ snet client call snet cntk-image-recon flowers '{"model": "ResNet152", "img_path": "https://www.fiftyflowers.com/site_files/FiftyFlowers/Image/Product/Mini-Black-Eye-bloom-350_c7d02e72.jpg"}'
-...
-Read call params from cmdline...
-
-Calling service...
-
-    response:
-        delta_time: '1.5536'
-        top_5: '{1: ''98.93%: sunflower'', 2: ''00.64%: black-eyed susan'', 3: ''00.16%:
-            barbeton daisy'', 4: ''00.14%: oxeye daisy'', 5: ''00.03%: daffodil''}'
+Price for this call will be 0.00000001 AGI (use -y to remove this warning). Proceed? (y/n): y
+delta_time: "2.5509"
+top_5: "{1: \'98.93%: sunflower\', 2: \'00.64%: black-eyed susan\', 3: \'00.16%: barbeton daisy\', 4: \'00.14%: oxeye daisy\', 5: \'00.03%: daffodil\'}"
 ```
 
 ## Contributing and Reporting Issues

@@ -71,10 +71,10 @@ You can use this service from [SingularityNET DApp](http://beta.singularitynet.i
 
 You can also call the service from SingularityNET CLI (`snet`).
 
-Assuming that you have an open channel (`id: 0`) to this service:
+Assuming that you have an open channel to this service:
 
 ```
-$ snet client call 0 0.00000001 54.203.198.53:7077 play '{"uid": "my_uid","move": "c2c4"}'
+$ snet client call snet zeta36-chess-alpha-zero play '{"uid": "my_uid","move": "c2c4"}'
 
 response:
 UID: my_uid

@@ -30,14 +30,11 @@ And returns as **output**:
 
 You can call the `places365-scene-recognition` service by installing the [SingularityNET Cli](https://github.com/singnet/snet-cli) through its `snet client call` command. Assuming you have an open channel to this service:
 
-1. Use its CHANNEL_ID (e.g.: `270`); 
-2. Specify a price in AGIs (e.g.: `0`, since its a free service);
-3. Point to the endpoint at which this service's [SNET Daemon](https://github.com/singnet/snet-daemon) listens to the blockchain waiting for client calls: `54.203.198.53:7019`. You can obtain this and other information about registered services by running `snet service print_metadata ORGANIZATION SERVICE_NAME`.
-4. Filling in the method and some input data as defined in the service's `.proto` file.
+1. Fill in the method and some input data as defined in the service's `.proto` file.
 
 Example call:
 ```
-$ snet client call 270 0 54.203.198.53:7019 recognize_scene '{"input_image":"https://static1.squarespace.com/static/564783d5e4b077901c4bdc37/t/5a823d47c83025d76ac6ddae/1518484818865/Piccolo-104.jpg?format=1500w", "predict":"io, categories"}'
+$ snet client call snet places365-scene-recognition recognize_scene '{"input_image":"https://static1.squarespace.com/static/564783d5e4b077901c4bdc37/t/5a823d47c83025d76ac6ddae/1518484818865/Piccolo-104.jpg?format=1500w", "predict":"io, categories"}'
 ...
 data: "{\"io\": \"indoor\", \"categories\": \" 0.924 -> beauty_salon, 0.006 -> gymnasium/indoor, 0.005 -> clean_room, 0.005 -> biology_laboratory, 0.004 -> chemistry_lab,\"}"
 ```

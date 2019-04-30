@@ -18,6 +18,17 @@ For more details on how to publish and test a service, select it from the list b
 
 ### Images:
 - [cntk-image-recon](services/cntk-image-recon) ([User's Guide](docs/users_guide/cntk-image-recon.md)) - This service uses ResNet152 model, trained to recognize different types of flowers and dog breeds. [[Reference](https://cntk.ai/pythondocs/CNTK_301_Image_Recognition_with_Deep_Transfer_Learning.html)]
+- [siggraph-colorization](services/siggraph-colorization) ([User's Guide](docs/users_guide/siggraph-colorization.md)) - This service learns to automatically color grayscale images with a deep network.
+    ```
+     @Article{IizukaSIGGRAPH2016,
+       author = {Satoshi Iizuka and Edgar Simo-Serra and Hiroshi Ishikawa},
+       title = {{Let there be Color!: Joint End-to-end Learning of Global and Local Image Priors for Automatic Image Colorization with Simultaneous Classification}},
+       journal = "ACM Transactions on Graphics (Proc. of SIGGRAPH 2016)",
+       year = 2016,
+       volume = 35,
+       number = 4,
+     }
+    ```
 - [yolov3-object-detection](services/yolov3-object-detection) ([User's Guide](docs/users_guide/yolov3-object-detection.md)) - This service uses YOLOv3 model to detect objects on images. [[Reference](https://pjreddie.com/darknet/yolo/)]
     ```
       @article{yolov3,
@@ -74,5 +85,6 @@ Each service is licensed as followed:
 - i3d-video-action-recognition - [Apache License 2.0](https://github.com/deepmind/kinetics-i3d/blob/master/LICENSE)
 - places365-scene-recognition - [MIT License](https://github.com/CSAILVision/places365/blob/master/LICENSE)
 - s2vt-video-captioning - [Attribution 4.0 International (CC BY 4.0)](http://creativecommons.org/licenses/by/4.0/)
+- siggraph-colorization - [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](https://github.com/satoshiiizuka/siggraph2016_colorization/blob/master/LICENSE)
 - yolov3-object-detection - [Public domain](https://github.com/pjreddie/darknet/blob/master/LICENSE)
 - zeta36-chess-alpha-zero - [MIT License](https://github.com/Zeta36/chess-alpha-zero/blob/master/LICENSE.txt)

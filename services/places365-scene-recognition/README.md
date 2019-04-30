@@ -1,7 +1,7 @@
 [issue-template]: ../../../../../issues/new?template=BUG_REPORT.md
 [feature-template]: ../../../../../issues/new?template=FEATURE_REQUEST.md
 
-![singnetlogo](../../../docs/assets/singnet-logo.jpg?raw=true 'SingularityNET')
+![singnetlogo](../../docs/assets/singnet-logo.jpg 'SingularityNET')
 
 # Scene Recognition
 
@@ -14,7 +14,7 @@ It is part of our third party [DNN Model Services](https://github.com/singnet/dn
 ### Requirements
 
 - [Python 3.6.5](https://www.python.org/downloads/release/python-365/)
-- [Node 8+ w/npm](https://nodejs.org/en/download/)
+- [SNET CLI](https://github.com/singnet/snet-cli)
 - ResNet pre-trained model and scene recognition attributes related files that are automatically downloaded by running the script for the first time.
 
 ### Development
@@ -121,10 +121,10 @@ Service completed!
 #### Through SingularityNET 
 > Follow this [link](https://github.com/singnet/wiki/blob/master/tutorials/howToPublishService/README.md) to learn how to publish a service and open a payment channel to be able to call it.
 
-Assuming that you have an open channel (`id: 270`) to this service, you need `0` AGI to call the service at its Daemon's endpoint (`54.203.198.53:7019`). The only call method available for this service is `recognize_scene`, which has been defined at its protobuf file. Specifying the URL to an `input_image` and telling the service what to `predict`, the full example call (and its outputs) would be:
+Assuming that you have an open channel to this service, you need `0` AGI to call the service at its Daemon's endpoint (`54.203.198.53:7019`). The only call method available for this service is `recognize_scene`, which has been defined at its protobuf file. Specifying the URL to an `input_image` and telling the service what to `predict`, the full example call (and its outputs) would be:
 
 ```
-$ snet client call 270 0 54.203.198.53:7019 recognize_scene '{"input_image":"https://static1.squarespace.com/static/564783d5e4b077901c4bdc37/t/5a823d47c83025d76ac6ddae/1518484818865/Piccolo-104.jpg?format=1500w", "predict":"io, categories"}'
+$ snet client call snet places365-scene-recognition recognize_scene '{"input_image":"https://static1.squarespace.com/static/564783d5e4b077901c4bdc37/t/5a823d47c83025d76ac6ddae/1518484818865/Piccolo-104.jpg?format=1500w", "predict":"io, categories"}'
 ...
 data: "{\"io\": \"indoor\", \"categories\": \" 0.924 -> beauty_salon, 0.006 -> gymnasium/indoor, 0.005 -> clean_room, 0.005 -> biology_laboratory, 0.004 -> chemistry_lab,\"}"
 ```
