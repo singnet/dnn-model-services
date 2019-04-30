@@ -108,7 +108,7 @@ Local (testing purpose):
 $ python3 test_colorize_service.py 
 Endpoint (localhost:7003): 
 Method (colorize): colorize
-Image (Link): 
+Image (Link): https://snet-models.s3.amazonaws.com/bh/Colorize/jucelino.jpg
 [Base64 Image]
 ```
 

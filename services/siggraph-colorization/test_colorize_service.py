@@ -7,7 +7,7 @@ import service.service_spec.colorization_pb2 as grpc_bt_pb2
 
 from service import registry
 
-TEST_URL = "https://raw.githubusercontent.com/singnet/dnn-model-services/master/docs/assets/users_guide/rose.jpg"
+TEST_URL = "https://snet-models.s3.amazonaws.com/bh/Colorize/jucelino.jpg"
 
 if __name__ == "__main__":
 
