@@ -46,6 +46,5 @@ def get_video_frames(video_path, frames_path, start_time_ms, stop_time_ms, pace)
         cap.release()
         cv2.destroyAllWindows()
         return True, frames_list
-    except Exception as e:
-        print e
+    except Exception:
         return False, []

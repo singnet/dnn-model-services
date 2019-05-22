@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+message Input {
+    string uid = 1;
+    string video_a = 2;
+    string video_b = 3;
+    string model_url = 4;
+}
+
+message Output {
+    string uid = 1;
+}
+
+service DeepFakesFaceSwap {
+    rpc faceswap(Input) returns (Output) {}
+}

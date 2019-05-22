@@ -18,7 +18,8 @@ For more details on how to publish and test a service, select it from the list b
 
 ### Images:
 - [cntk-image-recon](services/cntk-image-recon) ([User's Guide](docs/users_guide/cntk-image-recon.md)) - This service uses ResNet152 model, trained to recognize different types of flowers and dog breeds. [[Reference](https://cntk.ai/pythondocs/CNTK_301_Image_Recognition_with_Deep_Transfer_Learning.html)]
-- [siggraph-colorization](services/siggraph-colorization) ([User's Guide](docs/users_guide/siggraph-colorization.md)) - This service learns to automatically color grayscale images with a deep network.
+- [deepfakes-faceswap](services/deepfakes-faceswap) ([User's Guide](docs/users_guide/deepfakes-faceswap.md)) - This service uses the Deepfakes Faceswap, trained on two input videos A and B, to perform face swapping on videos. [[Reference](https://github.com/deepfakes/faceswap)]
+- [siggraph-colorization](services/siggraph-colorization) ([User's Guide](docs/users_guide/siggraph-colorization.md)) - This service learns to automatically color grayscale images with a deep network. [[Reference](http://iizuka.cs.tsukuba.ac.jp/projects/colorization/en/)]
     ```
      @Article{IizukaSIGGRAPH2016,
        author = {Satoshi Iizuka and Edgar Simo-Serra and Hiroshi Ishikawa},
