@@ -2,6 +2,15 @@ commands:
   build_command:
     description: "Build and Test SingularityNET Services"
     parameters:
+      domain:
+        type: string
+        default: ""
+      ssh_user_env_var:
+        type: string
+        default: ""
+      ssh_host_env_var:
+        type: string
+        default: ""
       docker_nvidia:
         type: boolean
         default: false
@@ -24,6 +33,8 @@ commands:
       - run:
           name: Removing old Docker Container (Previous Builds)
           command: |
+            export SSH_USER=<< parameters.ssh_user_env_var >>
+            export SSH_HOST=<< parameters.ssh_host_env_var >>
             export DOCKER_IMAGE_NAME=<< parameters.docker_image_name >>
             export DOCKER_CONTAINER_NAME=<< parameters.docker_container_name >>
             export PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
@@ -35,6 +46,8 @@ commands:
           name: Building
           command: |
             echo "==================================================== Build Configs ==================================================="
+            export SSH_USER=<< parameters.ssh_user_env_var >>
+            export SSH_HOST=<< parameters.ssh_host_env_var >>
             export DOCKER_NVIDIA=<< parameters.docker_nvidia >>
             export DOCKER_IMAGE_NAME=<< parameters.docker_image_name >>
             export DOCKER_CONTAINER_NAME=<< parameters.docker_container_name >>
@@ -66,11 +79,13 @@ commands:
                 $([ "${DOCKER_NVIDIA}" = "true" ] && echo "--runtime=nvidia" || echo "") \
                 --name ${PROD_TAG}${DOCKER_CONTAINER_NAME} \
                 $([ "${DOCKER_MOUNT_VOLUMES}" = "true" ] && echo "-v ${DOCKER_MOUNT_SRC}:${DOCKER_MOUNT_DEST}" || echo "") \
-                -di ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME} ${SERVICE_RUN_COMMAND}
+                -tdi ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME} ${SERVICE_RUN_COMMAND}
             EOF
       - run:
           name: Removing old Docker Container
           command: |
+            export SSH_USER=<< parameters.ssh_user_env_var >>
+            export SSH_HOST=<< parameters.ssh_host_env_var >>
             export DOCKER_IMAGE_NAME=<< parameters.docker_image_name >>
             export DOCKER_CONTAINER_NAME=<< parameters.docker_container_name >>
             export PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
@@ -80,7 +95,10 @@ commands:
             EOF
       - run:
           name: Testing local
+          no_output_timeout: 60m
           command: |
+            export SSH_USER=<< parameters.ssh_user_env_var >>
+            export SSH_HOST=<< parameters.ssh_host_env_var >>
             export DOCKER_IMAGE_NAME=<< parameters.docker_image_name >>
             export DOCKER_CONTAINER_NAME=<< parameters.docker_container_name >>
             export PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
@@ -92,6 +110,15 @@ commands:
   deploy_command:
     description: "Deploy SingularityNET Services"
     parameters:
+      domain:
+        type: string
+        default: ""
+      ssh_user_env_var:
+        type: string
+        default: ""
+      ssh_host_env_var:
+        type: string
+        default: ""
       docker_nvidia:
         type: boolean
         default: false
@@ -120,6 +147,8 @@ commands:
       - run:
           name: Removing old Docker Container (Previous Builds)
           command: |
+            export SSH_USER=<< parameters.ssh_user_env_var >>
+            export SSH_HOST=<< parameters.ssh_host_env_var >>
             export DOCKER_IMAGE_NAME=<< parameters.docker_image_name >>
             export DOCKER_CONTAINER_NAME=<< parameters.docker_container_name >>
             export PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
@@ -131,6 +160,8 @@ commands:
           name: Deploying
           command: |
             echo "=================================================== Deploy Configs ==================================================="
+            export SSH_USER=<< parameters.ssh_user_env_var >>
+            export SSH_HOST=<< parameters.ssh_host_env_var >>
             export DOCKER_DEPLOY=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "true" || echo "false")
             export DOCKER_NVIDIA=<< parameters.docker_nvidia >>
             export DOCKER_IMAGE_NAME=<< parameters.docker_image_name >>
@@ -176,7 +207,7 @@ commands:
                     $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-v ~/${CERTS_FOLDER}:/opt/singnet/.certs" || echo "") \
                     $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-v ~/${ETCD_HOST_FOLDER}:/${ETCD_CONTAINER_FOLDER}" || echo "") \
                     $([ "${DOCKER_MOUNT_VOLUMES}" = "true" ] && echo "-v ${DOCKER_MOUNT_SRC}:${DOCKER_MOUNT_DEST}" || echo "") \
-                    -di ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME} ${SERVICE_RUN_COMMAND}
+                    -dti ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME} ${SERVICE_RUN_COMMAND}
             	EOF
             else
             	echo "Status: Not deploying..."
@@ -185,6 +216,8 @@ commands:
       - run:
           name: Removing old Docker Container
           command: |
+            export SSH_USER=<< parameters.ssh_user_env_var >>
+            export SSH_HOST=<< parameters.ssh_host_env_var >>
             export DOCKER_DEPLOY=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "true" || echo "false")
             export PROD_TAG=$([ "${DOCKER_DEPLOY}" = "true" ] && echo "PROD_" || echo "")
             if [ "$DOCKER_DEPLOY" = "true" ]; then
@@ -200,7 +233,10 @@ commands:
 
       - run:
           name: Testing local
+          no_output_timeout: 60m
           command: |
+            export SSH_USER=<< parameters.ssh_user_env_var >>
+            export SSH_HOST=<< parameters.ssh_host_env_var >>
             export DOCKER_DEPLOY=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "true" || echo "false")
             export PROD_TAG=$([ "${DOCKER_DEPLOY}" = "true" ] && echo "PROD_" || echo "")
             if [ "$DOCKER_DEPLOY" = "true" ]; then
@@ -224,9 +260,11 @@ jobs:
       SERVICE_NAME: cntk-image-recon
       SERVICE_FOLDER: services/cntk-image-recon
       SERVICE_RUN_COMMAND: bash -c "source '/cntk/activate-cntk';git pull;python3 run_image_recon_service.py"
-      SERVICE_TEST_COMMAND: bash -c "source '/cntk/activate-cntk';python3 test_image_recon_service.py auto"
+      SERVICE_TEST_COMMAND: bash -c "sleep 10;source '/cntk/activate-cntk';python3 test_image_recon_service.py auto"
     steps:
       - build_command:
+          ssh_user_env_var: ${SSH_USER_CNTK_IMAGE_RECON}
+          ssh_host_env_var: ${SSH_HOST_CNTK_IMAGE_RECON}
           docker_nvidia: true
           docker_image_name: cntk_image_recognition
           docker_container_name: CNTK_IMAGE_RECON
@@ -240,14 +278,63 @@ jobs:
       SERVICE_FOLDER: services/cntk-image-recon
       CERTS_FOLDER: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "source '/cntk/activate-cntk';git pull;python3 run_image_recon_service.py --ssl"
-      SERVICE_TEST_COMMAND: bash -c "source '/cntk/activate-cntk';python3 test_image_recon_service.py auto"
+      SERVICE_TEST_COMMAND: bash -c "sleep 10;source '/cntk/activate-cntk';python3 test_image_recon_service.py auto"
       SNETD_PORT_MAINNET: 7004
       SNETD_PORT_ROPSTEN: 7054
     steps:
       - deploy_command:
+          domain: ${DOMAIN_CNTK_IMAGE_RECON}
+          ssh_user_env_var: ${SSH_USER_CNTK_IMAGE_RECON}
+          ssh_host_env_var: ${SSH_HOST_CNTK_IMAGE_RECON}
           docker_nvidia: true
           docker_image_name: cntk_image_recognition
           docker_container_name: CNTK_IMAGE_RECON
+          docker_etcd_host_folder: singnet/etcd/${SERVICE_NAME}/
+          docker_etcd_container_folder: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
+
+  build-deepfakes-faceswap:
+    docker:
+    - image: circleci/python:3.6.6-node
+    working_directory: ~/singnet
+    environment:
+      SERVICE_NAME: deepfakes-faceswap
+      SERVICE_FOLDER: services/deepfakes-faceswap
+      SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_deepfakes_faceswap_service.py"
+      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_deepfakes_faceswap_service.py auto"
+    steps:
+      - build_command:
+          ssh_user_env_var: ${SSH_USER_DEEPFAKES_FACESWAP}
+          ssh_host_env_var: ${SSH_HOST_DEEPFAKES_FACESWAP}
+          docker_mount_volumes: true
+          docker_mount_src: ~/storage
+          docker_mount_dest: /opt/storage
+          docker_nvidia: true
+          docker_image_name: deepfakes_faceswap
+          docker_container_name: DEEPFAKES_FACESWAP
+
+  deploy-deepfakes-faceswap:
+    docker:
+    - image: circleci/python:3.6.6-node
+    working_directory: ~/singnet
+    environment:
+      SERVICE_NAME: deepfakes-faceswap
+      SERVICE_FOLDER: services/deepfakes-faceswap
+      CERTS_FOLDER: singnet/.certs
+      SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_deepfakes_faceswap_service.py --ssl"
+      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_deepfakes_faceswap_service.py auto"
+      SNETD_PORT_MAINNET: 7004
+      SNETD_PORT_ROPSTEN: 7005-7006
+    steps:
+      - deploy_command:
+          domain: ${DOMAIN_DEEPFAKES_FACESWAP}
+          ssh_user_env_var: ${SSH_USER_DEEPFAKES_FACESWAP}
+          ssh_host_env_var: ${SSH_HOST_DEEPFAKES_FACESWAP}
+          docker_mount_volumes: true
+          docker_mount_src: ~/storage
+          docker_mount_dest: /opt/storage
+          docker_nvidia: true
+          docker_image_name: deepfakes_faceswap
+          docker_container_name: DEEPFAKES_FACESWAP
           docker_etcd_host_folder: singnet/etcd/${SERVICE_NAME}/
           docker_etcd_container_folder: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
 
@@ -262,6 +349,8 @@ jobs:
       SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_video_action_recon_service.py auto"
     steps:
       - build_command:
+          ssh_user_env_var: ${SSH_USER_I3D_VIDEO_ACTION_RECON}
+          ssh_host_env_var: ${SSH_HOST_I3D_VIDEO_ACTION_RECON}
           docker_nvidia: true
           docker_image_name: i3d_video_action_recognition
           docker_container_name: I3D_VIDEO_ACTION_RECON
@@ -280,6 +369,9 @@ jobs:
       SNETD_PORT_ROPSTEN: 7055
     steps:
       - deploy_command:
+          domain: ${DOMAIN_I3D_VIDEO_ACTION_RECON}
+          ssh_user_env_var: ${SSH_USER_I3D_VIDEO_ACTION_RECON}
+          ssh_host_env_var: ${SSH_HOST_I3D_VIDEO_ACTION_RECON}
           docker_nvidia: true
           docker_image_name: i3d_video_action_recognition
           docker_container_name: I3D_VIDEO_ACTION_RECON
@@ -297,6 +389,8 @@ jobs:
       SERVICE_TEST_COMMAND: bash -c "sleep 10;python test_video_cap_service.py auto"
     steps:
       - build_command:
+          ssh_user_env_var: ${SSH_USER_S2VT_VIDEO_CAPTIONING}
+          ssh_host_env_var: ${SSH_HOST_S2VT_VIDEO_CAPTIONING}
           docker_nvidia: true
           docker_image_name: s2vt_video_captioning
           docker_container_name: S2VT_VIDEO_CAPTIONING
@@ -315,6 +409,9 @@ jobs:
       SNETD_PORT_ROPSTEN: 7056
     steps:
       - deploy_command:
+          domain: ${DOMAIN_S2VT_VIDEO_CAPTIONING}
+          ssh_user_env_var: ${SSH_USER_S2VT_VIDEO_CAPTIONING}
+          ssh_host_env_var: ${SSH_HOST_S2VT_VIDEO_CAPTIONING}
           docker_nvidia: true
           docker_image_name: s2vt_video_captioning
           docker_container_name: S2VT_VIDEO_CAPTIONING
@@ -332,6 +429,8 @@ jobs:
       SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_colorize_service.py auto"
     steps:
       - build_command:
+          ssh_user_env_var: ${SSH_USER_SIGGRAPH_COLORIZATION}
+          ssh_host_env_var: ${SSH_HOST_SIGGRAPH_COLORIZATION}
           docker_nvidia: true
           docker_image_name: siggraph_colorization
           docker_container_name: SIGGRAPH_COLORIZATION
@@ -350,6 +449,9 @@ jobs:
       SNETD_PORT_ROPSTEN: 7085
     steps:
       - deploy_command:
+          domain: ${DOMAIN_SIGGRAPH_COLORIZATION}
+          ssh_user_env_var: ${SSH_USER_SIGGRAPH_COLORIZATION}
+          ssh_host_env_var: ${SSH_HOST_SIGGRAPH_COLORIZATION}
           docker_nvidia: true
           docker_image_name: siggraph_colorization
           docker_container_name: SIGGRAPH_COLORIZATION
@@ -367,6 +469,8 @@ jobs:
       SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_object_detection_service.py auto"
     steps:
       - build_command:
+          ssh_user_env_var: ${SSH_USER_YOLOv3_OBJECT_DETECTION}
+          ssh_host_env_var: ${SSH_HOST_YOLOv3_OBJECT_DETECTION}
           docker_nvidia: true
           docker_image_name: yolov3_object_detection
           docker_container_name: YOLOv3_OBJECT_DETECTION
@@ -385,6 +489,9 @@ jobs:
       SNETD_PORT_ROPSTEN: 7057
     steps:
       - deploy_command:
+          domain: ${DOMAIN_YOLOv3_OBJECT_DETECTION}
+          ssh_user_env_var: ${SSH_USER_YOLOv3_OBJECT_DETECTION}
+          ssh_host_env_var: ${SSH_HOST_YOLOv3_OBJECT_DETECTION}
           docker_nvidia: true
           docker_image_name: yolov3_object_detection
           docker_container_name: YOLOv3_OBJECT_DETECTION
@@ -402,6 +509,8 @@ jobs:
       SERVICE_TEST_COMMAND: bash -c "sleep 10;python3.6 test_alpha_zero_service.py auto"
     steps:
       - build_command:
+          ssh_user_env_var: ${SSH_USER_CHESS_ALPHA_ZERO}
+          ssh_host_env_var: ${SSH_HOST_CHESS_ALPHA_ZERO}
           docker_nvidia: true
           docker_image_name: zeta36_chess_alpha_zero
           docker_container_name: CHESS_ALPHA_ZERO
@@ -420,6 +529,9 @@ jobs:
       SNETD_PORT_ROPSTEN: 7058
     steps:
       - deploy_command:
+          domain: ${DOMAIN_CHESS_ALPHA_ZERO}
+          ssh_user_env_var: ${SSH_USER_CHESS_ALPHA_ZERO}
+          ssh_host_env_var: ${SSH_HOST_CHESS_ALPHA_ZERO}
           docker_nvidia: true
           docker_image_name: zeta36_chess_alpha_zero
           docker_container_name: CHESS_ALPHA_ZERO
@@ -437,6 +549,8 @@ jobs:
       SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_scene_recognition_service.py auto"
     steps:
       - build_command:
+          ssh_user_env_var: ${SSH_USER_PLACES365_SCENE_RECOGNITION}
+          ssh_host_env_var: ${SSH_HOST_PLACES365_SCENE_RECOGNITION}
           docker_nvidia: true
           docker_image_name: places365_scene_recognition
           docker_container_name: PLACES365_SCENE_RECOGNITION
@@ -455,6 +569,9 @@ jobs:
       SNETD_PORT_ROPSTEN: 7079
     steps:
       - deploy_command:
+          domain: ${DOMAIN_PLACES365_SCENE_RECOGNITION}
+          ssh_user_env_var: ${SSH_USER_PLACES365_SCENE_RECOGNITION}
+          ssh_host_env_var: ${SSH_HOST_PLACES365_SCENE_RECOGNITION}
           docker_nvidia: true
           docker_image_name: places365_scene_recognition
           docker_container_name: PLACES365_SCENE_RECOGNITION
@@ -469,6 +586,14 @@ workflows:
       - deploy-cntk-image-recon:
           requires:
             - build-cntk-image-recon
+          filters:
+            branches:
+              only: master
+
+      - build-deepfakes-faceswap
+      - deploy-deepfakes-faceswap:
+          requires:
+            - build-deepfakes-faceswap
           filters:
             branches:
               only: master
