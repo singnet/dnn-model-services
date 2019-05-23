@@ -3,7 +3,7 @@
 
 ![singnetlogo](../assets/singnet-logo.jpg?raw=true 'SingularityNET')
 
-# CNTK Image Recognition
+# Deepfakes Faceswap
 
 This service uses [faceswap](https://github.com/deepfakes/faceswap) to perform face swapping on videos.
 

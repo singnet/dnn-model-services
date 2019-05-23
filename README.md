@@ -83,6 +83,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 Each service is licensed as followed:
 
 - cntk-image-recon - [MIT License](https://github.com/Microsoft/CNTK/blob/master/LICENSE.md)
+- deepfakes-faceswap - [GPL-3.0](https://github.com/deepfakes/faceswap/blob/master/LICENSE)
 - i3d-video-action-recognition - [Apache License 2.0](https://github.com/deepmind/kinetics-i3d/blob/master/LICENSE)
 - places365-scene-recognition - [MIT License](https://github.com/CSAILVision/places365/blob/master/LICENSE)
 - s2vt-video-captioning - [Attribution 4.0 International (CC BY 4.0)](http://creativecommons.org/licenses/by/4.0/)
