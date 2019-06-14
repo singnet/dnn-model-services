@@ -60,6 +60,7 @@ commands:
             echo            git_branch: ${CIRCLE_BRANCH}
             echo SSH_USER             : ${SSH_USER}
             echo SSH_HOST             : ${SSH_HOST}
+            echo DOCKER_NOCACHE       : ${DOCKER_NOCACHE}
             echo DOCKER_NVIDIA        : ${DOCKER_NVIDIA}
             echo DOCKER_IMAGE_NAME    : ${DOCKER_IMAGE_NAME}
             echo DOCKER_CONTAINER_NAME: ${DOCKER_CONTAINER_NAME}
@@ -74,6 +75,7 @@ commands:
                 --build-arg git_owner=${CIRCLE_PROJECT_USERNAME} \
                 --build-arg git_repo=${CIRCLE_PROJECT_REPONAME} \
                 --build-arg git_branch=${CIRCLE_BRANCH} \
+                $([ "${DOCKER_NOCACHE}" = "true" ] && echo "--no-cache" || echo "") \
                 -t ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME} https://raw.githubusercontent.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}/${SERVICE_FOLDER}/Dockerfile
               docker run \
                 $([ "${DOCKER_NVIDIA}" = "true" ] && echo "--runtime=nvidia" || echo "") \
@@ -178,6 +180,7 @@ commands:
             echo SSH_USER             : ${SSH_USER}
             echo SSH_HOST             : ${SSH_HOST}
             echo DOCKER_DEPLOY        : ${DOCKER_DEPLOY}
+            echo DOCKER_NOCACHE       : ${DOCKER_NOCACHE}
             echo DOCKER_NVIDIA        : ${DOCKER_NVIDIA}
             echo DOCKER_IMAGE_NAME    : ${DOCKER_IMAGE_NAME}
             echo DOCKER_CONTAINER_NAME: ${DOCKER_CONTAINER_NAME}
@@ -197,6 +200,7 @@ commands:
                     --build-arg git_owner=${CIRCLE_PROJECT_USERNAME} \
                     --build-arg git_repo=${CIRCLE_PROJECT_REPONAME} \
                     --build-arg git_branch=${CIRCLE_BRANCH} \
+                    $([ "${DOCKER_NOCACHE}" = "true" ] && echo "--no-cache" || echo "") \
                     -t ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME} https://raw.githubusercontent.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}/${SERVICE_FOLDER}/Dockerfile
                     docker run \
                     $([ "${DOCKER_NVIDIA}" = "true" ] && echo "--runtime=nvidia" || echo "") \
@@ -614,13 +618,13 @@ workflows:
             branches:
               only: master
 
-      - build-siggraph-colorization
-      - deploy-siggraph-colorization:
-          requires:
-            - build-siggraph-colorization
-          filters:
-            branches:
-              only: master
+#      - build-siggraph-colorization
+#      - deploy-siggraph-colorization:
+#          requires:
+#            - build-siggraph-colorization
+#          filters:
+#            branches:
+#              only: master
 
       - build-yolov3-object-detection
       - deploy-yolov3-object-detection:
