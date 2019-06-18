@@ -9,6 +9,8 @@ import datetime
 import hashlib
 import logging
 
+from service.service_spec.object_detection_pb2 import Boxes
+
 logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s")
 log = logging.getLogger("object_detection_service")
 
@@ -122,11 +124,11 @@ class ObjectDetector:
                         round(x + w),
                         round(y + h),
                     )
-                    ret_boxes.append(boxes[i])
+                    ret_boxes.append(Boxes(x=x, y=y, w=w, h=h))
                     ret_class_ids.append(class_ids[i])
                     ret_confidences.append(confidences[i])
 
-                retval, buffer = cv2.imencode(".jpg", image)
+                _, buffer = cv2.imencode(".jpg", image)
                 img_base64 = base64.b64encode(buffer)
 
                 delta_time = time.time() - start_time
@@ -135,22 +137,22 @@ class ObjectDetector:
                     os.remove(tmp_img_file)
 
                 return {
-                    "delta_time": "{:.4f}".format(delta_time),
+                    "delta_time": delta_time,
                     "boxes": ret_boxes,
                     "class_ids": ret_class_ids,
                     "confidences": ret_confidences,
-                    "img_base64": img_base64.decode("utf-8"),
+                    "img_base64": img_base64,
                 }
 
             else:
                 if os.path.exists(tmp_img_file):
                     os.remove(tmp_img_file)
                 return {
-                    "delta_time": "Fail",
+                    "delta_time": 0,
                     "boxes": [],
                     "class_ids": [],
                     "confidences": [],
-                    "img_base64": "Fail",
+                    "img_base64": b"Fail",
                 }
 
         except Exception as e:
@@ -159,11 +161,11 @@ class ObjectDetector:
             if os.path.exists(tmp_img_file):
                 os.remove(tmp_img_file)
             return {
-                "delta_time": "Fail",
+                "delta_time": 0,
                 "boxes": [],
                 "class_ids": [],
                 "confidences": [],
-                "img_base64": "Fail",
+                "img_base64": b"Fail",
             }
 
 

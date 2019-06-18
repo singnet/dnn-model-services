@@ -6,12 +6,19 @@ message Input {
     string confidence = 3;
 }
 
+message Boxes {
+    float x = 1;
+    float y = 2;
+    int32 w = 3;
+    int32 h = 4;
+}
+
 message Output {
-    string delta_time = 1;
-    string boxes = 2;
-    string class_ids = 3;
-    string confidences = 4;
-    string img_base64 = 5;
+    float delta_time = 1;
+    repeated Boxes boxes = 2;
+    repeated int32 class_ids = 3;
+    repeated float confidences = 4;
+    bytes img_base64 = 5;
 }
 
 service Detect {
