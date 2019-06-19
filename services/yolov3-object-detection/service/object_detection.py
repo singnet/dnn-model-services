@@ -124,7 +124,7 @@ class ObjectDetector:
                         round(x + w),
                         round(y + h),
                     )
-                    ret_boxes.append(Boxes(x=x, y=y, w=w, h=h))
+                    ret_boxes.append(Boxes(x=round(x), y=round(y), w=w, h=h))
                     ret_class_ids.append(class_ids[i])
                     ret_confidences.append(confidences[i])
 

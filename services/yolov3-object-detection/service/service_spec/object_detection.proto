@@ -7,8 +7,8 @@ message Input {
 }
 
 message Boxes {
-    float x = 1;
-    float y = 2;
+    int32 x = 1;
+    int32 y = 2;
     int32 w = 3;
     int32 h = 4;
 }
