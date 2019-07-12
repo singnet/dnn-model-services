@@ -49,6 +49,7 @@ For more details on how to publish and test a service, select it from the list b
            publisher={IEEE}
       }
     ```
+- [pneumonia-diagnosis](services/pneumonia-diagnosis) ([User's Guide](docs/users_guide/pneumonia-diagnosis.md)) - This service uses VGG19 to classify X-ray chest images. Based on Alishba Imran's [work](https://github.com/alishbaimran/Pneumonia-Diagnosis-CNN-Model).
 
 ### Videos:
 - [i3d-video-action-recognition](services/i3d-video-action-recognition) ([User's Guide](docs/users_guide/i3d-video-action-recognition.md)) - This service uses I3D model to recognize actions on videos (with 400 or 600 labels). [[Reference](https://github.com/deepmind/kinetics-i3d)]
@@ -86,7 +87,7 @@ Each service is licensed as followed:
 - deepfakes-faceswap - [GPL-3.0](https://github.com/deepfakes/faceswap/blob/master/LICENSE)
 - i3d-video-action-recognition - [Apache License 2.0](https://github.com/deepmind/kinetics-i3d/blob/master/LICENSE)
 - places365-scene-recognition - [MIT License](https://github.com/CSAILVision/places365/blob/master/LICENSE)
+- pneumonia-diagnosis - [Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/)
 - s2vt-video-captioning - [Attribution 4.0 International (CC BY 4.0)](http://creativecommons.org/licenses/by/4.0/)
-- siggraph-colorization - [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](https://github.com/satoshiiizuka/siggraph2016_colorization/blob/master/LICENSE)
 - yolov3-object-detection - [Public domain](https://github.com/pjreddie/darknet/blob/master/LICENSE)
 - zeta36-chess-alpha-zero - [MIT License](https://github.com/Zeta36/chess-alpha-zero/blob/master/LICENSE.txt)
