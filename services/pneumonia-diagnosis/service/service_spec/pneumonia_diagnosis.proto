@@ -7,7 +7,7 @@ message Input {
 }
 
 message Output {
-    bool output = 1;
+    string output = 1;
 }
 
 service Diagnosis {
