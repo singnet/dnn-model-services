@@ -31,10 +31,10 @@ if __name__ == "__main__":
         img_input = input("Image (Link): ") if not test_flag else TEST_URL
 
         stub = grpc_bt_grpc.ColorizationStub(channel)
-        number = grpc_bt_pb2.Input(img_input=img_input)
+        grpc_input = grpc_bt_pb2.Input(img_input=img_input)
 
         if grpc_method == "colorize":
-            response = stub.colorize(number)
+            response = stub.colorize(grpc_input)
             print(response.img_colorized)
 
             if response.img_colorized == "Fail":

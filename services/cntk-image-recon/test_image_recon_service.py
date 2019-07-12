@@ -33,10 +33,10 @@ if __name__ == "__main__":
         img_path = input("Image (Link): ") if not test_flag else TEST_URL
 
         stub = grpc_bt_grpc.RecognizerStub(channel)
-        number = grpc_bt_pb2.Input(model=model, img_path=img_path)
+        grpc_input = grpc_bt_pb2.Input(model=model, img_path=img_path)
 
         if grpc_method == "flowers":
-            response = stub.flowers(number)
+            response = stub.flowers(grpc_input)
             print(response.delta_time)
             print(response.top_5)
 
@@ -44,7 +44,7 @@ if __name__ == "__main__":
                 exit(1)
 
         elif grpc_method == "dogs":
-            response = stub.dogs(number)
+            response = stub.dogs(grpc_input)
             print(response.delta_time)
             print(response.top_5)
 

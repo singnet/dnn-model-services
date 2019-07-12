@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package pneumonia_diagnosis;
+
+message Input {
+    string img_path = 1;
+}
+
+message Output {
+    bool output = 1;
+}
+
+service Diagnosis {
+    rpc check (Input) returns (Output) {}
+}
