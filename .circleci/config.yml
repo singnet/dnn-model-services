@@ -582,6 +582,46 @@ jobs:
           docker_etcd_host_folder: singnet/etcd/${SERVICE_NAME}/
           docker_etcd_container_folder: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
 
+  build-pneumonia-diagnosis:
+    docker:
+    - image: circleci/python:3.6.6-node
+    working_directory: ~/singnet
+    environment:
+      SERVICE_NAME: pneumonia-diagnosis
+      SERVICE_FOLDER: services/pneumonia-diagnosis
+      SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_pneumonia_diagnosis_service.py"
+      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_pneumonia_diagnosis_service.py auto"
+    steps:
+      - build_command:
+          ssh_user_env_var: ${SSH_USER_PNEUMONIA_DIAGNOSIS}
+          ssh_host_env_var: ${SSH_HOST_PNEUMONIA_DIAGNOSIS}
+          docker_nvidia: true
+          docker_image_name: pneumonia_diagnosis
+          docker_container_name: PNEUMONIA_DIAGNOSIS
+
+  deploy-pneumonia-diagnosis:
+    docker:
+    - image: circleci/python:3.6.6-node
+    working_directory: ~/singnet
+    environment:
+      SERVICE_NAME: pneumonia-diagnosis
+      SERVICE_FOLDER: services/pneumonia-diagnosis
+      CERTS_FOLDER: singnet/.certs
+      SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_pneumonia_diagnosis_service.py --ssl"
+      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_pneumonia_diagnosis_service.py auto"
+      SNETD_PORT_MAINNET: 7072
+      SNETD_PORT_ROPSTEN: 7062
+    steps:
+      - deploy_command:
+          domain: ${DOMAIN_PNEUMONIA_DIAGNOSIS}
+          ssh_user_env_var: ${SSH_USER_PNEUMONIA_DIAGNOSIS}
+          ssh_host_env_var: ${SSH_HOST_PNEUMONIA_DIAGNOSIS}
+          docker_nvidia: true
+          docker_image_name: pneumonia_diagnosis
+          docker_container_name: PNEUMONIA_DIAGNOSIS
+          docker_etcd_host_folder: singnet/etcd/${SERVICE_NAME}/
+          docker_etcd_container_folder: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
+
 workflows:
   version: 2.1
   build_deploy_dnn_services:
@@ -646,6 +686,14 @@ workflows:
       - deploy-places365-scene-recognition:
           requires:
             - build-places365-scene-recognition
+          filters:
+            branches:
+              only: master
+
+      - build-pneumonia-diagnosis
+      - deploy-pneumonia-diagnosis:
+          requires:
+            - build-pneumonia-diagnosis
           filters:
             branches:
               only: master
