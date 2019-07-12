@@ -23,7 +23,7 @@ and has achieved an accuracy of `77,52%`.
 
 The service makes prediction using computer vision and machine learning techniques.
 
-The service outputs True for images that has a probability to have pneumonia or False otherwise.
+The service outputs `"Pneumonia"` for images that has a probability to have pneumonia or "Normal" otherwise.
 
 ### How does it work?
 
@@ -47,7 +47,7 @@ Read call params from cmdline...
 Calling service...
 
     response:
-        output: False
+        output: "Normal"
 ```
 
 ### What to expect from this service?
@@ -58,7 +58,7 @@ Input image:
 
 Response:
 ```
-False
+output: "Normal"
 ```
 
 Input image:
@@ -67,5 +67,5 @@ Input image:
 
 Response:
 ```
-True
+output: "Pneumonia"
 ```

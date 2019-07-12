@@ -110,13 +110,16 @@ $ python3 test_pneumonia_diagnosis_service.py
 Endpoint (localhost:7003): 
 Method (check): 
 Image (Link): https://snet-models.s3.amazonaws.com/bh/PneumoniaDiagnosis/diagnosis_normal_1.jpg
-False
+
+Normal
+
 
 $ python3 test_pneumonia_diagnosis_service.py 
 Endpoint (localhost:7003): 
 Method (check): 
 Image (Link): https://snet-models.s3.amazonaws.com/bh/PneumoniaDiagnosis/diagnosis_pneumonia.jpg
-True
+
+Pneumonia
 ```
 
 Through SingularityNET (follow this [link](https://dev.singularitynet.io/tutorials/publish/) to learn how to publish a service and open a payment channel to be able to call it):
@@ -126,7 +129,7 @@ Assuming that you have an open channel to this service:
 ```
 $ snet client call snet pneumonia-diagnosis check '{"img_path": "https://snet-models.s3.amazonaws.com/bh/PneumoniaDiagnosis/diagnosis_normal_2.jpg"}'
 Price for this call will be 0.00000001 AGI (use -y to remove this warning). Proceed? (y/n): y
-False
+output: "Normal"
 ```
 
 ## Contributing and Reporting Issues

@@ -10,6 +10,8 @@ import numpy as np
 from keras.models import load_model
 from keras.preprocessing.image import img_to_array
 from keras.optimizers import SGD
+from keras import backend as K
+
 import cv2
 
 
@@ -44,8 +46,9 @@ def diagnosis(img_path):
         model_file = os.path.join(resources_root,
                                   "Models", "PneumoniaModel.h5")
 
-        img_width, img_height = 128, 128
+        K.clear_session()
 
+        img_width, img_height = 128, 128
         model = load_model(model_file)
         model.compile(loss="binary_crossentropy",
                       optimizer=SGD(lr=0.001, momentum=0.9),
@@ -60,18 +63,20 @@ def diagnosis(img_path):
 
         result = model.predict(image)
         pred = np.argmax(result, axis=1)
+
+        K.clear_session()
         
         if os.path.exists(tmp_img_file):
             os.remove(tmp_img_file)
 
         if pred[0] == 0:
-            return False
-        return True
+            return "Normal"
+        return "Pneumonia"
 
     except Exception as e:
         log.error(e)
         traceback.print_exc()
-        return False
+        return "Normal"
 
 
 def generate_uid():
