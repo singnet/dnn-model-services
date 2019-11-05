@@ -1,6 +1,6 @@
 #! /bin/bash
 
-declare -a arr=("${SERVICE_FOLDER}"/Dockerfile "${SERVICE_FOLDER}"/requirements.txt)
+declare -a arr=("Dockerfile" "requirements.txt")
 RET_VAL=0
 
 for TARGET_FILE in "${arr[@]}"
