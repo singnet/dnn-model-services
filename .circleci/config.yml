@@ -242,6 +242,54 @@ jobs:
           docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
           docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
 
+  places365-scene-recognition:
+    docker:
+    - image: circleci/python:3.6.6-node
+    working_directory: ~/singnet
+    environment:
+      SERVICE_NAME: places365-scene-recognition
+      SERVICE_FOLDER: services/places365-scene-recognition
+      CERTS_FOLDER: singnet/.certs
+      SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_scene_recognition_service.py --ssl"
+      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_scene_recognition_service.py auto"
+      SNETD_PORT_MAINNET: 7019
+      SNETD_PORT_ROPSTEN: 7079
+    steps:
+      - checkout
+      - build_and_deploy:
+          domain: ${DOMAIN_PLACES365_SCENE_RECOGNITION}
+          ssh_user_env_var: ${SSH_USER_PLACES365_SCENE_RECOGNITION}
+          ssh_host_env_var: ${SSH_HOST_PLACES365_SCENE_RECOGNITION}
+          docker_nvidia: true
+          docker_image_name: places365_scene_recognition
+          docker_container_name: PLACES365_SCENE_RECOGNITION
+          docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
+          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
+
+  pneumonia-diagnosis:
+    docker:
+    - image: circleci/python:3.6.6-node
+    working_directory: ~/singnet
+    environment:
+      SERVICE_NAME: pneumonia-diagnosis
+      SERVICE_FOLDER: services/pneumonia-diagnosis
+      CERTS_FOLDER: singnet/.certs
+      SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_pneumonia_diagnosis_service.py --ssl"
+      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_pneumonia_diagnosis_service.py auto"
+      SNETD_PORT_MAINNET: 7072
+      SNETD_PORT_ROPSTEN: 7062
+    steps:
+      - checkout
+      - build_and_deploy:
+          domain: ${DOMAIN_PNEUMONIA_DIAGNOSIS}
+          ssh_user_env_var: ${SSH_USER_PNEUMONIA_DIAGNOSIS}
+          ssh_host_env_var: ${SSH_HOST_PNEUMONIA_DIAGNOSIS}
+          docker_nvidia: true
+          docker_image_name: pneumonia_diagnosis
+          docker_container_name: PNEUMONIA_DIAGNOSIS
+          docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
+          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
+
   s2vt-video-captioning:
     docker:
     - image: circleci/python:3.6.6-node
@@ -338,60 +386,12 @@ jobs:
           docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
           docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
 
-  places365-scene-recognition:
-    docker:
-    - image: circleci/python:3.6.6-node
-    working_directory: ~/singnet
-    environment:
-      SERVICE_NAME: places365-scene-recognition
-      SERVICE_FOLDER: services/places365-scene-recognition
-      CERTS_FOLDER: singnet/.certs
-      SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_scene_recognition_service.py --ssl"
-      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_scene_recognition_service.py auto"
-      SNETD_PORT_MAINNET: 7019
-      SNETD_PORT_ROPSTEN: 7079
-    steps:
-      - checkout
-      - build_and_deploy:
-          domain: ${DOMAIN_PLACES365_SCENE_RECOGNITION}
-          ssh_user_env_var: ${SSH_USER_PLACES365_SCENE_RECOGNITION}
-          ssh_host_env_var: ${SSH_HOST_PLACES365_SCENE_RECOGNITION}
-          docker_nvidia: true
-          docker_image_name: places365_scene_recognition
-          docker_container_name: PLACES365_SCENE_RECOGNITION
-          docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
-          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
-
-  pneumonia-diagnosis:
-    docker:
-    - image: circleci/python:3.6.6-node
-    working_directory: ~/singnet
-    environment:
-      SERVICE_NAME: pneumonia-diagnosis
-      SERVICE_FOLDER: services/pneumonia-diagnosis
-      CERTS_FOLDER: singnet/.certs
-      SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_pneumonia_diagnosis_service.py --ssl"
-      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_pneumonia_diagnosis_service.py auto"
-      SNETD_PORT_MAINNET: 7072
-      SNETD_PORT_ROPSTEN: 7062
-    steps:
-      - checkout
-      - build_and_deploy:
-          domain: ${DOMAIN_PNEUMONIA_DIAGNOSIS}
-          ssh_user_env_var: ${SSH_USER_PNEUMONIA_DIAGNOSIS}
-          ssh_host_env_var: ${SSH_HOST_PNEUMONIA_DIAGNOSIS}
-          docker_nvidia: true
-          docker_image_name: pneumonia_diagnosis
-          docker_container_name: PNEUMONIA_DIAGNOSIS
-          docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
-          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
-
 workflows:
   version: 2.1
   build_deploy_dnn_services:
     jobs:
       - cntk-image-recon
-      - deepfakes-faceswap
+#      - deepfakes-faceswap
       - i3d-video-action-recognition
       - s2vt-video-captioning
 #      - siggraph-colorization
