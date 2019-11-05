@@ -45,9 +45,7 @@ commands:
             export DOCKER_DEPLOY=$([ "${CIRCLE_PROJECT_USERNAME}"/"${CIRCLE_BRANCH}" = "singnet/master" ] && echo "true" || echo "false")
             export PROD_TAG=$([ "${DOCKER_DEPLOY}" = "true" ] && echo "PROD_" || echo "")
             echo "Setting Up..."
-            cp .circleci/check_md5.sh ${SERVICE_DIR}
-            cd ${SERVICE_DIR}
-            echo $(./check_md5.sh) >> docker_rebuild
+            echo $(.circleci/check_md5.sh) >> docker_rebuild
             echo "FILES_CHANGED=$(cat docker_rebuild)"
 
       - run:
