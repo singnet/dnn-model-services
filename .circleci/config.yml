@@ -42,10 +42,12 @@ commands:
             export SSH_USER=<< parameters.ssh_user_env_var >>
             export SSH_HOST=<< parameters.ssh_host_env_var >>
             export DOCKER_CONTAINER_NAME=<< parameters.docker_container_name >>
-            export PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
+            export DOCKER_DEPLOY=$([ "${CIRCLE_PROJECT_USERNAME}"/"${CIRCLE_BRANCH}" = "singnet/master" ] && echo "true" || echo "false")
+            export PROD_TAG=$([ "${DOCKER_DEPLOY}" = "true" ] && echo "PROD_" || echo "")
             echo "Setting Up..."
+            cp .circleci/check_md5.sh ${SERVICE_DIR}
             cd ${SERVICE_DIR}
-            echo $(.circleci/check_md5.sh) >> docker_rebuild
+            echo $(./check_md5.sh) >> docker_rebuild
             echo "FILES_CHANGED=$(cat docker_rebuild)"
 
       - run:
@@ -55,7 +57,8 @@ commands:
             export SSH_HOST=<< parameters.ssh_host_env_var >>
             export DOCKER_IMAGE_NAME=<< parameters.docker_image_name >>
             export DOCKER_CONTAINER_NAME=<< parameters.docker_container_name >>
-            export PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
+            export DOCKER_DEPLOY=$([ "${CIRCLE_PROJECT_USERNAME}"/"${CIRCLE_BRANCH}" = "singnet/master" ] && echo "true" || echo "false")
+            export PROD_TAG=$([ "${DOCKER_DEPLOY}" = "true" ] && echo "PROD_" || echo "")
             echo "Removing old Container (from previous builds)..."
             ssh -o "StrictHostKeyChecking no" ${SSH_USER}@${SSH_HOST} \<< EOF
               docker stop ${PROD_TAG}${DOCKER_CONTAINER_NAME}_old || true
@@ -76,7 +79,8 @@ commands:
             export DOCKER_MOUNT_DEST=<< parameters.docker_mount_dest >>
             export ETCD_HOST_DIR=<< parameters.docker_etcd_host_dir >>
             export ETCD_CONTAINER_DIR=<< parameters.docker_etcd_container_dir >>
-            export PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
+            export DOCKER_DEPLOY=$([ "${CIRCLE_PROJECT_USERNAME}"/"${CIRCLE_BRANCH}" = "singnet/master" ] && echo "true" || echo "false")
+            export PROD_TAG=$([ "${DOCKER_DEPLOY}" = "true" ] && echo "PROD_" || echo "")
             echo            git_user  : ${CIRCLE_PROJECT_USERNAME}
             echo            git_repo  : ${CIRCLE_PROJECT_REPONAME}
             echo            git_branch: ${CIRCLE_BRANCH}
@@ -111,7 +115,7 @@ commands:
       - run:
           name: Running new Docker Container
           command: |
-            echo "==================== Running Configs ========================"
+            echo "============================================ Run Configs ============================================"
             export SSH_USER=<< parameters.ssh_user_env_var >>
             export SSH_HOST=<< parameters.ssh_host_env_var >>
             export DOCKER_NVIDIA=<< parameters.docker_nvidia >>
@@ -122,7 +126,8 @@ commands:
             export DOCKER_MOUNT_DEST=<< parameters.docker_mount_dest >>
             export ETCD_HOST_DIR=<< parameters.docker_etcd_host_dir >>
             export ETCD_CONTAINER_DIR=<< parameters.docker_etcd_container_dir >>
-            export PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
+            export DOCKER_DEPLOY=$([ "${CIRCLE_PROJECT_USERNAME}"/"${CIRCLE_BRANCH}" = "singnet/master" ] && echo "true" || echo "false")
+            export PROD_TAG=$([ "${DOCKER_DEPLOY}" = "true" ] && echo "PROD_" || echo "")
             echo            git_user  : ${CIRCLE_PROJECT_USERNAME}
             echo            git_repo  : ${CIRCLE_PROJECT_REPONAME}
             echo            git_branch: ${CIRCLE_BRANCH}
@@ -135,7 +140,7 @@ commands:
             echo DOCKER_MOUNT_VOLUMES : ${DOCKER_MOUNT_VOLUMES}
             echo DOCKER_MOUNT_SRC     : ${DOCKER_MOUNT_SRC}
             echo DOCKER_MOUNT_DEST    : ${DOCKER_MOUNT_DEST}
-            echo "============================================================="
+            echo "====================================================================================================="
             echo "Running new Container..."
             ssh -o "StrictHostKeyChecking no" ${SSH_USER}@${SSH_HOST} \<<-EOF
                   docker stop ${PROD_TAG}${DOCKER_CONTAINER_NAME} || true
@@ -161,7 +166,8 @@ commands:
             export SSH_HOST=<< parameters.ssh_host_env_var >>
             export DOCKER_IMAGE_NAME=<< parameters.docker_image_name >>
             export DOCKER_CONTAINER_NAME=<< parameters.docker_container_name >>
-            export PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
+            export DOCKER_DEPLOY=$([ "${CIRCLE_PROJECT_USERNAME}"/"${CIRCLE_BRANCH}" = "singnet/master" ] && echo "true" || echo "false")
+            export PROD_TAG=$([ "${DOCKER_DEPLOY}" = "true" ] && echo "PROD_" || echo "")
             ssh -o "StrictHostKeyChecking no" ${SSH_USER}@${SSH_HOST} \<< EOF
               docker exec -i ${PROD_TAG}${DOCKER_CONTAINER_NAME} ${SERVICE_TEST_COMMAND}
             EOF
