@@ -64,7 +64,7 @@ For more details on how to publish and test a service, select it from the list b
       }
     ```
 
-### Game AI:
+### Games:
 - [zeta36-chess-alpha-zero](services/zeta36-chess-alpha-zero) ([User's Guide](docs/users_guide/zeta36-chess-alpha-zero.md)) - This service uses [AlphaGo Zero methods](https://deepmind.com/blog/alphago-zero-learning-scratch/)
  to learn and play chess. [[Reference](https://github.com/Zeta36/chess-alpha-zero)]
 
