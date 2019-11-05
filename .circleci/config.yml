@@ -146,7 +146,7 @@ commands:
                   -e PVT_KEY_FOR_METERING=${PVT_KEY_FOR_METERING} \
                   $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-p ${SNETD_PORT_MAINNET}:${SNETD_PORT_MAINNET}" || echo "") \
                   $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-p ${SNETD_PORT_ROPSTEN}:${SNETD_PORT_ROPSTEN}" || echo "") \
-                  $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-v ~/${CERTS_FOLDER}:/opt/singnet/.certs" || echo "") \
+                  -v ~/${CERTS_FOLDER}:/opt/singnet/.certs \
                   $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-v ~/${ETCD_HOST_FOLDER}:/${ETCD_CONTAINER_FOLDER}" || echo "") \
                   $([ "${DOCKER_MOUNT_VOLUMES}" = "true" ] && echo "-v ${DOCKER_MOUNT_SRC}:${DOCKER_MOUNT_DEST}" || echo "") \
                   -tdi ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME} ${SERVICE_RUN_COMMAND}
