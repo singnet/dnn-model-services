@@ -74,8 +74,8 @@ commands:
             export DOCKER_MOUNT_VOLUMES=<< parameters.docker_mount_volumes >>
             export DOCKER_MOUNT_SRC=<< parameters.docker_mount_src >>
             export DOCKER_MOUNT_DEST=<< parameters.docker_mount_dest >>
-            export ETCD_HOST_FOLDER=<< parameters.docker_etcd_host_dir >>
-            export ETCD_CONTAINER_FOLDER=<< parameters.docker_etcd_container_dir >>
+            export ETCD_HOST_DIR=<< parameters.docker_etcd_host_dir >>
+            export ETCD_CONTAINER_DIR=<< parameters.docker_etcd_container_dir >>
             export PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
             echo            git_user  : ${CIRCLE_PROJECT_USERNAME}
             echo            git_repo  : ${CIRCLE_PROJECT_REPONAME}
@@ -120,8 +120,8 @@ commands:
             export DOCKER_MOUNT_VOLUMES=<< parameters.docker_mount_volumes >>
             export DOCKER_MOUNT_SRC=<< parameters.docker_mount_src >>
             export DOCKER_MOUNT_DEST=<< parameters.docker_mount_dest >>
-            export ETCD_HOST_FOLDER=<< parameters.docker_etcd_host_dir >>
-            export ETCD_CONTAINER_FOLDER=<< parameters.docker_etcd_container_dir >>
+            export ETCD_HOST_DIR=<< parameters.docker_etcd_host_dir >>
+            export ETCD_CONTAINER_DIR=<< parameters.docker_etcd_container_dir >>
             export PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
             echo            git_user  : ${CIRCLE_PROJECT_USERNAME}
             echo            git_repo  : ${CIRCLE_PROJECT_REPONAME}
@@ -147,8 +147,8 @@ commands:
                   -e PVT_KEY_FOR_METERING=${PVT_KEY_FOR_METERING} \
                   $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-p ${SNETD_PORT_MAINNET}:${SNETD_PORT_MAINNET}" || echo "") \
                   $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-p ${SNETD_PORT_ROPSTEN}:${SNETD_PORT_ROPSTEN}" || echo "") \
-                  -v ~/${CERTS_FOLDER}:/opt/singnet/.certs \
-                  $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-v ~/${ETCD_HOST_FOLDER}:/${ETCD_CONTAINER_FOLDER}" || echo "") \
+                  -v ~/${CERTS_DIR}:/opt/singnet/.certs \
+                  $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-v ~/${ETCD_HOST_DIR}:/${ETCD_CONTAINER_DIR}" || echo "") \
                   $([ "${DOCKER_MOUNT_VOLUMES}" = "true" ] && echo "-v ${DOCKER_MOUNT_SRC}:${DOCKER_MOUNT_DEST}" || echo "") \
                   -tdi ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME} ${SERVICE_RUN_COMMAND}
             EOF
@@ -175,7 +175,7 @@ jobs:
     environment:
       SERVICE_NAME: cntk-image-recon
       SERVICE_DIR: services/cntk-image-recon
-      CERTS_FOLDER: singnet/.certs
+      CERTS_DIR: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "source '/cntk/activate-cntk';git pull;python3 run_image_recon_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 10;source '/cntk/activate-cntk';python3 test_image_recon_service.py auto"
       SNETD_PORT_MAINNET: 7004
@@ -199,7 +199,7 @@ jobs:
     environment:
       SERVICE_NAME: deepfakes-faceswap
       SERVICE_DIR: services/deepfakes-faceswap
-      CERTS_FOLDER: singnet/.certs
+      CERTS_DIR: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_deepfakes_faceswap_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_deepfakes_faceswap_service.py auto"
       SNETD_PORT_MAINNET: 7060
@@ -226,7 +226,7 @@ jobs:
     environment:
       SERVICE_NAME: i3d-video-action-recognition
       SERVICE_DIR: services/i3d-video-action-recognition
-      CERTS_FOLDER: singnet/.certs
+      CERTS_DIR: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_video_action_recon_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_video_action_recon_service.py auto"
       SNETD_PORT_MAINNET: 7005
@@ -250,7 +250,7 @@ jobs:
     environment:
       SERVICE_NAME: places365-scene-recognition
       SERVICE_DIR: services/places365-scene-recognition
-      CERTS_FOLDER: singnet/.certs
+      CERTS_DIR: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_scene_recognition_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_scene_recognition_service.py auto"
       SNETD_PORT_MAINNET: 7019
@@ -274,7 +274,7 @@ jobs:
     environment:
       SERVICE_NAME: pneumonia-diagnosis
       SERVICE_DIR: services/pneumonia-diagnosis
-      CERTS_FOLDER: singnet/.certs
+      CERTS_DIR: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_pneumonia_diagnosis_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_pneumonia_diagnosis_service.py auto"
       SNETD_PORT_MAINNET: 7072
@@ -298,7 +298,7 @@ jobs:
     environment:
       SERVICE_NAME: s2vt-video-captioning
       SERVICE_DIR: services/s2vt-video-captioning
-      CERTS_FOLDER: singnet/.certs
+      CERTS_DIR: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "git pull;python run_video_cap_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 10;python test_video_cap_service.py auto"
       SNETD_PORT_MAINNET: 7006
@@ -322,7 +322,7 @@ jobs:
     environment:
       SERVICE_NAME: siggraph-colorization
       SERVICE_DIR: services/siggraph-colorization
-      CERTS_FOLDER: singnet/.certs
+      CERTS_DIR: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_colorize_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_colorize_service.py auto"
       SNETD_PORT_MAINNET: 7084
@@ -346,7 +346,7 @@ jobs:
     environment:
       SERVICE_NAME: yolov3-object-detection
       SERVICE_DIR: services/yolov3-object-detection
-      CERTS_FOLDER: singnet/.certs
+      CERTS_DIR: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_object_detection_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_object_detection_service.py auto"
       SNETD_PORT_MAINNET: 7007
@@ -370,7 +370,7 @@ jobs:
     environment:
       SERVICE_NAME: zeta36-chess-alpha-zero
       SERVICE_DIR: services/zeta36-chess-alpha-zero
-      CERTS_FOLDER: singnet/.certs
+      CERTS_DIR: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "git pull;python3.6 run_alpha_zero_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 10;python3.6 test_alpha_zero_service.py auto"
       SNETD_PORT_MAINNET: 7008
