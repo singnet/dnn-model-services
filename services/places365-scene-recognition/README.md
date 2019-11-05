@@ -34,9 +34,8 @@ Create `SNET Daemon`'s config JSON file (`snetd.config.json`).
 ```
 {
    "DAEMON_END_POINT": "DAEMON_HOST:DAEMON_PORT",
-   "ETHEREUM_JSON_RPC_ENDPOINT": "https://kovan.infura.io",
    "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
-   "REGISTRY_ADDRESS_KEY": "0x2e4b2f2b72402b9b2d6a7851e37c856c329afe38",
+   "BLOCKCHAIN_NETWORK_SELECTED": "BLOCKCHAIN_NETWORK",
    "PASSTHROUGH_ENABLED": true,
    "PASSTHROUGH_ENDPOINT": "SERVICE_GRPC_HOST:SERVICE_GRPC_PORT",  
    "ORGANIZATION_NAME": "ORGANIZATION_NAME",
@@ -51,9 +50,8 @@ Create `SNET Daemon`'s config JSON file (`snetd.config.json`).
 ```
 In which:
 - *DAEMON_END_POINT* is the endpoint at which your service's SNET Daemon awaits for client calls. If running from inside a Docker container, make sure to expose the port by using the `-p` flag on `docker run` (e.g. `docker run [...] -p HOST_PORT:CONTAINER_PORT [...]`);
-- *ETHEREUM_JSON_RPC_ENDPOINT* is network endpoint on ethereum blockchain. Should be kept as `"https://kovan.infura.io"` for Kovan Test Network to test your service;
-- *IPFS_END_POINT* is the endpoint of IPFS instance to get service configuration metadata. Should be kept as `http://ipfs.singularitynet.io:80` for the current SNET Registry at Kovan;
-- *REGISTRY_ADDRESS_KEY* is SNET's current Registry address on Kovan (where all the services and organizations are listed);
+- *BLOCKCHAIN_NETWORK_SELECTED* is the network. Should be `"ropsten"` for Ropsten Test Network to test your service;
+- *IPFS_END_POINT* is the endpoint of IPFS instance to get service configuration metadata. Should be kept as `http://ipfs.singularitynet.io:80` for the current SNET's IPFS server;
 - *PASSTHROUGH_ENABLED* should be kept as `true` so that the SNET Daemon forwards the data it receives to your service's endpoint. If set to `false` it will simply echo its inputs for testing purposes;
 - *PASSTHROUGH_ENDPOINT* is the endpoint at which your service awaits for Daemon input. In this case we're using gRPC for Daemon-service communication so the service's endpoint should be a specific http host (`http://ip:port`). You're likely going to use `localhost` as you ip and specify a port;
 - *ORGANIZATION_NAME* and *SERVICE_NAME* are the names of your organzation and service, respectively, under SingularityNET. [Click here](https://github.com/singnet/wiki/blob/master/tutorials/howToPublishService/README.md) to learn more about creating an organization and publishing a service;
@@ -65,9 +63,8 @@ For example:
 $ cat snetd.config.json
 {
    "DAEMON_END_POINT": "http://54.203.198.53:7019",
-   "ETHEREUM_JSON_RPC_ENDPOINT": "https://kovan.infura.io",
    "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
-   "REGISTRY_ADDRESS_KEY": "0x2e4b2f2b72402b9b2d6a7851e37c856c329afe38",
+   "BLOCKCHAIN_NETWORK_SELECTED": "ropsten",
    "PASSTHROUGH_ENABLED": true,
    "PASSTHROUGH_ENDPOINT": "http://localhost:7018",
    "ORGANIZATION_NAME": "snet",

@@ -24,7 +24,7 @@ log = logging.getLogger("deepfakes_faceswap_service")
 cs = None
 admin_pwd = "admin#deepfakes"
 cs_host = "0.0.0.0"
-cs_port = 7006
+cs_port = 7062
 
 
 # Create a class to be added to the gRPC server
@@ -58,7 +58,7 @@ class DeepFakesFaceSwapServicer(grpc_bt_grpc.DeepFakesFaceSwapServicer):
                                           func=self.process_request,
                                           args={"request": request})
 
-            self.response.uid = "http://52.38.111.172:7006/" \
+            self.response.uid = "http://52.38.111.172:7062/" \
                                 "dashboard?uid={}".format(self.response.uid)
 
             return self.response
@@ -163,7 +163,7 @@ def init_content_server():
     log.info("Creating Content Server Database...")
     cs.create()
     
-    # Start serving at 0.0.0.0:7001 with "admin" as the admin password
+    # Start Content Server at 0.0.0.0:7062 with "admin" as the admin password
     log.info("Starting Content Server...")
     cs.serve()
 

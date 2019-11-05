@@ -1,6 +1,6 @@
 commands:
-  build_command:
-    description: "Build and Test SingularityNET Services"
+  build_and_deploy:
+    description: "Build/Test and Deploy SingularityNET Services"
     parameters:
       domain:
         type: string
@@ -20,6 +20,12 @@ commands:
       docker_container_name:
         type: string
         default: ""
+      docker_etcd_host_dir:
+        type: string
+        default: ""
+      docker_etcd_container_dir:
+        type: string
+        default: ""
       docker_mount_volumes:
         type: boolean
         default: false
@@ -31,6 +37,17 @@ commands:
         default: ""
     steps:
       - run:
+          name: Setting Up
+          command: |
+            export SSH_USER=<< parameters.ssh_user_env_var >>
+            export SSH_HOST=<< parameters.ssh_host_env_var >>
+            export DOCKER_CONTAINER_NAME=<< parameters.docker_container_name >>
+            export PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
+            echo "Setting Up..."
+            echo $(.circleci/check_md5.sh) >> docker_rebuild
+            echo "FILES_CHANGED=$(cat docker_rebuild)"
+
+      - run:
           name: Removing old Docker Container (Previous Builds)
           command: |
             export SSH_USER=<< parameters.ssh_user_env_var >>
@@ -38,14 +55,16 @@ commands:
             export DOCKER_IMAGE_NAME=<< parameters.docker_image_name >>
             export DOCKER_CONTAINER_NAME=<< parameters.docker_container_name >>
             export PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
-
+            echo "Removing old Container (from previous builds)..."
             ssh -o "StrictHostKeyChecking no" ${SSH_USER}@${SSH_HOST} \<< EOF
-              docker stop ${PROD_TAG}${DOCKER_CONTAINER_NAME}_old || true && docker rm ${PROD_TAG}${DOCKER_CONTAINER_NAME}_old || true
+              docker stop ${PROD_TAG}${DOCKER_CONTAINER_NAME}_old || true
+              docker rm ${PROD_TAG}${DOCKER_CONTAINER_NAME}_old || true
             EOF
+
       - run:
           name: Building
           command: |
-            echo "==================================================== Build Configs ==================================================="
+            echo "=========================================== Build Configs ==========================================="
             export SSH_USER=<< parameters.ssh_user_env_var >>
             export SSH_HOST=<< parameters.ssh_host_env_var >>
             export DOCKER_NVIDIA=<< parameters.docker_nvidia >>
@@ -54,6 +73,8 @@ commands:
             export DOCKER_MOUNT_VOLUMES=<< parameters.docker_mount_volumes >>
             export DOCKER_MOUNT_SRC=<< parameters.docker_mount_src >>
             export DOCKER_MOUNT_DEST=<< parameters.docker_mount_dest >>
+            export ETCD_HOST_FOLDER=<< parameters.docker_etcd_host_dir >>
+            export ETCD_CONTAINER_FOLDER=<< parameters.docker_etcd_container_dir >>
             export PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
             echo            git_user  : ${CIRCLE_PROJECT_USERNAME}
             echo            git_repo  : ${CIRCLE_PROJECT_REPONAME}
@@ -67,34 +88,70 @@ commands:
             echo DOCKER_MOUNT_VOLUMES : ${DOCKER_MOUNT_VOLUMES}
             echo DOCKER_MOUNT_SRC     : ${DOCKER_MOUNT_SRC}
             echo DOCKER_MOUNT_DEST    : ${DOCKER_MOUNT_DEST}
-            echo "======================================================================================================================"
-
+            echo "====================================================================================================="
+            DOCKER_IMAGE_EXISTS=`ssh -o "StrictHostKeyChecking no" ${SSH_USER}@${SSH_HOST} docker images -q ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME}`
+            FILES_CHANGED=`cat docker_rebuild`
+            echo DOCKER_IMAGE_EXISTS=${DOCKER_IMAGE_EXISTS}
+            echo FILES_CHANGED=${FILES_CHANGED}
             ssh -o "StrictHostKeyChecking no" ${SSH_USER}@${SSH_HOST} \<< EOF
-              docker stop ${PROD_TAG}${DOCKER_CONTAINER_NAME} || true && docker rename ${PROD_TAG}${DOCKER_CONTAINER_NAME} ${PROD_TAG}${DOCKER_CONTAINER_NAME}_old || true
-              docker build \
-                --build-arg git_owner=${CIRCLE_PROJECT_USERNAME} \
-                --build-arg git_repo=${CIRCLE_PROJECT_REPONAME} \
-                --build-arg git_branch=${CIRCLE_BRANCH} \
-                $([ "${DOCKER_NOCACHE}" = "true" ] && echo "--no-cache" || echo "") \
-                -t ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME} https://raw.githubusercontent.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}/${SERVICE_FOLDER}/Dockerfile
-              docker run \
-                $([ "${DOCKER_NVIDIA}" = "true" ] && echo "--runtime=nvidia" || echo "") \
-                --name ${PROD_TAG}${DOCKER_CONTAINER_NAME} \
-                $([ "${DOCKER_MOUNT_VOLUMES}" = "true" ] && echo "-v ${DOCKER_MOUNT_SRC}:${DOCKER_MOUNT_DEST}" || echo "") \
-                -tdi ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME} ${SERVICE_RUN_COMMAND}
+              if [ "$DOCKER_IMAGE_EXISTS" = "" ] || [ "$FILES_CHANGED" != 0 ]; then
+                echo "Building..."
+                docker build \
+                  --build-arg git_owner=${CIRCLE_PROJECT_USERNAME} \
+                  --build-arg git_repo=${CIRCLE_PROJECT_REPONAME} \
+                  --build-arg git_branch=${CIRCLE_BRANCH} \
+                  $([ "${DOCKER_NOCACHE}" = "true" ] && echo "--no-cache" || echo "") \
+                  -t ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME} https://raw.githubusercontent.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}/${SERVICE_FOLDER}/Dockerfile
+              else
+                echo "Not Building..."
+              fi
             EOF
+
       - run:
-          name: Removing old Docker Container
+          name: Running new Docker Container
           command: |
+            echo "==================== Running Configs ========================"
             export SSH_USER=<< parameters.ssh_user_env_var >>
             export SSH_HOST=<< parameters.ssh_host_env_var >>
+            export DOCKER_NVIDIA=<< parameters.docker_nvidia >>
             export DOCKER_IMAGE_NAME=<< parameters.docker_image_name >>
             export DOCKER_CONTAINER_NAME=<< parameters.docker_container_name >>
+            export DOCKER_MOUNT_VOLUMES=<< parameters.docker_mount_volumes >>
+            export DOCKER_MOUNT_SRC=<< parameters.docker_mount_src >>
+            export DOCKER_MOUNT_DEST=<< parameters.docker_mount_dest >>
+            export ETCD_HOST_FOLDER=<< parameters.docker_etcd_host_dir >>
+            export ETCD_CONTAINER_FOLDER=<< parameters.docker_etcd_container_dir >>
             export PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
-
-            ssh -o "StrictHostKeyChecking no" ${SSH_USER}@${SSH_HOST} \<< EOF
-              docker stop ${PROD_TAG}${DOCKER_CONTAINER_NAME}_old || true && docker rm ${PROD_TAG}${DOCKER_CONTAINER_NAME}_old || true
+            echo            git_user  : ${CIRCLE_PROJECT_USERNAME}
+            echo            git_repo  : ${CIRCLE_PROJECT_REPONAME}
+            echo            git_branch: ${CIRCLE_BRANCH}
+            echo SSH_USER             : ${SSH_USER}
+            echo SSH_HOST             : ${SSH_HOST}
+            echo DOCKER_NOCACHE       : ${DOCKER_NOCACHE}
+            echo DOCKER_NVIDIA        : ${DOCKER_NVIDIA}
+            echo DOCKER_IMAGE_NAME    : ${DOCKER_IMAGE_NAME}
+            echo DOCKER_CONTAINER_NAME: ${DOCKER_CONTAINER_NAME}
+            echo DOCKER_MOUNT_VOLUMES : ${DOCKER_MOUNT_VOLUMES}
+            echo DOCKER_MOUNT_SRC     : ${DOCKER_MOUNT_SRC}
+            echo DOCKER_MOUNT_DEST    : ${DOCKER_MOUNT_DEST}
+            echo "============================================================="
+            echo "Running new Container..."
+            ssh -o "StrictHostKeyChecking no" ${SSH_USER}@${SSH_HOST} \<<-EOF
+                  docker stop ${PROD_TAG}${DOCKER_CONTAINER_NAME} || true
+                  docker rename ${PROD_TAG}${DOCKER_CONTAINER_NAME} ${PROD_TAG}${DOCKER_CONTAINER_NAME}_old || true
+                  docker run \
+                  $([ "${DOCKER_NVIDIA}" = "true" ] && echo "--runtime=nvidia" || echo "") \
+                  --name ${PROD_TAG}${DOCKER_CONTAINER_NAME} \
+                  --restart unless-stopped \
+                  -e PVT_KEY_FOR_METERING=${PVT_KEY_FOR_METERING} \
+                  $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-p ${SNETD_PORT_MAINNET}:${SNETD_PORT_MAINNET}" || echo "") \
+                  $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-p ${SNETD_PORT_ROPSTEN}:${SNETD_PORT_ROPSTEN}" || echo "") \
+                  $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-v ~/${CERTS_FOLDER}:/opt/singnet/.certs" || echo "") \
+                  $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-v ~/${ETCD_HOST_FOLDER}:/${ETCD_CONTAINER_FOLDER}" || echo "") \
+                  $([ "${DOCKER_MOUNT_VOLUMES}" = "true" ] && echo "-v ${DOCKER_MOUNT_SRC}:${DOCKER_MOUNT_DEST}" || echo "") \
+                  -tdi ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME} ${SERVICE_RUN_COMMAND}
             EOF
+
       - run:
           name: Testing local
           no_output_timeout: 60m
@@ -104,176 +161,13 @@ commands:
             export DOCKER_IMAGE_NAME=<< parameters.docker_image_name >>
             export DOCKER_CONTAINER_NAME=<< parameters.docker_container_name >>
             export PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
-
             ssh -o "StrictHostKeyChecking no" ${SSH_USER}@${SSH_HOST} \<< EOF
               docker exec -i ${PROD_TAG}${DOCKER_CONTAINER_NAME} ${SERVICE_TEST_COMMAND}
             EOF
 
-  deploy_command:
-    description: "Deploy SingularityNET Services"
-    parameters:
-      domain:
-        type: string
-        default: ""
-      ssh_user_env_var:
-        type: string
-        default: ""
-      ssh_host_env_var:
-        type: string
-        default: ""
-      docker_nvidia:
-        type: boolean
-        default: false
-      docker_image_name:
-        type: string
-        default: ""
-      docker_container_name:
-        type: string
-        default: ""
-      docker_etcd_host_folder:
-        type: string
-        default: ""
-      docker_etcd_container_folder:
-        type: string
-        default: ""
-      docker_mount_volumes:
-        type: boolean
-        default: false
-      docker_mount_src:
-        type: string
-        default: ""
-      docker_mount_dest:
-        type: string
-        default: ""
-    steps:
-      - run:
-          name: Removing old Docker Container (Previous Builds)
-          command: |
-            export SSH_USER=<< parameters.ssh_user_env_var >>
-            export SSH_HOST=<< parameters.ssh_host_env_var >>
-            export DOCKER_IMAGE_NAME=<< parameters.docker_image_name >>
-            export DOCKER_CONTAINER_NAME=<< parameters.docker_container_name >>
-            export PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
-
-            ssh -o "StrictHostKeyChecking no" ${SSH_USER}@${SSH_HOST} \<< EOF
-              docker stop ${PROD_TAG}${DOCKER_CONTAINER_NAME}_old || true && docker rm ${PROD_TAG}${DOCKER_CONTAINER_NAME}_old || true
-            EOF
-      - run:
-          name: Deploying
-          command: |
-            echo "=================================================== Deploy Configs ==================================================="
-            export SSH_USER=<< parameters.ssh_user_env_var >>
-            export SSH_HOST=<< parameters.ssh_host_env_var >>
-            export DOCKER_DEPLOY=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "true" || echo "false")
-            export DOCKER_NVIDIA=<< parameters.docker_nvidia >>
-            export DOCKER_IMAGE_NAME=<< parameters.docker_image_name >>
-            export DOCKER_CONTAINER_NAME=<< parameters.docker_container_name >>
-            export DOCKER_MOUNT_VOLUMES=<< parameters.docker_mount_volumes >>
-            export DOCKER_MOUNT_SRC=<< parameters.docker_mount_src >>
-            export DOCKER_MOUNT_DEST=<< parameters.docker_mount_dest >>
-            export ETCD_HOST_FOLDER=<< parameters.docker_etcd_host_folder >>
-            export ETCD_CONTAINER_FOLDER=<< parameters.docker_etcd_container_folder >>
-            export PROD_TAG=$([ "${DOCKER_DEPLOY}" = "true" ] && echo "PROD_" || echo "")
-            echo            git_user  : ${CIRCLE_PROJECT_USERNAME}
-            echo            git_repo  : ${CIRCLE_PROJECT_REPONAME}
-            echo            git_branch: ${CIRCLE_BRANCH}
-            echo SSH_USER             : ${SSH_USER}
-            echo SSH_HOST             : ${SSH_HOST}
-            echo DOCKER_DEPLOY        : ${DOCKER_DEPLOY}
-            echo DOCKER_NOCACHE       : ${DOCKER_NOCACHE}
-            echo DOCKER_NVIDIA        : ${DOCKER_NVIDIA}
-            echo DOCKER_IMAGE_NAME    : ${DOCKER_IMAGE_NAME}
-            echo DOCKER_CONTAINER_NAME: ${DOCKER_CONTAINER_NAME}
-            echo DOCKER_MOUNT_VOLUMES : ${DOCKER_MOUNT_VOLUMES}
-            echo DOCKER_MOUNT_SRC     : ${DOCKER_MOUNT_SRC}
-            echo DOCKER_MOUNT_DEST    : ${DOCKER_MOUNT_DEST}
-            echo ETCD_HOST_FOLDER     : ${ETCD_HOST_FOLDER}
-            echo ETCD_CONTAINER_FOLDER: ${ETCD_CONTAINER_FOLDER}
-            echo CERTS_FOLDER         : ${CERTS_FOLDER}
-            echo "======================================================================================================================"
-
-            if [ "$DOCKER_DEPLOY" = "true" ]; then
-            	echo "Status: Deploying..."
-            	ssh -o "StrictHostKeyChecking no" ${SSH_USER}@${SSH_HOST} \<<-EOF
-                    docker stop ${PROD_TAG}${DOCKER_CONTAINER_NAME} || true && docker rename ${PROD_TAG}${DOCKER_CONTAINER_NAME} ${PROD_TAG}${DOCKER_CONTAINER_NAME}_old || true
-                    docker build \
-                    --build-arg git_owner=${CIRCLE_PROJECT_USERNAME} \
-                    --build-arg git_repo=${CIRCLE_PROJECT_REPONAME} \
-                    --build-arg git_branch=${CIRCLE_BRANCH} \
-                    $([ "${DOCKER_NOCACHE}" = "true" ] && echo "--no-cache" || echo "") \
-                    -t ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME} https://raw.githubusercontent.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}/${SERVICE_FOLDER}/Dockerfile
-                    docker run \
-                    $([ "${DOCKER_NVIDIA}" = "true" ] && echo "--runtime=nvidia" || echo "") \
-                    --name ${PROD_TAG}${DOCKER_CONTAINER_NAME} \
-                    --restart unless-stopped \
-                    $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-p ${SNETD_PORT_MAINNET}:${SNETD_PORT_MAINNET}" || echo "") \
-                    $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-p ${SNETD_PORT_ROPSTEN}:${SNETD_PORT_ROPSTEN}" || echo "") \
-                    $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-v ~/${CERTS_FOLDER}:/opt/singnet/.certs" || echo "") \
-                    $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-v ~/${ETCD_HOST_FOLDER}:/${ETCD_CONTAINER_FOLDER}" || echo "") \
-                    $([ "${DOCKER_MOUNT_VOLUMES}" = "true" ] && echo "-v ${DOCKER_MOUNT_SRC}:${DOCKER_MOUNT_DEST}" || echo "") \
-                    -dti ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME} ${SERVICE_RUN_COMMAND}
-            	EOF
-            else
-            	echo "Status: Not deploying..."
-            fi
-
-      - run:
-          name: Removing old Docker Container
-          command: |
-            export SSH_USER=<< parameters.ssh_user_env_var >>
-            export SSH_HOST=<< parameters.ssh_host_env_var >>
-            export DOCKER_DEPLOY=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "true" || echo "false")
-            export PROD_TAG=$([ "${DOCKER_DEPLOY}" = "true" ] && echo "PROD_" || echo "")
-            if [ "$DOCKER_DEPLOY" = "true" ]; then
-            	echo "Status: Deploying..."
-            	export DOCKER_IMAGE_NAME=<< parameters.docker_image_name >>
-            	export DOCKER_CONTAINER_NAME=<< parameters.docker_container_name >>
-            	ssh -o "StrictHostKeyChecking no" ${SSH_USER}@${SSH_HOST} \<<-EOF
-                    docker stop ${PROD_TAG}${DOCKER_CONTAINER_NAME}_old || true && docker rm ${PROD_TAG}${DOCKER_CONTAINER_NAME}_old || true
-            	EOF
-            else
-            	echo "Status: Not deploying..."
-            fi
-
-      - run:
-          name: Testing local
-          no_output_timeout: 60m
-          command: |
-            export SSH_USER=<< parameters.ssh_user_env_var >>
-            export SSH_HOST=<< parameters.ssh_host_env_var >>
-            export DOCKER_DEPLOY=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "true" || echo "false")
-            export PROD_TAG=$([ "${DOCKER_DEPLOY}" = "true" ] && echo "PROD_" || echo "")
-            if [ "$DOCKER_DEPLOY" = "true" ]; then
-            	echo "Status: Deploying..."
-            	export DOCKER_IMAGE_NAME=<< parameters.docker_image_name >>
-            	export DOCKER_CONTAINER_NAME=<< parameters.docker_container_name >>
-            	ssh -o "StrictHostKeyChecking no" ${SSH_USER}@${SSH_HOST} \<<-EOF
-                    docker exec -i ${PROD_TAG}${DOCKER_CONTAINER_NAME} ${SERVICE_TEST_COMMAND}
-            	EOF
-            else
-            	echo "Status: Not deploying..."
-            fi
-
 version: 2.1
 jobs:
-  build-cntk-image-recon:
-    docker:
-    - image: circleci/python:3.6.6-node
-    working_directory: ~/singnet
-    environment:
-      SERVICE_NAME: cntk-image-recon
-      SERVICE_FOLDER: services/cntk-image-recon
-      SERVICE_RUN_COMMAND: bash -c "source '/cntk/activate-cntk';git pull;python3 run_image_recon_service.py"
-      SERVICE_TEST_COMMAND: bash -c "sleep 10;source '/cntk/activate-cntk';python3 test_image_recon_service.py auto"
-    steps:
-      - build_command:
-          ssh_user_env_var: ${SSH_USER_CNTK_IMAGE_RECON}
-          ssh_host_env_var: ${SSH_HOST_CNTK_IMAGE_RECON}
-          docker_nvidia: true
-          docker_image_name: cntk_image_recognition
-          docker_container_name: CNTK_IMAGE_RECON
-
-  deploy-cntk-image-recon:
+  cntk-image-recon:
     docker:
     - image: circleci/python:3.6.6-node
     working_directory: ~/singnet
@@ -286,37 +180,18 @@ jobs:
       SNETD_PORT_MAINNET: 7004
       SNETD_PORT_ROPSTEN: 7054
     steps:
-      - deploy_command:
+      - checkout
+      - build_and_deploy:
           domain: ${DOMAIN_CNTK_IMAGE_RECON}
           ssh_user_env_var: ${SSH_USER_CNTK_IMAGE_RECON}
           ssh_host_env_var: ${SSH_HOST_CNTK_IMAGE_RECON}
           docker_nvidia: true
           docker_image_name: cntk_image_recognition
           docker_container_name: CNTK_IMAGE_RECON
-          docker_etcd_host_folder: singnet/etcd/${SERVICE_NAME}/
-          docker_etcd_container_folder: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
+          docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
+          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
 
-  build-deepfakes-faceswap:
-    docker:
-    - image: circleci/python:3.6.6-node
-    working_directory: ~/singnet
-    environment:
-      SERVICE_NAME: deepfakes-faceswap
-      SERVICE_FOLDER: services/deepfakes-faceswap
-      SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_deepfakes_faceswap_service.py"
-      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_deepfakes_faceswap_service.py auto"
-    steps:
-      - build_command:
-          ssh_user_env_var: ${SSH_USER_DEEPFAKES_FACESWAP}
-          ssh_host_env_var: ${SSH_HOST_DEEPFAKES_FACESWAP}
-          docker_mount_volumes: true
-          docker_mount_src: ~/storage
-          docker_mount_dest: /opt/storage
-          docker_nvidia: true
-          docker_image_name: deepfakes_faceswap
-          docker_container_name: DEEPFAKES_FACESWAP
-
-  deploy-deepfakes-faceswap:
+  deepfakes-faceswap:
     docker:
     - image: circleci/python:3.6.6-node
     working_directory: ~/singnet
@@ -326,10 +201,11 @@ jobs:
       CERTS_FOLDER: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_deepfakes_faceswap_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_deepfakes_faceswap_service.py auto"
-      SNETD_PORT_MAINNET: 7004
-      SNETD_PORT_ROPSTEN: 7005-7006
+      SNETD_PORT_MAINNET: 7060
+      SNETD_PORT_ROPSTEN: 7061-7062
     steps:
-      - deploy_command:
+      - checkout
+      - build_and_deploy:
           domain: ${DOMAIN_DEEPFAKES_FACESWAP}
           ssh_user_env_var: ${SSH_USER_DEEPFAKES_FACESWAP}
           ssh_host_env_var: ${SSH_HOST_DEEPFAKES_FACESWAP}
@@ -339,27 +215,10 @@ jobs:
           docker_nvidia: true
           docker_image_name: deepfakes_faceswap
           docker_container_name: DEEPFAKES_FACESWAP
-          docker_etcd_host_folder: singnet/etcd/${SERVICE_NAME}/
-          docker_etcd_container_folder: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
+          docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
+          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
 
-  build-i3d-video-action-recognition:
-    docker:
-      - image: circleci/python:3.6.6-node
-    working_directory: ~/singnet
-    environment:
-      SERVICE_NAME: i3d-video-action-recognition
-      SERVICE_FOLDER: services/i3d-video-action-recognition
-      SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_video_action_recon_service.py"
-      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_video_action_recon_service.py auto"
-    steps:
-      - build_command:
-          ssh_user_env_var: ${SSH_USER_I3D_VIDEO_ACTION_RECON}
-          ssh_host_env_var: ${SSH_HOST_I3D_VIDEO_ACTION_RECON}
-          docker_nvidia: true
-          docker_image_name: i3d_video_action_recognition
-          docker_container_name: I3D_VIDEO_ACTION_RECON
-
-  deploy-i3d-video-action-recognition:
+  i3d-video-action-recognition:
     docker:
     - image: circleci/python:3.6.6-node
     working_directory: ~/singnet
@@ -372,34 +231,18 @@ jobs:
       SNETD_PORT_MAINNET: 7005
       SNETD_PORT_ROPSTEN: 7055
     steps:
-      - deploy_command:
+      - checkout
+      - build_and_deploy:
           domain: ${DOMAIN_I3D_VIDEO_ACTION_RECON}
           ssh_user_env_var: ${SSH_USER_I3D_VIDEO_ACTION_RECON}
           ssh_host_env_var: ${SSH_HOST_I3D_VIDEO_ACTION_RECON}
           docker_nvidia: true
           docker_image_name: i3d_video_action_recognition
           docker_container_name: I3D_VIDEO_ACTION_RECON
-          docker_etcd_host_folder: singnet/etcd/${SERVICE_NAME}/
-          docker_etcd_container_folder: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
+          docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
+          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
 
-  build-s2vt-video-captioning:
-    docker:
-      - image: circleci/python:3.6.6-node
-    working_directory: ~/singnet
-    environment:
-      SERVICE_NAME: s2vt-video-captioning
-      SERVICE_FOLDER: services/s2vt-video-captioning
-      SERVICE_RUN_COMMAND: bash -c "git pull;python run_video_cap_service.py"
-      SERVICE_TEST_COMMAND: bash -c "sleep 10;python test_video_cap_service.py auto"
-    steps:
-      - build_command:
-          ssh_user_env_var: ${SSH_USER_S2VT_VIDEO_CAPTIONING}
-          ssh_host_env_var: ${SSH_HOST_S2VT_VIDEO_CAPTIONING}
-          docker_nvidia: true
-          docker_image_name: s2vt_video_captioning
-          docker_container_name: S2VT_VIDEO_CAPTIONING
-
-  deploy-s2vt-video-captioning:
+  s2vt-video-captioning:
     docker:
     - image: circleci/python:3.6.6-node
     working_directory: ~/singnet
@@ -412,34 +255,18 @@ jobs:
       SNETD_PORT_MAINNET: 7006
       SNETD_PORT_ROPSTEN: 7056
     steps:
-      - deploy_command:
+      - checkout
+      - build_and_deploy:
           domain: ${DOMAIN_S2VT_VIDEO_CAPTIONING}
           ssh_user_env_var: ${SSH_USER_S2VT_VIDEO_CAPTIONING}
           ssh_host_env_var: ${SSH_HOST_S2VT_VIDEO_CAPTIONING}
           docker_nvidia: true
           docker_image_name: s2vt_video_captioning
           docker_container_name: S2VT_VIDEO_CAPTIONING
-          docker_etcd_host_folder: singnet/etcd/${SERVICE_NAME}/
-          docker_etcd_container_folder: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
+          docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
+          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
 
-  build-siggraph-colorization:
-    docker:
-      - image: circleci/python:3.6.6-node
-    working_directory: ~/singnet
-    environment:
-      SERVICE_NAME: siggraph-colorization
-      SERVICE_FOLDER: services/siggraph-colorization
-      SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_colorize_service.py"
-      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_colorize_service.py auto"
-    steps:
-      - build_command:
-          ssh_user_env_var: ${SSH_USER_SIGGRAPH_COLORIZATION}
-          ssh_host_env_var: ${SSH_HOST_SIGGRAPH_COLORIZATION}
-          docker_nvidia: true
-          docker_image_name: siggraph_colorization
-          docker_container_name: SIGGRAPH_COLORIZATION
-
-  deploy-siggraph-colorization:
+  siggraph-colorization:
     docker:
     - image: circleci/python:3.6.6-node
     working_directory: ~/singnet
@@ -452,34 +279,18 @@ jobs:
       SNETD_PORT_MAINNET: 7084
       SNETD_PORT_ROPSTEN: 7085
     steps:
-      - deploy_command:
+      - checkout
+      - build_and_deploy:
           domain: ${DOMAIN_SIGGRAPH_COLORIZATION}
           ssh_user_env_var: ${SSH_USER_SIGGRAPH_COLORIZATION}
           ssh_host_env_var: ${SSH_HOST_SIGGRAPH_COLORIZATION}
           docker_nvidia: true
           docker_image_name: siggraph_colorization
           docker_container_name: SIGGRAPH_COLORIZATION
-          docker_etcd_host_folder: singnet/etcd/${SERVICE_NAME}/
-          docker_etcd_container_folder: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
+          docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
+          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
 
-  build-yolov3-object-detection:
-    docker:
-      - image: circleci/python:3.6.6-node
-    working_directory: ~/singnet
-    environment:
-      SERVICE_NAME: yolov3-object-detection
-      SERVICE_FOLDER: services/yolov3-object-detection
-      SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_object_detection_service.py"
-      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_object_detection_service.py auto"
-    steps:
-      - build_command:
-          ssh_user_env_var: ${SSH_USER_YOLOv3_OBJECT_DETECTION}
-          ssh_host_env_var: ${SSH_HOST_YOLOv3_OBJECT_DETECTION}
-          docker_nvidia: true
-          docker_image_name: yolov3_object_detection
-          docker_container_name: YOLOv3_OBJECT_DETECTION
-
-  deploy-yolov3-object-detection:
+  yolov3-object-detection:
     docker:
     - image: circleci/python:3.6.6-node
     working_directory: ~/singnet
@@ -492,34 +303,18 @@ jobs:
       SNETD_PORT_MAINNET: 7007
       SNETD_PORT_ROPSTEN: 7057
     steps:
-      - deploy_command:
+      - checkout
+      - build_and_deploy:
           domain: ${DOMAIN_YOLOv3_OBJECT_DETECTION}
           ssh_user_env_var: ${SSH_USER_YOLOv3_OBJECT_DETECTION}
           ssh_host_env_var: ${SSH_HOST_YOLOv3_OBJECT_DETECTION}
           docker_nvidia: true
           docker_image_name: yolov3_object_detection
           docker_container_name: YOLOv3_OBJECT_DETECTION
-          docker_etcd_host_folder: singnet/etcd/${SERVICE_NAME}/
-          docker_etcd_container_folder: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
+          docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
+          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
 
-  build-zeta36-chess-alpha-zero:
-    docker:
-      - image: circleci/python:3.6.6-node
-    working_directory: ~/singnet
-    environment:
-      SERVICE_NAME: zeta36-chess-alpha-zero
-      SERVICE_FOLDER: services/zeta36-chess-alpha-zero
-      SERVICE_RUN_COMMAND: bash -c "git pull;python3.6 run_alpha_zero_service.py"
-      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3.6 test_alpha_zero_service.py auto"
-    steps:
-      - build_command:
-          ssh_user_env_var: ${SSH_USER_CHESS_ALPHA_ZERO}
-          ssh_host_env_var: ${SSH_HOST_CHESS_ALPHA_ZERO}
-          docker_nvidia: true
-          docker_image_name: zeta36_chess_alpha_zero
-          docker_container_name: CHESS_ALPHA_ZERO
-
-  deploy-zeta36-chess-alpha-zero:
+  zeta36-chess-alpha-zero:
     docker:
     - image: circleci/python:3.6.6-node
     working_directory: ~/singnet
@@ -532,34 +327,18 @@ jobs:
       SNETD_PORT_MAINNET: 7008
       SNETD_PORT_ROPSTEN: 7058
     steps:
-      - deploy_command:
+      - checkout
+      - build_and_deploy:
           domain: ${DOMAIN_CHESS_ALPHA_ZERO}
           ssh_user_env_var: ${SSH_USER_CHESS_ALPHA_ZERO}
           ssh_host_env_var: ${SSH_HOST_CHESS_ALPHA_ZERO}
           docker_nvidia: true
           docker_image_name: zeta36_chess_alpha_zero
           docker_container_name: CHESS_ALPHA_ZERO
-          docker_etcd_host_folder: singnet/etcd/${SERVICE_NAME}/
-          docker_etcd_container_folder: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
+          docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
+          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
 
-  build-places365-scene-recognition:
-    docker:
-      - image: circleci/python:3.6.6-node
-    working_directory: ~/singnet
-    environment:
-      SERVICE_NAME: places365-scene-recognition
-      SERVICE_FOLDER: services/places365-scene-recognition
-      SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_scene_recognition_service.py"
-      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_scene_recognition_service.py auto"
-    steps:
-      - build_command:
-          ssh_user_env_var: ${SSH_USER_PLACES365_SCENE_RECOGNITION}
-          ssh_host_env_var: ${SSH_HOST_PLACES365_SCENE_RECOGNITION}
-          docker_nvidia: true
-          docker_image_name: places365_scene_recognition
-          docker_container_name: PLACES365_SCENE_RECOGNITION
-
-  deploy-places365-scene-recognition:
+  places365-scene-recognition:
     docker:
     - image: circleci/python:3.6.6-node
     working_directory: ~/singnet
@@ -572,34 +351,18 @@ jobs:
       SNETD_PORT_MAINNET: 7019
       SNETD_PORT_ROPSTEN: 7079
     steps:
-      - deploy_command:
+      - checkout
+      - build_and_deploy:
           domain: ${DOMAIN_PLACES365_SCENE_RECOGNITION}
           ssh_user_env_var: ${SSH_USER_PLACES365_SCENE_RECOGNITION}
           ssh_host_env_var: ${SSH_HOST_PLACES365_SCENE_RECOGNITION}
           docker_nvidia: true
           docker_image_name: places365_scene_recognition
           docker_container_name: PLACES365_SCENE_RECOGNITION
-          docker_etcd_host_folder: singnet/etcd/${SERVICE_NAME}/
-          docker_etcd_container_folder: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
+          docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
+          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
 
-  build-pneumonia-diagnosis:
-    docker:
-    - image: circleci/python:3.6.6-node
-    working_directory: ~/singnet
-    environment:
-      SERVICE_NAME: pneumonia-diagnosis
-      SERVICE_FOLDER: services/pneumonia-diagnosis
-      SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_pneumonia_diagnosis_service.py"
-      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_pneumonia_diagnosis_service.py auto"
-    steps:
-      - build_command:
-          ssh_user_env_var: ${SSH_USER_PNEUMONIA_DIAGNOSIS}
-          ssh_host_env_var: ${SSH_HOST_PNEUMONIA_DIAGNOSIS}
-          docker_nvidia: true
-          docker_image_name: pneumonia_diagnosis
-          docker_container_name: PNEUMONIA_DIAGNOSIS
-
-  deploy-pneumonia-diagnosis:
+  pneumonia-diagnosis:
     docker:
     - image: circleci/python:3.6.6-node
     working_directory: ~/singnet
@@ -612,88 +375,27 @@ jobs:
       SNETD_PORT_MAINNET: 7072
       SNETD_PORT_ROPSTEN: 7062
     steps:
-      - deploy_command:
+      - checkout
+      - build_and_deploy:
           domain: ${DOMAIN_PNEUMONIA_DIAGNOSIS}
           ssh_user_env_var: ${SSH_USER_PNEUMONIA_DIAGNOSIS}
           ssh_host_env_var: ${SSH_HOST_PNEUMONIA_DIAGNOSIS}
           docker_nvidia: true
           docker_image_name: pneumonia_diagnosis
           docker_container_name: PNEUMONIA_DIAGNOSIS
-          docker_etcd_host_folder: singnet/etcd/${SERVICE_NAME}/
-          docker_etcd_container_folder: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
+          docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
+          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
 
 workflows:
   version: 2.1
   build_deploy_dnn_services:
     jobs:
-      - build-cntk-image-recon
-      - deploy-cntk-image-recon:
-          requires:
-            - build-cntk-image-recon
-          filters:
-            branches:
-              only: master
-
-      - build-deepfakes-faceswap
-      - deploy-deepfakes-faceswap:
-          requires:
-            - build-deepfakes-faceswap
-          filters:
-            branches:
-              only: master
-
-      - build-i3d-video-action-recognition
-      - deploy-i3d-video-action-recognition:
-          requires:
-            - build-i3d-video-action-recognition
-          filters:
-            branches:
-              only: master
-
-      - build-s2vt-video-captioning
-      - deploy-s2vt-video-captioning:
-          requires:
-            - build-s2vt-video-captioning
-          filters:
-            branches:
-              only: master
-
-#      - build-siggraph-colorization
-#      - deploy-siggraph-colorization:
-#          requires:
-#            - build-siggraph-colorization
-#          filters:
-#            branches:
-#              only: master
-
-      - build-yolov3-object-detection
-      - deploy-yolov3-object-detection:
-          requires:
-            - build-yolov3-object-detection
-          filters:
-            branches:
-              only: master
-
-      - build-zeta36-chess-alpha-zero
-      - deploy-zeta36-chess-alpha-zero:
-          requires:
-            - build-zeta36-chess-alpha-zero
-          filters:
-            branches:
-              only: master
-
-      - build-places365-scene-recognition
-      - deploy-places365-scene-recognition:
-          requires:
-            - build-places365-scene-recognition
-          filters:
-            branches:
-              only: master
-
-      - build-pneumonia-diagnosis
-      - deploy-pneumonia-diagnosis:
-          requires:
-            - build-pneumonia-diagnosis
-          filters:
-            branches:
-              only: master
+      - cntk-image-recon
+      - deepfakes-faceswap
+      - i3d-video-action-recognition
+      - s2vt-video-captioning
+#      - siggraph-colorization
+      - yolov3-object-detection
+      - zeta36-chess-alpha-zero
+      - places365-scene-recognition
+      - pneumonia-diagnosis

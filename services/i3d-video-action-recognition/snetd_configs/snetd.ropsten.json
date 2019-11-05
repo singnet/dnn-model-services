@@ -1,30 +1,11 @@
 {
   "daemon_end_point": "0.0.0.0:7055",
-  "ethereum_json_rpc_endpoint": "https://ropsten.infura.io",
   "ipfs_end_point": "http://ipfs.singularitynet.io:80",
-  "registry_address_key": "0x5156fde2ca71da4398f8c76763c41bc9633875e4",
   "passthrough_enabled": true,
   "passthrough_endpoint": "http://localhost:7003",
+  "blockchain_network_selected": "ropsten",
   "organization_id": "snet",
   "service_id": "i3d-video-action-recognition",
-
-  "payment_channel_storage_server": {
-    "id": "storage-ropsten",
-    "host": "127.0.0.1",
-    "client_port": 2381,
-    "peer_port": 2382,
-    "token": "unique-token",
-    "cluster": "storage-ropsten=http://127.0.0.1:2382",
-    "data_dir": "etcd/storage-data-dir-ropsten.etcd",
-    "enabled": true
-  },
-
-  "payment_channel_storage_client": {
-    "connection_timeout": "5s",
-    "request_timeout": "3s",
-    "endpoints": ["http://127.0.0.1:2381"]
-  },
-
   "log": {
     "level": "debug",
     "output": {
