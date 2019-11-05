@@ -5,7 +5,7 @@
 
 # Places365 Scene Recognition
 
-> This is the user's guide to the "Places365 Scene Recognition Service". It is registered at Kovan Test Network onto SingularityNET's official organization (`snet`) under the name `places365-scene-recognition` as part of our third party [DNN Model Services](https://github.com/singnet/dnn-model-services).
+> This is the user's guide to the "Places365 Scene Recognition Service". It is registered at Ropsten Test Network onto SingularityNET's official organization (`snet`) under the name `places365-scene-recognition` as part of our third party [DNN Model Services](https://github.com/singnet/dnn-model-services).
 
 ### Welcome
 

@@ -34,9 +34,8 @@ Create the `SNET Daemon`'s config JSON file (`snetd.config.json`).
 ```
 {
    "DAEMON_END_POINT": "DAEMON_HOST:DAEMON_PORT",
-   "ETHEREUM_JSON_RPC_ENDPOINT": "JSON_RPC_ENDPOINT",
    "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
-   "REGISTRY_ADDRESS_KEY": "REGISTRY_ADDRESS",
+   "BLOCKCHAIN_NETWORK_SELECTED": "BLOCKCHAIN_NETWORK",
    "PASSTHROUGH_ENABLED": true,
    "PASSTHROUGH_ENDPOINT": "http://SERVICE_GRPC_HOST:SERVICE_GRPC_PORT",  
    "ORGANIZATION_ID": "ORGANIZATION_ID",
@@ -56,9 +55,8 @@ For example (using the Ropsten testnet):
 $ cat snetd.config.json
 {
    "DAEMON_END_POINT": "0.0.0.0:7005",
-   "ETHEREUM_JSON_RPC_ENDPOINT": "https://ropsten.infura.io",
    "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
-   "REGISTRY_ADDRESS_KEY": "0x5156fde2ca71da4398f8c76763c41bc9633875e4",
+   "BLOCKCHAIN_NETWORK_SELECTED": "ropsten",
    "PASSTHROUGH_ENABLED": true,
    "PASSTHROUGH_ENDPOINT": "http://localhost:7003",
    "ORGANIZATION_ID": "snet",
