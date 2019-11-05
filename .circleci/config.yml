@@ -44,6 +44,7 @@ commands:
             export DOCKER_CONTAINER_NAME=<< parameters.docker_container_name >>
             export PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
             echo "Setting Up..."
+            cd ${SERVICE_DIR}
             echo $(.circleci/check_md5.sh) >> docker_rebuild
             echo "FILES_CHANGED=$(cat docker_rebuild)"
 
@@ -73,8 +74,8 @@ commands:
             export DOCKER_MOUNT_VOLUMES=<< parameters.docker_mount_volumes >>
             export DOCKER_MOUNT_SRC=<< parameters.docker_mount_src >>
             export DOCKER_MOUNT_DEST=<< parameters.docker_mount_dest >>
-            export ETCD_HOST_FOLDER=<< parameters.docker_etcd_host_dir >>
-            export ETCD_CONTAINER_FOLDER=<< parameters.docker_etcd_container_dir >>
+            export ETCD_HOST_DIR=<< parameters.docker_etcd_host_dir >>
+            export ETCD_CONTAINER_DIR=<< parameters.docker_etcd_container_dir >>
             export PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
             echo            git_user  : ${CIRCLE_PROJECT_USERNAME}
             echo            git_repo  : ${CIRCLE_PROJECT_REPONAME}
@@ -101,7 +102,7 @@ commands:
                   --build-arg git_repo=${CIRCLE_PROJECT_REPONAME} \
                   --build-arg git_branch=${CIRCLE_BRANCH} \
                   $([ "${DOCKER_NOCACHE}" = "true" ] && echo "--no-cache" || echo "") \
-                  -t ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME} https://raw.githubusercontent.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}/${SERVICE_FOLDER}/Dockerfile
+                  -t ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME} https://raw.githubusercontent.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}/${SERVICE_DIR}/Dockerfile
               else
                 echo "Not Building..."
               fi
@@ -119,8 +120,8 @@ commands:
             export DOCKER_MOUNT_VOLUMES=<< parameters.docker_mount_volumes >>
             export DOCKER_MOUNT_SRC=<< parameters.docker_mount_src >>
             export DOCKER_MOUNT_DEST=<< parameters.docker_mount_dest >>
-            export ETCD_HOST_FOLDER=<< parameters.docker_etcd_host_dir >>
-            export ETCD_CONTAINER_FOLDER=<< parameters.docker_etcd_container_dir >>
+            export ETCD_HOST_DIR=<< parameters.docker_etcd_host_dir >>
+            export ETCD_CONTAINER_DIR=<< parameters.docker_etcd_container_dir >>
             export PROD_TAG=$([ "${CIRCLE_PROJECT_USERNAME}" = "singnet" ] && echo "PROD_" || echo "")
             echo            git_user  : ${CIRCLE_PROJECT_USERNAME}
             echo            git_repo  : ${CIRCLE_PROJECT_REPONAME}
@@ -146,8 +147,8 @@ commands:
                   -e PVT_KEY_FOR_METERING=${PVT_KEY_FOR_METERING} \
                   $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-p ${SNETD_PORT_MAINNET}:${SNETD_PORT_MAINNET}" || echo "") \
                   $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-p ${SNETD_PORT_ROPSTEN}:${SNETD_PORT_ROPSTEN}" || echo "") \
-                  -v ~/${CERTS_FOLDER}:/opt/singnet/.certs \
-                  $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-v ~/${ETCD_HOST_FOLDER}:/${ETCD_CONTAINER_FOLDER}" || echo "") \
+                  -v ~/${CERTS_DIR}:/opt/singnet/.certs \
+                  $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-v ~/${ETCD_HOST_DIR}:/${ETCD_CONTAINER_DIR}" || echo "") \
                   $([ "${DOCKER_MOUNT_VOLUMES}" = "true" ] && echo "-v ${DOCKER_MOUNT_SRC}:${DOCKER_MOUNT_DEST}" || echo "") \
                   -tdi ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME} ${SERVICE_RUN_COMMAND}
             EOF
@@ -173,8 +174,8 @@ jobs:
     working_directory: ~/singnet
     environment:
       SERVICE_NAME: cntk-image-recon
-      SERVICE_FOLDER: services/cntk-image-recon
-      CERTS_FOLDER: singnet/.certs
+      SERVICE_DIR: services/cntk-image-recon
+      CERTS_DIR: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "source '/cntk/activate-cntk';git pull;python3 run_image_recon_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 10;source '/cntk/activate-cntk';python3 test_image_recon_service.py auto"
       SNETD_PORT_MAINNET: 7004
@@ -189,7 +190,7 @@ jobs:
           docker_image_name: cntk_image_recognition
           docker_container_name: CNTK_IMAGE_RECON
           docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
-          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
+          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_DIR}/etcd/
 
   deepfakes-faceswap:
     docker:
@@ -197,8 +198,8 @@ jobs:
     working_directory: ~/singnet
     environment:
       SERVICE_NAME: deepfakes-faceswap
-      SERVICE_FOLDER: services/deepfakes-faceswap
-      CERTS_FOLDER: singnet/.certs
+      SERVICE_DIR: services/deepfakes-faceswap
+      CERTS_DIR: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_deepfakes_faceswap_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_deepfakes_faceswap_service.py auto"
       SNETD_PORT_MAINNET: 7060
@@ -216,7 +217,7 @@ jobs:
           docker_image_name: deepfakes_faceswap
           docker_container_name: DEEPFAKES_FACESWAP
           docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
-          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
+          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_DIR}/etcd/
 
   i3d-video-action-recognition:
     docker:
@@ -224,8 +225,8 @@ jobs:
     working_directory: ~/singnet
     environment:
       SERVICE_NAME: i3d-video-action-recognition
-      SERVICE_FOLDER: services/i3d-video-action-recognition
-      CERTS_FOLDER: singnet/.certs
+      SERVICE_DIR: services/i3d-video-action-recognition
+      CERTS_DIR: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_video_action_recon_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_video_action_recon_service.py auto"
       SNETD_PORT_MAINNET: 7005
@@ -240,103 +241,7 @@ jobs:
           docker_image_name: i3d_video_action_recognition
           docker_container_name: I3D_VIDEO_ACTION_RECON
           docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
-          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
-
-  s2vt-video-captioning:
-    docker:
-    - image: circleci/python:3.6.6-node
-    working_directory: ~/singnet
-    environment:
-      SERVICE_NAME: s2vt-video-captioning
-      SERVICE_FOLDER: services/s2vt-video-captioning
-      CERTS_FOLDER: singnet/.certs
-      SERVICE_RUN_COMMAND: bash -c "git pull;python run_video_cap_service.py --ssl"
-      SERVICE_TEST_COMMAND: bash -c "sleep 10;python test_video_cap_service.py auto"
-      SNETD_PORT_MAINNET: 7006
-      SNETD_PORT_ROPSTEN: 7056
-    steps:
-      - checkout
-      - build_and_deploy:
-          domain: ${DOMAIN_S2VT_VIDEO_CAPTIONING}
-          ssh_user_env_var: ${SSH_USER_S2VT_VIDEO_CAPTIONING}
-          ssh_host_env_var: ${SSH_HOST_S2VT_VIDEO_CAPTIONING}
-          docker_nvidia: true
-          docker_image_name: s2vt_video_captioning
-          docker_container_name: S2VT_VIDEO_CAPTIONING
-          docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
-          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
-
-  siggraph-colorization:
-    docker:
-    - image: circleci/python:3.6.6-node
-    working_directory: ~/singnet
-    environment:
-      SERVICE_NAME: siggraph-colorization
-      SERVICE_FOLDER: services/siggraph-colorization
-      CERTS_FOLDER: singnet/.certs
-      SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_colorize_service.py --ssl"
-      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_colorize_service.py auto"
-      SNETD_PORT_MAINNET: 7084
-      SNETD_PORT_ROPSTEN: 7085
-    steps:
-      - checkout
-      - build_and_deploy:
-          domain: ${DOMAIN_SIGGRAPH_COLORIZATION}
-          ssh_user_env_var: ${SSH_USER_SIGGRAPH_COLORIZATION}
-          ssh_host_env_var: ${SSH_HOST_SIGGRAPH_COLORIZATION}
-          docker_nvidia: true
-          docker_image_name: siggraph_colorization
-          docker_container_name: SIGGRAPH_COLORIZATION
-          docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
-          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
-
-  yolov3-object-detection:
-    docker:
-    - image: circleci/python:3.6.6-node
-    working_directory: ~/singnet
-    environment:
-      SERVICE_NAME: yolov3-object-detection
-      SERVICE_FOLDER: services/yolov3-object-detection
-      CERTS_FOLDER: singnet/.certs
-      SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_object_detection_service.py --ssl"
-      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_object_detection_service.py auto"
-      SNETD_PORT_MAINNET: 7007
-      SNETD_PORT_ROPSTEN: 7057
-    steps:
-      - checkout
-      - build_and_deploy:
-          domain: ${DOMAIN_YOLOv3_OBJECT_DETECTION}
-          ssh_user_env_var: ${SSH_USER_YOLOv3_OBJECT_DETECTION}
-          ssh_host_env_var: ${SSH_HOST_YOLOv3_OBJECT_DETECTION}
-          docker_nvidia: true
-          docker_image_name: yolov3_object_detection
-          docker_container_name: YOLOv3_OBJECT_DETECTION
-          docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
-          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
-
-  zeta36-chess-alpha-zero:
-    docker:
-    - image: circleci/python:3.6.6-node
-    working_directory: ~/singnet
-    environment:
-      SERVICE_NAME: zeta36-chess-alpha-zero
-      SERVICE_FOLDER: services/zeta36-chess-alpha-zero
-      CERTS_FOLDER: singnet/.certs
-      SERVICE_RUN_COMMAND: bash -c "git pull;python3.6 run_alpha_zero_service.py --ssl"
-      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3.6 test_alpha_zero_service.py auto"
-      SNETD_PORT_MAINNET: 7008
-      SNETD_PORT_ROPSTEN: 7058
-    steps:
-      - checkout
-      - build_and_deploy:
-          domain: ${DOMAIN_CHESS_ALPHA_ZERO}
-          ssh_user_env_var: ${SSH_USER_CHESS_ALPHA_ZERO}
-          ssh_host_env_var: ${SSH_HOST_CHESS_ALPHA_ZERO}
-          docker_nvidia: true
-          docker_image_name: zeta36_chess_alpha_zero
-          docker_container_name: CHESS_ALPHA_ZERO
-          docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
-          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
+          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_DIR}/etcd/
 
   places365-scene-recognition:
     docker:
@@ -344,8 +249,8 @@ jobs:
     working_directory: ~/singnet
     environment:
       SERVICE_NAME: places365-scene-recognition
-      SERVICE_FOLDER: services/places365-scene-recognition
-      CERTS_FOLDER: singnet/.certs
+      SERVICE_DIR: services/places365-scene-recognition
+      CERTS_DIR: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_scene_recognition_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_scene_recognition_service.py auto"
       SNETD_PORT_MAINNET: 7019
@@ -360,7 +265,7 @@ jobs:
           docker_image_name: places365_scene_recognition
           docker_container_name: PLACES365_SCENE_RECOGNITION
           docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
-          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
+          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_DIR}/etcd/
 
   pneumonia-diagnosis:
     docker:
@@ -368,8 +273,8 @@ jobs:
     working_directory: ~/singnet
     environment:
       SERVICE_NAME: pneumonia-diagnosis
-      SERVICE_FOLDER: services/pneumonia-diagnosis
-      CERTS_FOLDER: singnet/.certs
+      SERVICE_DIR: services/pneumonia-diagnosis
+      CERTS_DIR: singnet/.certs
       SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_pneumonia_diagnosis_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_pneumonia_diagnosis_service.py auto"
       SNETD_PORT_MAINNET: 7072
@@ -384,14 +289,110 @@ jobs:
           docker_image_name: pneumonia_diagnosis
           docker_container_name: PNEUMONIA_DIAGNOSIS
           docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
-          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_FOLDER}/etcd/
+          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_DIR}/etcd/
+
+  s2vt-video-captioning:
+    docker:
+    - image: circleci/python:3.6.6-node
+    working_directory: ~/singnet
+    environment:
+      SERVICE_NAME: s2vt-video-captioning
+      SERVICE_DIR: services/s2vt-video-captioning
+      CERTS_DIR: singnet/.certs
+      SERVICE_RUN_COMMAND: bash -c "git pull;python run_video_cap_service.py --ssl"
+      SERVICE_TEST_COMMAND: bash -c "sleep 10;python test_video_cap_service.py auto"
+      SNETD_PORT_MAINNET: 7006
+      SNETD_PORT_ROPSTEN: 7056
+    steps:
+      - checkout
+      - build_and_deploy:
+          domain: ${DOMAIN_S2VT_VIDEO_CAPTIONING}
+          ssh_user_env_var: ${SSH_USER_S2VT_VIDEO_CAPTIONING}
+          ssh_host_env_var: ${SSH_HOST_S2VT_VIDEO_CAPTIONING}
+          docker_nvidia: true
+          docker_image_name: s2vt_video_captioning
+          docker_container_name: S2VT_VIDEO_CAPTIONING
+          docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
+          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_DIR}/etcd/
+
+  siggraph-colorization:
+    docker:
+    - image: circleci/python:3.6.6-node
+    working_directory: ~/singnet
+    environment:
+      SERVICE_NAME: siggraph-colorization
+      SERVICE_DIR: services/siggraph-colorization
+      CERTS_DIR: singnet/.certs
+      SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_colorize_service.py --ssl"
+      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_colorize_service.py auto"
+      SNETD_PORT_MAINNET: 7084
+      SNETD_PORT_ROPSTEN: 7085
+    steps:
+      - checkout
+      - build_and_deploy:
+          domain: ${DOMAIN_SIGGRAPH_COLORIZATION}
+          ssh_user_env_var: ${SSH_USER_SIGGRAPH_COLORIZATION}
+          ssh_host_env_var: ${SSH_HOST_SIGGRAPH_COLORIZATION}
+          docker_nvidia: true
+          docker_image_name: siggraph_colorization
+          docker_container_name: SIGGRAPH_COLORIZATION
+          docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
+          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_DIR}/etcd/
+
+  yolov3-object-detection:
+    docker:
+    - image: circleci/python:3.6.6-node
+    working_directory: ~/singnet
+    environment:
+      SERVICE_NAME: yolov3-object-detection
+      SERVICE_DIR: services/yolov3-object-detection
+      CERTS_DIR: singnet/.certs
+      SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_object_detection_service.py --ssl"
+      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_object_detection_service.py auto"
+      SNETD_PORT_MAINNET: 7007
+      SNETD_PORT_ROPSTEN: 7057
+    steps:
+      - checkout
+      - build_and_deploy:
+          domain: ${DOMAIN_YOLOv3_OBJECT_DETECTION}
+          ssh_user_env_var: ${SSH_USER_YOLOv3_OBJECT_DETECTION}
+          ssh_host_env_var: ${SSH_HOST_YOLOv3_OBJECT_DETECTION}
+          docker_nvidia: true
+          docker_image_name: yolov3_object_detection
+          docker_container_name: YOLOv3_OBJECT_DETECTION
+          docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
+          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_DIR}/etcd/
+
+  zeta36-chess-alpha-zero:
+    docker:
+    - image: circleci/python:3.6.6-node
+    working_directory: ~/singnet
+    environment:
+      SERVICE_NAME: zeta36-chess-alpha-zero
+      SERVICE_DIR: services/zeta36-chess-alpha-zero
+      CERTS_DIR: singnet/.certs
+      SERVICE_RUN_COMMAND: bash -c "git pull;python3.6 run_alpha_zero_service.py --ssl"
+      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3.6 test_alpha_zero_service.py auto"
+      SNETD_PORT_MAINNET: 7008
+      SNETD_PORT_ROPSTEN: 7058
+    steps:
+      - checkout
+      - build_and_deploy:
+          domain: ${DOMAIN_CHESS_ALPHA_ZERO}
+          ssh_user_env_var: ${SSH_USER_CHESS_ALPHA_ZERO}
+          ssh_host_env_var: ${SSH_HOST_CHESS_ALPHA_ZERO}
+          docker_nvidia: true
+          docker_image_name: zeta36_chess_alpha_zero
+          docker_container_name: CHESS_ALPHA_ZERO
+          docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
+          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_DIR}/etcd/
 
 workflows:
   version: 2.1
   build_deploy_dnn_services:
     jobs:
       - cntk-image-recon
-      - deepfakes-faceswap
+#      - deepfakes-faceswap
       - i3d-video-action-recognition
       - s2vt-video-captioning
 #      - siggraph-colorization
