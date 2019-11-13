@@ -303,8 +303,8 @@ jobs:
       SERVICE_NAME: real-time-voice-cloning
       SERVICE_DIR: services/real-time-voice-cloning
       CERTS_DIR: singnet/.certs
-      SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_video_cloning_service.py --ssl"
-      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_video_cloning_service.py auto"
+      SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_voice_cloning_service.py --ssl"
+      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_voice_cloning_service.py auto"
       SNETD_PORT_MAINNET: 7064
       SNETD_PORT_ROPSTEN: 7065
     steps:

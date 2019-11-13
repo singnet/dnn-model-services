@@ -1,4 +1,4 @@
-FROM pytorch/pytorch
+FROM pytorch/pytorch:0.4.1-cuda9-cudnn7-runtime
 
 ARG git_owner="singnet"
 ARG git_repo="dnn-model-services"
