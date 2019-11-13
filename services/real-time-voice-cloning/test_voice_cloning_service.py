@@ -34,7 +34,8 @@ if __name__ == "__main__":
         grpc_input = grpc_bt_pb2.Input(audio_url=audio_url, sentence=sentence)
 
         response = stub.clone(grpc_input)
-        if response.audio == "Fail":
+        if response.audio == b"Fail":
+            print("Fail!")
             exit(1)
         print("Audio file length:", len(response.audio))
     except Exception as e:

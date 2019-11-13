@@ -40,13 +40,9 @@ def clone(audio=None, audio_url=None, sentence=""):
             elif len(audio_url) > 500:
                 audio_data = base64.b64decode(audio_url)
 
-        tmp_audio_file = generate_uid() + ".wav"
-        with open(tmp_audio_file, "wb") as f:
+        audio_path = generate_uid() + ".audio"
+        with open(audio_path, "wb") as f:
             f.write(audio_data)
-            audio_path = tmp_audio_file
-
-        if os.path.exists(tmp_audio_file):
-            os.remove(tmp_audio_file)
 
         # Load the models one by one.
         log.info("Preparing the encoder, the synthesizer and the vocoder...")
@@ -58,6 +54,9 @@ def clone(audio=None, audio_url=None, sentence=""):
         original_wav, sampling_rate = librosa.load(audio_path)
         preprocessed_wav = encoder.preprocess_wav(original_wav, sampling_rate)
         log.info("Loaded file successfully")
+
+        if os.path.exists(audio_path):
+            os.remove(audio_path)
 
         embed = encoder.embed_utterance(preprocessed_wav)
         log.info("Created the embedding")
