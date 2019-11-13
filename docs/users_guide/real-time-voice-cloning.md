@@ -36,10 +36,11 @@ You can also call the service from SingularityNET CLI (`snet`).
 Assuming that you have an open channel to this service:
 
 ```
-$ snet client call snet real-time-voice-cloning default_group clone '{"audio_url": "https://raw.githubusercontent.com/singnet/dnn-model-services/master/docs/assets/users_guide/ben_websumit19.mp3", "sentence": "I am an artificial intelligence researcher and I would like to make the world a better place!"}'
-...
-((Audio bytes array))
+$ snet client call --save-field audio output.wav snet real-time-voice-cloning default_group clone '{"audio_url": "https://raw.githubusercontent.com/singnet/dnn-model-services/master/docs/assets/users_guide/ben_websumit19.mp3", "sentence": "I am an artificial intelligence researcher and I would like to make the world a better place!"}'
+Price for this call will be 0.00000001 AGI (use -y to remove this warning). Proceed? (y/n): y
 ```
+
+The WAV audio file will be saved in `output.wav`!
 
 ### What to expect from this service?
 
