@@ -48,7 +48,7 @@ RUN SNETD_VERSION=`curl -s https://api.github.com/repos/singnet/snet-daemon/rele
 RUN cd ${SINGNET_REPOS} && \
     git clone -b ${git_branch} https://github.com/${git_owner}/${DNN_REPO_NAME}.git
 
-RUN cd ${SINGNET_REPOS} && \
+RUN cd ${SERVICES_FOLDER} && \
     sh utils/get_voice_model.sh
 
 RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \

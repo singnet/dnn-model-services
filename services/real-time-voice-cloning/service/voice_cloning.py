@@ -20,11 +20,20 @@ log = logging.getLogger("voice_cloning")
 
 def clone(audio=None, audio_url=None, sentence=""):
     try:
+        if not 10 <= len(sentence.split(" ")) <= 30:
+            return {"audio": b"Sentence is invalid! (length must be 10 to 30 words)"}
         audio_data = audio
         if audio_url:
             # Link
             if "http://" in audio_url or "https://" in audio_url:
                 header = {'User-Agent': 'Mozilla/5.0 (Windows NT x.y; Win64; x64; rv:9.0) Gecko/20100101 Firefox/10.0'}
+                # Check if audio file has less than 5Mb
+                r = requests.head(audio_url, headers=header, allow_redirects=True)
+                size = r.headers.get('content-length', 0)
+                size = int(size) / float(1 << 20)
+                log.info("File size: {:.2f} Mb".format(size))
+                if size > 5:
+                    return {"audio": b"Input audio file is too large! (max 5Mb)"}
                 r = requests.get(audio_url, headers=header, allow_redirects=True)
                 audio_data = r.content
             # Base64
