@@ -24,24 +24,29 @@ RUN apt-get clean && \
     apt-get install -y ffmpeg libportaudio2 && \
     apt-get -y autoremove
 
+# Downloading the latest SNET Daemon version
 RUN SNETD_VERSION=`curl -s https://api.github.com/repos/singnet/snet-daemon/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")'` && \
     cd /tmp && \
     wget https://github.com/singnet/snet-daemon/releases/download/${SNETD_VERSION}/snet-daemon-${SNETD_VERSION}-linux-amd64.tar.gz && \
     tar -xvf snet-daemon-${SNETD_VERSION}-linux-amd64.tar.gz && \
     mv snet-daemon-${SNETD_VERSION}-linux-amd64/snetd /usr/bin/snetd
 
+# Git cloning this repository
 RUN cd ${SINGNET_REPOS} && \
     git clone -b ${git_branch} https://github.com/${git_owner}/${DNN_REPO_NAME}.git
 
-# Git cloning Real-Time-Voice-Cloning codes to rtvc/ and put it in PYTHONPATH
+# Git cloning Real-Time-Voice-Cloning repository to rtvc/
 RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \
-    git clone https://github.com/CorentinJ/Real-Time-Voice-Cloning.git rtvc/ && \
-    export PYTHONPATH=${PYTHONPATH}:$(pwd)/rtvc
+    git clone https://github.com/CorentinJ/Real-Time-Voice-Cloning.git rtvc/
+
+# Putting it in PYTHONPATH
+ENV PYTHONPATH "${PYTHONPATH}:${SERVICES_FOLDER}/${SERVICE_NAME}/rtvc"
 
 # Downloading the pre-trained models
-RUN cd ${DNN_REPO_NAME} && \
+RUN cd ${SINGNET_REPOS}/${DNN_REPO_NAME} && \
     sh utils/get_voice_model.sh
 
+# Installing all the dependencies of the service
 RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \
     pip install -r requirements.txt && \
     sh buildproto.sh

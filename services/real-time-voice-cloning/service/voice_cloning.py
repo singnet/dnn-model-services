@@ -50,9 +50,9 @@ def clone(audio=None, audio_url=None, sentence=""):
 
         # Load the models one by one.
         log.info("Preparing the encoder, the synthesizer and the vocoder...")
-        encoder.load_model(Path("encoder/saved_models/pretrained.pt"))
-        synthesizer = Synthesizer(Path("synthesizer/saved_models/logs-pretrained/taco_pretrained"))
-        vocoder.load_model(Path("vocoder/saved_models/pretrained/pretrained.pt"))
+        encoder.load_model(Path("rtvc/encoder/saved_models/pretrained.pt"))
+        synthesizer = Synthesizer(Path("rtvc/synthesizer/saved_models/logs-pretrained/taco_pretrained"))
+        vocoder.load_model(Path("rtvc/vocoder/saved_models/pretrained/pretrained.pt"))
 
         # Computing the embedding
         original_wav, sampling_rate = librosa.load(audio_path)
