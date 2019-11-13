@@ -5,8 +5,8 @@
 
 # Real Time Voice Cloning
 
-This service uses [Real-Time-Voice-Cloning](https://github.com/CorentinJ/Real-Time-Voice-Cloning) to clone a voice from 
-5 seconds audio to generate arbitrary speech in real-time
+This service uses [Real-Time-Voice-Cloning](https://github.com/CorentinJ/Real-Time-Voice-Cloning) to clone a voice from
+a 5 seconds audio file to generate arbitrary speech in real-time
 
 It is part of our third party [DNN Model Services](https://github.com/singnet/dnn-model-services).
 
@@ -109,10 +109,11 @@ Through SingularityNET (follow this [link](https://dev.singularitynet.io/tutoria
 Assuming that you have an open channel to this service:
 
 ```
-$ snet client call snet real-time-voice-cloning default_group clone '{"audio_url": "https://raw.githubusercontent.com/singnet/dnn-model-services/master/docs/assets/users_guide/ben_websumit19.mp3", "sentence": "I am an artificial intelligence researcher and I would like to make the world a better place!"}'
+$ snet client call --save-field audio output.wav snet real-time-voice-cloning default_group clone '{"audio_url": "https://raw.githubusercontent.com/singnet/dnn-model-services/master/docs/assets/users_guide/ben_websumit19.mp3", "sentence": "I am an artificial intelligence researcher and I would like to make the world a better place!"}'
 Price for this call will be 0.00000001 AGI (use -y to remove this warning). Proceed? (y/n): y
-{'audio': '...' }
 ```
+
+The WAV audio file will be saved in `output.wav`!
 
 ## Contributing and Reporting Issues
 

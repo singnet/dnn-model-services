@@ -16,6 +16,9 @@ A collection of services using third party DNN models.
 
 For more details on how to publish and test a service, select it from the list below:
 
+### Audio:
+- [real-time-voice-cloning](services/real-time-voice-cloning) ([User's Guide](docs/users_guide/real-time-voice-cloning.md)) - This service uses Real-Time-Voice-Cloning to clone a voice from a 5 seconds audio file to generate arbitrary speech in real-time [[Reference](https://github.com/CorentinJ/Real-Time-Voice-Cloning)]
+
 ### Images:
 - [cntk-image-recon](services/cntk-image-recon) ([User's Guide](docs/users_guide/cntk-image-recon.md)) - This service uses ResNet152 model, trained to recognize different types of flowers and dog breeds. [[Reference](https://cntk.ai/pythondocs/CNTK_301_Image_Recognition_with_Deep_Transfer_Learning.html)]
 - [deepfakes-faceswap](services/deepfakes-faceswap) ([User's Guide](docs/users_guide/deepfakes-faceswap.md)) - This service uses the Deepfakes Faceswap, trained on two input videos A and B, to perform face swapping on videos. [[Reference](https://github.com/deepfakes/faceswap)]
