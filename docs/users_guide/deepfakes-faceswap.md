@@ -43,7 +43,7 @@ You can also call the service from SingularityNET CLI (`snet`).
 Assuming that you have an open channel to this service:
 
 ```
-$ snet client call snet deepfakes-faceswap faceswap '{"video_a": "http://snet-models.s3.amazonaws.com/bh/Deepfakes/ben.mp4", "video_b": "http://snet-models.s3.amazonaws.com/bh/Deepfakes/musk.mp4"}'
+$ snet client call snet deepfakes-faceswap default_group faceswap '{"video_a": "http://snet-models.s3.amazonaws.com/bh/Deepfakes/ben.mp4", "video_b": "http://snet-models.s3.amazonaws.com/bh/Deepfakes/musk.mp4"}'
 uid: "http://52.38.111.172:7006/dashboard?uid=c5b28d375b53e6107f05"
 ```
 

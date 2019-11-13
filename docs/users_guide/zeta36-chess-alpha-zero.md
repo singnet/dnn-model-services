@@ -74,7 +74,7 @@ You can also call the service from SingularityNET CLI (`snet`).
 Assuming that you have an open channel to this service:
 
 ```
-$ snet client call snet zeta36-chess-alpha-zero play '{"uid": "my_uid","move": "c2c4"}'
+$ snet client call snet zeta36-chess-alpha-zero default_group play '{"uid": "my_uid","move": "c2c4"}'
 
 response:
 UID: my_uid

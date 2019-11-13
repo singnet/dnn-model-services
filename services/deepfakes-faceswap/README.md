@@ -124,7 +124,7 @@ Through SingularityNET (follow this [link](https://dev.singularitynet.io/tutoria
 Assuming that you have an open channel to this service:
 
 ```
-$ snet client call snet deepfakes-faceswap faceswap '{"video_a": "http://snet-models.s3.amazonaws.com/bh/Deepfakes/ben.mp4", "video_b": "http://snet-models.s3.amazonaws.com/bh/Deepfakes/musk.mp4"}'
+$ snet client call snet deepfakes-faceswap default_group faceswap '{"video_a": "http://snet-models.s3.amazonaws.com/bh/Deepfakes/ben.mp4", "video_b": "http://snet-models.s3.amazonaws.com/bh/Deepfakes/musk.mp4"}'
 
 uid: "http://52.38.111.172:7006/dashboard?uid=b3076ddd3efe046d64df"
 ```

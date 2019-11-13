@@ -33,7 +33,7 @@ You can also call the service from SingularityNET CLI (`snet`).
 Assuming that you have an open channel to this service:
 
 ```
-$ snet client call snet siggraph-colorization colorize '{"img_input": "https://snet-models.s3.amazonaws.com/bh/Colorize/carnaval.jpg"}'
+$ snet client call snet siggraph-colorization default_group colorize '{"img_input": "https://snet-models.s3.amazonaws.com/bh/Colorize/carnaval.jpg"}'
 
 [Base64 Image]
 ```

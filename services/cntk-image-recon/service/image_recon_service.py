@@ -32,7 +32,6 @@ class RecognizerServicer(grpc_bt_grpc.RecognizerServicer):
     # request: incoming data
     # context: object that provides RPC-specific information (timeout, etc).
     def flowers(self, request, context):
-        # In our case, request is a Numbers() object (from .proto file)
         self.img_path = request.img_path
         self.model = request.model
 

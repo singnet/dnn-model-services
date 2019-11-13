@@ -3,9 +3,10 @@
 
 ![singnetlogo](../../docs/assets/singnet-logo.jpg 'SingularityNET')
 
-# CNTK Image Recognition
+# Real Time Voice Cloning
 
-This service uses [CNTK Image Recognition](https://cntk.ai/pythondocs/CNTK_301_Image_Recognition_with_Deep_Transfer_Learning.html) to perform image recognition on photos.
+This service uses [Real-Time-Voice-Cloning](https://github.com/CorentinJ/Real-Time-Voice-Cloning) to clone a voice from 
+5 seconds audio to generate arbitrary speech in real-time
 
 It is part of our third party [DNN Model Services](https://github.com/singnet/dnn-model-services).
 
@@ -15,23 +16,16 @@ It is part of our third party [DNN Model Services](https://github.com/singnet/dn
 
 - [Python 3.6.5](https://www.python.org/downloads/release/python-365/)
 - [SNET CLI](https://github.com/singnet/snet-cli)
-- Pre-trained models (dogs and flowers)
+- Pre-trained model
 
 ### Development
 
-Clone this repository and download the models using the `get_cntk_models.sh` script:
+Clone this repository and download the models using the `get_voice_models.sh` script:
 
 ```
 $ git clone https://github.com/singnet/dnn-model-services.git
 $ cd dnn-model-services/utils
-$ ./get_cntk_models.sh
-$ ls -la Resources/Models
-total 458416
-drwxrwxr-x 2 user user      4096 Nov  8 08:49 .
-drwxrwxr-x 3 user user      4096 Nov  8 08:49 ..
--rw-rw-r-- 1 user user 234830033 Ago 28 17:28 dogs_ResNet152_20.model
--rw-rw-r-- 1 user user 234574954 Ago 28 15:57 flowers_ResNet152_20.model
-$ cd ../services/cntk-image-recon
+$ ./get_voice_models.sh
 ```
 
 ### Running the service:
@@ -63,13 +57,13 @@ For example (using the Ropsten testnet):
 ```
 $ cat snetd.config.json
 {
-   "DAEMON_END_POINT": "0.0.0.0:7054",
+   "DAEMON_END_POINT": "0.0.0.0:7065",
    "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
    "BLOCKCHAIN_NETWORK_SELECTED": "ropsten",
    "PASSTHROUGH_ENABLED": true,
    "PASSTHROUGH_ENDPOINT": "http://localhost:7003",
    "ORGANIZATION_ID": "snet",
-   "SERVICE_ID": "cntk-image-recon",
+   "SERVICE_ID": "real-time-voice-cloning",
    "LOG": {
        "LEVEL": "debug",
        "OUTPUT": {
@@ -91,34 +85,23 @@ $ sh buildproto.sh
 ```
 Start the service and `SNET Daemon`:
 ```
-$ python3 run_image_recon_service.py
+$ python3 run_voice_cloning_service.py
 ```
 
 ### Calling the service:
 
 Inputs:
-  - `gRPC method`: flowers or dogs.
-  - `model`: DNN Model ("ResNet152").
-  - `img_path`: An image URL.
+  - `audio_url` or `audio`: An URL with an audio file (mp3 or wav) or an audio bytes array.
+  - `sentence`: An english sentence in plain text (~20 words).
 
 Local (testing purpose):
 
 ```
-$ python3 test_image_recon_service.py 
+$ python3 test_voice_cloning_service.py 
 Endpoint (localhost:7003): 
-Method (flowers|dogs): flowers
-Model (ResNet152): <ENTER>
-Image (Link): https://www.fiftyflowers.com/site_files/FiftyFlowers/Image/Product/Mini-Black-Eye-bloom-350_c7d02e72.jpg
-1.8751
-{1: '98.93%: sunflower', 2: '00.64%: black-eyed susan', 3: '00.16%: barbeton daisy', 4: '00.14%: oxeye daisy', 5: '00.03%: daffodil'}
-
-$ python3 test_image_recon_service.py 
-Endpoint (localhost:7003): 
-Method (flowers|dogs): dogs
-Model (ResNet152): <ENTER>
-Image (Link): https://cdn2-www.dogtime.com/assets/uploads/2011/01/file_22950_standard-schnauzer-460x290.jpg
-1.5280
-{1: '99.83%: Miniature_schnauzer', 2: '00.09%: Alaskan_malamute', 3: '00.05%: Giant_schnauzer', 4: '00.01%: Bouvier_des_flandres', 5: '00.01%: Lowchen'}
+Audio (link): https://raw.githubusercontent.com/singnet/dnn-model-services/master/docs/assets/users_guide/ben_websumit19.mp3
+Sentence (~20 words): I am an artificial intelligence researcher and I would like to make the world a better place!
+{'audio': '...' }
 ```
 
 Through SingularityNET (follow this [link](https://dev.singularitynet.io/tutorials/publish/) to learn how to publish a service and open a payment channel to be able to call it):
@@ -126,10 +109,9 @@ Through SingularityNET (follow this [link](https://dev.singularitynet.io/tutoria
 Assuming that you have an open channel to this service:
 
 ```
-$ snet client call snet cntk-image-recon default_group flowers '{"model": "ResNet152", "img_path": "https://www.fiftyflowers.com/site_files/FiftyFlowers/Image/Product/Mini-Black-Eye-bloom-350_c7d02e72.jpg"}'
+$ snet client call snet real-time-voice-cloning default_group clone '{"audio_url": "https://raw.githubusercontent.com/singnet/dnn-model-services/master/docs/assets/users_guide/ben_websumit19.mp3", "sentence": "I am an artificial intelligence researcher and I would like to make the world a better place!"}'
 Price for this call will be 0.00000001 AGI (use -y to remove this warning). Proceed? (y/n): y
-delta_time: "2.5509"
-top_5: "{1: \'98.93%: sunflower\', 2: \'00.64%: black-eyed susan\', 3: \'00.16%: barbeton daisy\', 4: \'00.14%: oxeye daisy\', 5: \'00.03%: daffodil\'}"
+{'audio': '...' }
 ```
 
 ## Contributing and Reporting Issues

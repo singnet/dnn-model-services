@@ -189,7 +189,7 @@ Through SingularityNET (follow this [link](https://dev.singularitynet.io/tutoria
 Assuming that you have an open channel to this service:
 
 ```
-$ snet client call snet zeta36-chess-alpha-zero play '{"move": "g1f3"}'
+$ snet client call snet zeta36-chess-alpha-zero default_group play '{"move": "g1f3"}'
 
 response:
 UID: b8f24aa8f25a5dddbfaf

@@ -121,7 +121,7 @@ Service completed!
 Assuming that you have an open channel to this service, you need `0` AGI to call the service at its Daemon's endpoint (`54.203.198.53:7019`). The only call method available for this service is `recognize_scene`, which has been defined at its protobuf file. Specifying the URL to an `input_image` and telling the service what to `predict`, the full example call (and its outputs) would be:
 
 ```
-$ snet client call snet places365-scene-recognition recognize_scene '{"input_image":"https://static1.squarespace.com/static/564783d5e4b077901c4bdc37/t/5a823d47c83025d76ac6ddae/1518484818865/Piccolo-104.jpg?format=1500w", "predict":"io, categories"}'
+$ snet client call snet places365-scene-recognition default_group recognize_scene '{"input_image":"https://static1.squarespace.com/static/564783d5e4b077901c4bdc37/t/5a823d47c83025d76ac6ddae/1518484818865/Piccolo-104.jpg?format=1500w", "predict":"io, categories"}'
 ...
 data: "{\"io\": \"indoor\", \"categories\": \" 0.924 -> beauty_salon, 0.006 -> gymnasium/indoor, 0.005 -> clean_room, 0.005 -> biology_laboratory, 0.004 -> chemistry_lab,\"}"
 ```
