@@ -91,6 +91,7 @@ Each service is licensed as followed:
 - i3d-video-action-recognition - [Apache License 2.0](https://github.com/deepmind/kinetics-i3d/blob/master/LICENSE)
 - places365-scene-recognition - [MIT License](https://github.com/CSAILVision/places365/blob/master/LICENSE)
 - pneumonia-diagnosis - [Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/)
+- real-time-voice-cloning - [MIT License](https://github.com/CorentinJ/Real-Time-Voice-Cloning/blob/master/LICENSE.txt)
 - s2vt-video-captioning - [Attribution 4.0 International (CC BY 4.0)](http://creativecommons.org/licenses/by/4.0/)
 - yolov3-object-detection - [Public domain](https://github.com/pjreddie/darknet/blob/master/LICENSE)
 - zeta36-chess-alpha-zero - [MIT License](https://github.com/Zeta36/chess-alpha-zero/blob/master/LICENSE.txt)
