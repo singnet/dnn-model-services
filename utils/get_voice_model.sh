@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # This script downloads the Real-Time-Voice-Cloning pre trained model,
 
-DIR="./services/real-time-voice-cloning"
+DIR="./services/real-time-voice-cloning/rtvc"
 
 cd ${DIR} || true
 
