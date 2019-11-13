@@ -125,7 +125,7 @@ Through SingularityNET (follow this [link](https://dev.singularitynet.io/tutoria
 Assuming that you have an open channel to this service:
 
 ```
-$ snet client call snet pneumonia-diagnosis check '{"img_path": "https://snet-models.s3.amazonaws.com/bh/PneumoniaDiagnosis/diagnosis_normal_2.jpg"}'
+$ snet client call snet pneumonia-diagnosis default_group check '{"img_path": "https://snet-models.s3.amazonaws.com/bh/PneumoniaDiagnosis/diagnosis_normal_2.jpg"}'
 Price for this call will be 0.00000001 AGI (use -y to remove this warning). Proceed? (y/n): y
 output: "Normal"
 ```

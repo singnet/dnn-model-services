@@ -1,0 +1,16 @@
+grpcio>=1.14.2
+grpcio-tools>=1.14.1
+requests==2.20.0
+tensorflow-gpu>=1.10.0,<=1.14.0
+umap-learn
+visdom
+webrtcvad
+librosa>=0.5.1
+numpy>=1.14.0
+scipy>=1.0.0
+tqdm
+sounddevice
+Unidecode
+inflect
+multiprocess
+numba

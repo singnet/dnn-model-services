@@ -40,7 +40,7 @@ You can also call the service from SingularityNET CLI (`snet`).
 Assuming that you have an open channel to this service:
 
 ```
-$ snet client call snet cntk-image-recon flowers '{"model": "ResNet152", "img_path": "https://www.fiftyflowers.com/site_files/FiftyFlowers/Image/Product/Mini-Black-Eye-bloom-350_c7d02e72.jpg"}'
+$ snet client call snet cntk-image-recon default_group flowers '{"model": "ResNet152", "img_path": "https://www.fiftyflowers.com/site_files/FiftyFlowers/Image/Product/Mini-Black-Eye-bloom-350_c7d02e72.jpg"}'
 ...
 Read call params from cmdline...
 

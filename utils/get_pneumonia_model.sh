@@ -6,14 +6,14 @@ if [ ! -d "$DIR" ]; then
     mkdir -p ${DIR}
 fi
 
-cd ${DIR}
+cd ${DIR} || true
 
 echo "Downloading VGG19 Pneumonia Model files [~180MB] ..."
 
-file="PneumoniaModel.h5"
-if [ -f "$file" ]
+FILE="PneumoniaModel.h5"
+if [ -f "${FILE}" ]
 then
-	echo "$file found, skipping.."
+	echo "${FILE} found, skipping.."
 else
 	wget --no-check-certificate https://snet-models.s3.amazonaws.com/bh/PneumoniaDiagnosis/PneumoniaModel.h5
 fi

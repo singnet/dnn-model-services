@@ -295,6 +295,30 @@ jobs:
           docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
           docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_DIR}/etcd/
 
+  real-time-voice-cloning:
+    docker:
+    - image: circleci/python:3.6.6-node
+    working_directory: ~/singnet
+    environment:
+      SERVICE_NAME: real-time-voice-cloning
+      SERVICE_DIR: services/real-time-voice-cloning
+      CERTS_DIR: singnet/.certs
+      SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_video_cloning_service.py --ssl"
+      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_video_cloning_service.py auto"
+      SNETD_PORT_MAINNET: 7064
+      SNETD_PORT_ROPSTEN: 7065
+    steps:
+      - checkout
+      - build_and_deploy:
+          domain: ${DOMAIN_VOICE_CLONING}
+          ssh_user_env_var: ${SSH_USER_VOICE_CLONING}
+          ssh_host_env_var: ${SSH_HOST_VOICE_CLONING}
+          docker_nvidia: true
+          docker_image_name: voice_cloning
+          docker_container_name: VOICE_CLONING
+          docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
+          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_DIR}/etcd/
+
   s2vt-video-captioning:
     docker:
     - image: circleci/python:3.6.6-node
@@ -404,3 +428,4 @@ workflows:
       - zeta36-chess-alpha-zero
       - places365-scene-recognition
       - pneumonia-diagnosis
+      - real-time-voice-cloning

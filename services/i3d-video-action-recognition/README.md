@@ -114,7 +114,7 @@ Through SingularityNET (follow this [link](https://dev.singularitynet.io/tutoria
 Assuming that you have an open channel to this service:
 
 ```
-$ snet client call snet i3d-video-action-recognition video_action_recon '{"model": "400", "url": "http://crcv.ucf.edu/THUMOS14/UCF101/UCF101/v_CricketShot_g04_c02.avi"}'
+$ snet client call snet i3d-video-action-recognition default_group video_action_recon '{"model": "400", "url": "http://crcv.ucf.edu/THUMOS14/UCF101/UCF101/v_CricketShot_g04_c02.avi"}'
 ...
 Read call params from cmdline...
 
