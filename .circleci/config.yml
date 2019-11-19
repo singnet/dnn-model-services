@@ -367,6 +367,30 @@ jobs:
           docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
           docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_DIR}/etcd/
 
+  sound-spleeter:
+    docker:
+    - image: circleci/python:3.6.6-node
+    working_directory: ~/singnet
+    environment:
+      SERVICE_NAME: sound-spleeter
+      SERVICE_DIR: services/sound-spleeter
+      CERTS_DIR: singnet/.certs
+      SERVICE_RUN_COMMAND: bash -c "git pull;python3 run_sound_spleeter_service.py --ssl"
+      SERVICE_TEST_COMMAND: bash -c "sleep 10;python3 test_sound_spleeter_service.py auto"
+      SNETD_PORT_MAINNET: 7066
+      SNETD_PORT_ROPSTEN: 7067
+    steps:
+      - checkout
+      - build_and_deploy:
+          domain: ${DOMAIN_SOUND_SPLEETER}
+          ssh_user_env_var: ${SSH_USER_SOUND_SPLEETER}
+          ssh_host_env_var: ${SSH_HOST_SOUND_SPLEETER}
+          docker_nvidia: true
+          docker_image_name: sound_spleeter
+          docker_container_name: SOUND_SPLEETER
+          docker_etcd_host_dir: singnet/etcd/${SERVICE_NAME}/
+          docker_etcd_container_dir: opt/singnet/${CIRCLE_PROJECT_REPONAME}/${SERVICE_DIR}/etcd/
+
   yolov3-object-detection:
     docker:
     - image: circleci/python:3.6.6-node
@@ -422,10 +446,11 @@ workflows:
       - cntk-image-recon
 #      - deepfakes-faceswap
       - i3d-video-action-recognition
-      - s2vt-video-captioning
-#      - siggraph-colorization
-      - yolov3-object-detection
-      - zeta36-chess-alpha-zero
       - places365-scene-recognition
       - pneumonia-diagnosis
       - real-time-voice-cloning
+      - s2vt-video-captioning
+#      - siggraph-colorization
+      - sound-spleeter
+      - yolov3-object-detection
+      - zeta36-chess-alpha-zero
