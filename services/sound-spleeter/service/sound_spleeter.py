@@ -14,10 +14,10 @@ logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s 
 log = logging.getLogger("sound_spleeter")
 
 
-def spleeter(audio_url=None, audio=None, response=None):
+def spleeter(response, audio_url=None, audio=None):
     try:
-        if not response:
-            response = {"vocals": b"Fail", "accomp": b"Fail"}
+        response["vocals"] = b"Fail"
+        response["accomp"] = b"Fail"
 
         audio_data = audio
         if audio_url:
