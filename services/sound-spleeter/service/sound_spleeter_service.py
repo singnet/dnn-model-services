@@ -27,13 +27,13 @@ class SoundSpleeterServicer(grpc_bt_grpc.SoundSpleeterServicer):
 
     @staticmethod
     def spleeter(request, _):
-        response = multiprocessing.Queue()
+        manager = multiprocessing.Manager()
+        response = manager.dict()
         worker = multiprocessing.Process(
             target=ss.spleeter,
             args=(request.audio_url, request.audio, response))
         worker.start()
         worker.join()
-        response = response.get()
         log.debug("clone({},{})={},{}".format(request.audio_url[:10],
                                               len(request.audio),
                                               len(response["vocals"]),

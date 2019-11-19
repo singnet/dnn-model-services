@@ -16,6 +16,9 @@ log = logging.getLogger("sound_spleeter")
 
 def spleeter(audio_url=None, audio=None, response=None):
     try:
+        if not response:
+            response = {"vocals": b"Fail", "accomp": b"Fail"}
+
         audio_data = audio
         if audio_url:
             # Link
@@ -71,8 +74,6 @@ def spleeter(audio_url=None, audio=None, response=None):
     except Exception as e:
         log.error(e)
         traceback.print_exc()
-        response["vocals"] = b"Fail"
-        response["accomp"] = b"Fail"
         return
 
 
