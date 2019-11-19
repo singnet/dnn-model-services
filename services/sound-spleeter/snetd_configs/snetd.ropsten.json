@@ -1,0 +1,19 @@
+{
+  "daemon_end_point": "0.0.0.0:7067",
+  "ipfs_end_point": "http://ipfs.singularitynet.io:80",
+  "passthrough_enabled": true,
+  "passthrough_endpoint": "http://localhost:7003",
+  "blockchain_network_selected": "ropsten",
+  "organization_id": "snet",
+  "service_id": "sound-spleeter",
+  "log": {
+    "level": "debug",
+    "output": {
+      "current_link": "./snetd-ropsten.log",
+      "file_pattern": "./snetd-ropsten.%Y%m%d.log",
+      "rotation_count": 0,
+      "rotation_time_in_sec": 86400,
+      "type": "file"
+    }
+  }
+}
