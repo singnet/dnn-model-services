@@ -47,4 +47,5 @@ Inputs:
 
 Response:
 
-- `audio bytes array`: [Vocals Separation](http://54.203.198.53:7000/Resources/vocals_example.mp3)
+- `audio bytes array`: [Vocals](http://54.203.198.53:7000/Resources/vocals.wav)
+- `audio bytes array`: [Accompaniment](http://54.203.198.53:7000/Resources/accompaniment.wav)
