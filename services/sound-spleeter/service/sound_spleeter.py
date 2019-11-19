@@ -14,7 +14,7 @@ logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s 
 log = logging.getLogger("sound_spleeter")
 
 
-def spleeter(audio_url=None, audio=None):
+def spleeter(audio_url=None, audio=None, response=None):
     try:
         audio_data = audio
         if audio_url:
@@ -27,7 +27,9 @@ def spleeter(audio_url=None, audio=None):
                 size = int(size) / float(1 << 20)
                 log.info("File size: {:.2f} Mb".format(size))
                 if size > 5:
-                    return {"vocals": b"Input audio file is too large! (max 5Mb)", "accomp": b"Fail"}
+                    response["vocals"] = b"Input audio file is too large! (max 5Mb)"
+                    response["accomp"] = b"Fail"
+                    return
                 r = requests.get(audio_url, headers=header, allow_redirects=True)
                 audio_data = r.content
             # Base64
@@ -62,12 +64,16 @@ def spleeter(audio_url=None, audio=None):
         # Deleting the files output directory
         shutil.rmtree(tmp_dir)
 
-        return {"vocals": vocals, "accomp": accomp}
+        response["vocals"] = vocals
+        response["accomp"] = accomp
+        return
 
     except Exception as e:
         log.error(e)
         traceback.print_exc()
-        return {"vocals": b"Fail", "accomp": b"Fail"}
+        response["vocals"] = b"Fail"
+        response["accomp"] = b"Fail"
+        return
 
 
 def generate_uid():

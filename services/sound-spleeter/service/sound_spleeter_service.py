@@ -2,6 +2,7 @@ import sys
 import logging
 import datetime
 import hashlib
+import multiprocessing
 
 import grpc
 import concurrent.futures as futures
@@ -26,7 +27,13 @@ class SoundSpleeterServicer(grpc_bt_grpc.SoundSpleeterServicer):
 
     @staticmethod
     def spleeter(request, _):
-        response = ss.spleeter(request.audio_url, request.audio)
+        response = multiprocessing.Queue()
+        worker = multiprocessing.Process(
+            target=ss.spleeter,
+            args=(request.audio_url, request.audio, response))
+        worker.start()
+        worker.join()
+        response = response.get()
         log.debug("clone({},{})={},{}".format(request.audio_url[:10],
                                               len(request.audio),
                                               len(response["vocals"]),
