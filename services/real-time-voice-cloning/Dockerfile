@@ -48,6 +48,7 @@ RUN cd ${SINGNET_REPOS}/${DNN_REPO_NAME} && \
 
 # Installing all the dependencies of the service
 RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \
+    pip install -U pip && \
     pip install -r requirements.txt && \
     sh buildproto.sh
 

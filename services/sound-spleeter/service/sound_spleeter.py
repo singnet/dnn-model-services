@@ -53,14 +53,15 @@ def spleeter(response, audio_url=None, audio=None):
         separator = Separator("spleeter:2stems")
         separator.separate_to_file(tmp_dir + audio_path, tmp_dir)
 
-        if os.path.exists(audio_path):
-            os.remove(audio_path)
+        if os.path.exists(tmp_dir + audio_path):
+            os.remove(tmp_dir + audio_path)
 
         # Getting the output files content
-        output_vocals = tmp_dir + "vocals.wav"
+        out_dir = tmp_dir + audio_path.replace(".audio", "") + "/"
+        output_vocals = out_dir + "vocals.wav"
         with open(output_vocals, "rb") as fv:
             vocals = fv.read()
-        output_accomp = tmp_dir + "accompaniment.wav"
+        output_accomp = out_dir + "accompaniment.wav"
         with open(output_accomp, "rb") as fa:
             accomp = fa.read()
 
