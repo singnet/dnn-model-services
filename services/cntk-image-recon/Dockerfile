@@ -30,6 +30,7 @@ RUN cd ${SINGNET_REPOS} && \
     ./get_cntk_models.sh
 
 RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \
+    /root/anaconda3/envs/cntk-py35/bin/python -m pip install -U pip && \
     /root/anaconda3/envs/cntk-py35/bin/python -m pip install -r requirements.txt && \
     sh buildproto.sh
 

@@ -56,6 +56,7 @@ RUN cd ${SINGNET_REPOS} && \
     sh get_colorize_model.sh
 
 RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \
+    pip3 install -U pip && \
     pip3 install -r requirements.txt && \
     sh buildproto.sh
 

@@ -39,6 +39,7 @@ RUN cd ${SINGNET_REPOS} && \
 
 # Building protobuf messages
 RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \
+    pip install -U pip && \
     pip install -r requirements.txt && \
     sh buildproto.sh
 

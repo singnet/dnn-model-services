@@ -35,6 +35,7 @@ RUN cd ${SINGNET_REPOS} && \
     git clone -b ${git_branch} https://github.com/${git_owner}/${DNN_REPO_NAME}.git
 
 RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \
+    pip3 install -U pip && \
     pip3 install -r requirements.txt && \
     sh buildproto.sh
 

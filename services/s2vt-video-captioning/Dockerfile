@@ -35,6 +35,7 @@ RUN cd ${SINGNET_REPOS} && \
     ./get_s2vt.sh
 
 RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \
+    pip install -U pip && \
     pip install -r requirements.txt && \
     sh buildproto.sh
 

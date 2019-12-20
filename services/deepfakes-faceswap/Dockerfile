@@ -41,6 +41,7 @@ RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \
     pip3 install git+https://github.com/arturgontijo/content-server.git
 
 RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \
+    pip3 install -U pip && \
     pip3 install -r requirements.txt && \
     sh buildproto.sh
 
