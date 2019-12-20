@@ -35,8 +35,8 @@ RUN cd ${SINGNET_REPOS} && \
     ./get_yolov3.sh
 
 RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \
-    pip3 install -U pip && \
-    pip3 install -r requirements.txt && \
+    python3 -m pip install -U pip && \
+    python3 -m pip install -r requirements.txt && \
     sh buildproto.sh
 
 WORKDIR ${SERVICES_FOLDER}/${SERVICE_NAME}
