@@ -11,6 +11,9 @@ commands:
       ssh_host_env_var:
         type: string
         default: ""
+      daemon_pk:
+        type: string
+        default: ""
       docker_nvidia:
         type: boolean
         default: false
@@ -116,6 +119,7 @@ commands:
             echo "============================================ Run Configs ============================================"
             export SSH_USER=<< parameters.ssh_user_env_var >>
             export SSH_HOST=<< parameters.ssh_host_env_var >>
+            export PVT_KEY_FOR_METERING=<< parameters.daemon_pk >>
             export DOCKER_NVIDIA=<< parameters.docker_nvidia >>
             export DOCKER_IMAGE_NAME=<< parameters.docker_image_name >>
             export DOCKER_CONTAINER_NAME=<< parameters.docker_container_name >>
@@ -190,6 +194,7 @@ jobs:
           domain: ${DOMAIN_CNTK_IMAGE_RECON}
           ssh_user_env_var: ${SSH_USER_CNTK_IMAGE_RECON}
           ssh_host_env_var: ${SSH_HOST_CNTK_IMAGE_RECON}
+          daemon_pk: ${PK_CNTK_IMAGE_RECON}
           docker_nvidia: true
           docker_image_name: cntk_image_recognition
           docker_container_name: CNTK_IMAGE_RECON
@@ -214,6 +219,7 @@ jobs:
           domain: ${DOMAIN_DEEPFAKES_FACESWAP}
           ssh_user_env_var: ${SSH_USER_DEEPFAKES_FACESWAP}
           ssh_host_env_var: ${SSH_HOST_DEEPFAKES_FACESWAP}
+          daemon_pk: ${PK_DEEPFAKES_FACESWAP}
           docker_mount_volumes: true
           docker_mount_src: ~/storage
           docker_mount_dest: /opt/storage
@@ -241,6 +247,7 @@ jobs:
           domain: ${DOMAIN_I3D_VIDEO_ACTION_RECON}
           ssh_user_env_var: ${SSH_USER_I3D_VIDEO_ACTION_RECON}
           ssh_host_env_var: ${SSH_HOST_I3D_VIDEO_ACTION_RECON}
+          daemon_pk: ${PK_I3D_VIDEO_ACTION_RECON}
           docker_nvidia: true
           docker_image_name: i3d_video_action_recognition
           docker_container_name: I3D_VIDEO_ACTION_RECON
@@ -265,6 +272,7 @@ jobs:
           domain: ${DOMAIN_PLACES365_SCENE_RECOGNITION}
           ssh_user_env_var: ${SSH_USER_PLACES365_SCENE_RECOGNITION}
           ssh_host_env_var: ${SSH_HOST_PLACES365_SCENE_RECOGNITION}
+          daemon_pk: ${PK_PLACES365_SCENE_RECOGNITION}
           docker_nvidia: true
           docker_image_name: places365_scene_recognition
           docker_container_name: PLACES365_SCENE_RECOGNITION
@@ -289,6 +297,7 @@ jobs:
           domain: ${DOMAIN_PNEUMONIA_DIAGNOSIS}
           ssh_user_env_var: ${SSH_USER_PNEUMONIA_DIAGNOSIS}
           ssh_host_env_var: ${SSH_HOST_PNEUMONIA_DIAGNOSIS}
+          daemon_pk: ${PK_PNEUMONIA_DIAGNOSIS}
           docker_nvidia: true
           docker_image_name: pneumonia_diagnosis
           docker_container_name: PNEUMONIA_DIAGNOSIS
@@ -313,6 +322,7 @@ jobs:
           domain: ${DOMAIN_VOICE_CLONING}
           ssh_user_env_var: ${SSH_USER_VOICE_CLONING}
           ssh_host_env_var: ${SSH_HOST_VOICE_CLONING}
+          daemon_pk: ${PK_VOICE_CLONING}
           docker_nvidia: true
           docker_image_name: voice_cloning
           docker_container_name: VOICE_CLONING
@@ -337,6 +347,7 @@ jobs:
           domain: ${DOMAIN_S2VT_VIDEO_CAPTIONING}
           ssh_user_env_var: ${SSH_USER_S2VT_VIDEO_CAPTIONING}
           ssh_host_env_var: ${SSH_HOST_S2VT_VIDEO_CAPTIONING}
+          daemon_pk: ${PK_S2VT_VIDEO_CAPTIONING}
           docker_nvidia: true
           docker_image_name: s2vt_video_captioning
           docker_container_name: S2VT_VIDEO_CAPTIONING
@@ -361,6 +372,7 @@ jobs:
           domain: ${DOMAIN_SIGGRAPH_COLORIZATION}
           ssh_user_env_var: ${SSH_USER_SIGGRAPH_COLORIZATION}
           ssh_host_env_var: ${SSH_HOST_SIGGRAPH_COLORIZATION}
+          daemon_pk: ${PK_SIGGRAPH_COLORIZATION}
           docker_nvidia: true
           docker_image_name: siggraph_colorization
           docker_container_name: SIGGRAPH_COLORIZATION
@@ -385,6 +397,7 @@ jobs:
           domain: ${DOMAIN_SOUND_SPLEETER}
           ssh_user_env_var: ${SSH_USER_SOUND_SPLEETER}
           ssh_host_env_var: ${SSH_HOST_SOUND_SPLEETER}
+          daemon_pk: ${PK_SOUND_SPLEETER}
           docker_nvidia: true
           docker_image_name: sound_spleeter
           docker_container_name: SOUND_SPLEETER
@@ -409,6 +422,7 @@ jobs:
           domain: ${DOMAIN_YOLOv3_OBJECT_DETECTION}
           ssh_user_env_var: ${SSH_USER_YOLOv3_OBJECT_DETECTION}
           ssh_host_env_var: ${SSH_HOST_YOLOv3_OBJECT_DETECTION}
+          daemon_pk: ${PK_YOLOv3_OBJECT_DETECTION}
           docker_nvidia: true
           docker_image_name: yolov3_object_detection
           docker_container_name: YOLOv3_OBJECT_DETECTION
@@ -433,6 +447,7 @@ jobs:
           domain: ${DOMAIN_CHESS_ALPHA_ZERO}
           ssh_user_env_var: ${SSH_USER_CHESS_ALPHA_ZERO}
           ssh_host_env_var: ${SSH_HOST_CHESS_ALPHA_ZERO}
+          daemon_pk: ${PK_CHESS_ALPHA_ZERO}
           docker_nvidia: true
           docker_image_name: zeta36_chess_alpha_zero
           docker_container_name: CHESS_ALPHA_ZERO
