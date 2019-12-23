@@ -1,3 +1,3 @@
 registry = {
-    "scene_recognition_service": {"grpc": 7018},
+    "scene_recognition_service": {"grpc": 7003},
 }
