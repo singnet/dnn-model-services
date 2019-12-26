@@ -1,6 +1,6 @@
 import os
 import shutil
-import time
+import datetime
 import logging
 import requests
 
@@ -31,9 +31,9 @@ class VideoCaptioner:
     # Caption
     def _create_srt(self, s):
         if self.stop_time == 0:
-            self.stop_time = get_video_length(self.video_path)
-        start_caption = time.strftime("%H:%M:%S,00", time.gmtime(int(self.start_time)))
-        stop_caption = time.strftime("%H:%M:%S,00", time.gmtime(int(self.stop_time)))
+            self.stop_time = get_video_length(self.video_path)       
+        start_caption = datetime.datetime.utcfromtimestamp(self.start_time).strftime("%H:%M:%S,%f")
+        stop_caption = datetime.datetime.utcfromtimestamp(self.stop_time).strftime("%H:%M:%S,%f")
         if s:
             s = s[0].split("\t")[-1].replace("\n", "")
         return "1\n{} --> {}\n{}".format(start_caption, stop_caption, s)

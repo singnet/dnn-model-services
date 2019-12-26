@@ -28,10 +28,10 @@ if __name__ == "__main__":
         grpc_method = raw_input("Method (video_cap): ") if not test_flag else ""
         if grpc_method == "video_cap" or grpc_method == "":
             url = raw_input("Url: ") if not test_flag else TEST_URL
-            start_time_sec = raw_input("StartTime(s): ") if not test_flag else "0"
-            stop_time_sec = raw_input("StopTime (s): ") if not test_flag else "0"
+            start_time_sec = raw_input("StartTime(s): ") if not test_flag else 0
+            stop_time_sec = raw_input("StopTime (s): ") if not test_flag else 0
             stub = grpc_bt_grpc.VideoCaptioningStub(channel)
-            request = grpc_bt_pb2.Input(url=url, start_time_sec=start_time_sec, stop_time_sec=stop_time_sec)
+            request = grpc_bt_pb2.Input(url=url, start_time_sec=float(start_time_sec), stop_time_sec=float(stop_time_sec))
             response = stub.video_cap(request)
             print(response.value)
 

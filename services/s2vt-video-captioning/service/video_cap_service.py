@@ -36,8 +36,8 @@ class VideoCaptioningServicer(grpc_bt_grpc.VideoCaptioningServicer):
     # context: object that provides RPC-specific information (timeout, etc).
     def video_cap(self, request, context):
         self.url = request.url
-        self.start_time_sec = int(request.start_time_sec)
-        self.stop_time_sec = int(request.stop_time_sec)
+        self.start_time_sec = request.start_time_sec
+        self.stop_time_sec = request.stop_time_sec
         self.uid = generate_uid()
 
         # To respond we need to create a Output() object (from .proto file)
