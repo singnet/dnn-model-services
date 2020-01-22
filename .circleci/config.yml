@@ -11,6 +11,9 @@ commands:
       ssh_host_env_var:
         type: string
         default: ""
+      infura_api_key:
+        type: string
+        default: ""
       daemon_pk:
         type: string
         default: ""
@@ -119,6 +122,7 @@ commands:
             echo "============================================ Run Configs ============================================"
             export SSH_USER=<< parameters.ssh_user_env_var >>
             export SSH_HOST=<< parameters.ssh_host_env_var >>
+            export INFURA_API_KEY=<< parameters.infura_api_key >>
             export PVT_KEY_FOR_METERING=<< parameters.daemon_pk >>
             export DOCKER_NVIDIA=<< parameters.docker_nvidia >>
             export DOCKER_IMAGE_NAME=<< parameters.docker_image_name >>
@@ -151,6 +155,7 @@ commands:
                   $([ "${DOCKER_NVIDIA}" = "true" ] && echo "--runtime=nvidia" || echo "") \
                   --name ${PROD_TAG}${DOCKER_CONTAINER_NAME} \
                   --restart unless-stopped \
+                  -e INFURA_API_KEY=${INFURA_API_KEY} \
                   -e PVT_KEY_FOR_METERING=${PVT_KEY_FOR_METERING} \
                   $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-p ${SNETD_PORT_MAINNET}:${SNETD_PORT_MAINNET}" || echo "") \
                   $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-p ${SNETD_PORT_ROPSTEN}:${SNETD_PORT_ROPSTEN}" || echo "") \
@@ -194,6 +199,7 @@ jobs:
           domain: ${DOMAIN_CNTK_IMAGE_RECON}
           ssh_user_env_var: ${SSH_USER_CNTK_IMAGE_RECON}
           ssh_host_env_var: ${SSH_HOST_CNTK_IMAGE_RECON}
+          infura_api_key: ${INFURA_API_KEY}
           daemon_pk: ${PK_CNTK_IMAGE_RECON}
           docker_nvidia: true
           docker_image_name: cntk_image_recognition
@@ -219,6 +225,7 @@ jobs:
           domain: ${DOMAIN_DEEPFAKES_FACESWAP}
           ssh_user_env_var: ${SSH_USER_DEEPFAKES_FACESWAP}
           ssh_host_env_var: ${SSH_HOST_DEEPFAKES_FACESWAP}
+          infura_api_key: ${INFURA_API_KEY}
           daemon_pk: ${PK_DEEPFAKES_FACESWAP}
           docker_mount_volumes: true
           docker_mount_src: ~/storage
@@ -247,6 +254,7 @@ jobs:
           domain: ${DOMAIN_I3D_VIDEO_ACTION_RECON}
           ssh_user_env_var: ${SSH_USER_I3D_VIDEO_ACTION_RECON}
           ssh_host_env_var: ${SSH_HOST_I3D_VIDEO_ACTION_RECON}
+          infura_api_key: ${INFURA_API_KEY}
           daemon_pk: ${PK_I3D_VIDEO_ACTION_RECON}
           docker_nvidia: true
           docker_image_name: i3d_video_action_recognition
@@ -272,6 +280,7 @@ jobs:
           domain: ${DOMAIN_PLACES365_SCENE_RECOGNITION}
           ssh_user_env_var: ${SSH_USER_PLACES365_SCENE_RECOGNITION}
           ssh_host_env_var: ${SSH_HOST_PLACES365_SCENE_RECOGNITION}
+          infura_api_key: ${INFURA_API_KEY}
           daemon_pk: ${PK_PLACES365_SCENE_RECOGNITION}
           docker_nvidia: true
           docker_image_name: places365_scene_recognition
@@ -297,6 +306,7 @@ jobs:
           domain: ${DOMAIN_PNEUMONIA_DIAGNOSIS}
           ssh_user_env_var: ${SSH_USER_PNEUMONIA_DIAGNOSIS}
           ssh_host_env_var: ${SSH_HOST_PNEUMONIA_DIAGNOSIS}
+          infura_api_key: ${INFURA_API_KEY}
           daemon_pk: ${PK_PNEUMONIA_DIAGNOSIS}
           docker_nvidia: true
           docker_image_name: pneumonia_diagnosis
@@ -322,6 +332,7 @@ jobs:
           domain: ${DOMAIN_VOICE_CLONING}
           ssh_user_env_var: ${SSH_USER_VOICE_CLONING}
           ssh_host_env_var: ${SSH_HOST_VOICE_CLONING}
+          infura_api_key: ${INFURA_API_KEY}
           daemon_pk: ${PK_VOICE_CLONING}
           docker_nvidia: true
           docker_image_name: voice_cloning
@@ -347,6 +358,7 @@ jobs:
           domain: ${DOMAIN_S2VT_VIDEO_CAPTIONING}
           ssh_user_env_var: ${SSH_USER_S2VT_VIDEO_CAPTIONING}
           ssh_host_env_var: ${SSH_HOST_S2VT_VIDEO_CAPTIONING}
+          infura_api_key: ${INFURA_API_KEY}
           daemon_pk: ${PK_S2VT_VIDEO_CAPTIONING}
           docker_nvidia: true
           docker_image_name: s2vt_video_captioning
@@ -372,6 +384,7 @@ jobs:
           domain: ${DOMAIN_SIGGRAPH_COLORIZATION}
           ssh_user_env_var: ${SSH_USER_SIGGRAPH_COLORIZATION}
           ssh_host_env_var: ${SSH_HOST_SIGGRAPH_COLORIZATION}
+          infura_api_key: ${INFURA_API_KEY}
           daemon_pk: ${PK_SIGGRAPH_COLORIZATION}
           docker_nvidia: true
           docker_image_name: siggraph_colorization
@@ -397,6 +410,7 @@ jobs:
           domain: ${DOMAIN_SOUND_SPLEETER}
           ssh_user_env_var: ${SSH_USER_SOUND_SPLEETER}
           ssh_host_env_var: ${SSH_HOST_SOUND_SPLEETER}
+          infura_api_key: ${INFURA_API_KEY}
           daemon_pk: ${PK_SOUND_SPLEETER}
           docker_nvidia: true
           docker_image_name: sound_spleeter
@@ -422,6 +436,7 @@ jobs:
           domain: ${DOMAIN_YOLOv3_OBJECT_DETECTION}
           ssh_user_env_var: ${SSH_USER_YOLOv3_OBJECT_DETECTION}
           ssh_host_env_var: ${SSH_HOST_YOLOv3_OBJECT_DETECTION}
+          infura_api_key: ${INFURA_API_KEY}
           daemon_pk: ${PK_YOLOv3_OBJECT_DETECTION}
           docker_nvidia: true
           docker_image_name: yolov3_object_detection
@@ -447,6 +462,7 @@ jobs:
           domain: ${DOMAIN_CHESS_ALPHA_ZERO}
           ssh_user_env_var: ${SSH_USER_CHESS_ALPHA_ZERO}
           ssh_host_env_var: ${SSH_HOST_CHESS_ALPHA_ZERO}
+          infura_api_key: ${INFURA_API_KEY}
           daemon_pk: ${PK_CHESS_ALPHA_ZERO}
           docker_nvidia: true
           docker_image_name: zeta36_chess_alpha_zero
