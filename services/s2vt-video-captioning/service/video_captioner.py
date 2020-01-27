@@ -2,7 +2,9 @@ import os
 import shutil
 import datetime
 import logging
+
 import requests
+import youtube_dl
 
 from utils.extract_features import extractor
 from utils.s2vt_captioner import get_captions
@@ -31,7 +33,7 @@ class VideoCaptioner:
     # Caption
     def _create_srt(self, s):
         if self.stop_time == 0:
-            self.stop_time = get_video_length(self.video_path)       
+            self.stop_time = get_video_length(self.video_path)
         start_caption = datetime.datetime.utcfromtimestamp(self.start_time).strftime("%H:%M:%S,%f")
         stop_caption = datetime.datetime.utcfromtimestamp(self.stop_time).strftime("%H:%M:%S,%f")
         if s:
@@ -43,19 +45,35 @@ class VideoCaptioner:
         try:
             # Link
             if "http://" in self.url or "https://" in self.url:
-                header = {
-                    "User-Agent": "Mozilla/5.0 (Windows NT x.y; Win64; x64; rv:9.0) Gecko/20100101 Firefox/10.0"}
-                r = requests.get(self.url, headers=header, allow_redirects=True)
-                self.video_path = self.video_folder + "/tmp_video.vid"
-                with open(self.video_path, "wb") as my_f:
-                    my_f.write(r.content)
+                try:
+                    ydl_opts = {
+                        "format": "bestvideo[ext=mp4]",
+                        "outtmpl": "{}/%(id)s.mp4".format(self.video_folder),
+                        "noplaylist": True
+                    }
+                    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+                        video_info = ydl.extract_info(self.url, download=False)
+                        if video_info["duration"] > 100:
+                            self.video_path = "Video is too long (must be <= 100s)."
+                            return False
+                        else:
+                            ydl.download([self.url])
+                            self.video_path = "{}/{}.mp4".format(self.video_folder, video_info["id"])
+                except Exception as e:
+                    log.error(e)
+                    header = {
+                        "User-Agent": "Mozilla/5.0 (Windows NT x.y; Win64; x64; rv:9.0) Gecko/20100101 Firefox/10.0"}
+                    r = requests.get(self.url, headers=header, allow_redirects=True)
                     self.video_path = self.video_folder + "/tmp_video.vid"
+                    with open(self.video_path, "wb") as my_f:
+                        my_f.write(r.content)
             else:
                 self.video_path = "Not a valid video url."
                 return False
             return True
         except Exception as e:
             log.error(e)
+            self.video_path = "Error downloading video."
             return False
 
     # Main method, it gets the url, start_time and stop_time and returns a Caption.
