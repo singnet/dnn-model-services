@@ -4,3 +4,4 @@ tensorflow==1.15
 tensorflow-hub==0.1.1
 requests==2.20.0
 opencv-python==3.4.3.18
+youtube_dl==2020.1.24

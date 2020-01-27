@@ -9,6 +9,8 @@ import numpy as np
 import tensorflow as tf
 import tensorflow_hub as hub
 
+import youtube_dl
+
 tf.logging.set_verbosity(tf.logging.ERROR)
 
 logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s")
@@ -22,25 +24,62 @@ class VideoActionRecognizer:
         self.url = url
         self.video_path = ""
         self.video_folder = "./service/data/videos/{}".format(self.uid)
+        self.error = ""
 
         self.response = dict()
 
     # Downloads the video from URL.
-    def _download_video(self):
+    def _download_video(self, max_size=25):
         try:
             # Link
             if "http://" in self.url or "https://" in self.url:
-                header = {"User-Agent": "Mozilla/5.0 (Windows NT x.y; Win64; x64; rv:9.0) Gecko/20100101 Firefox/10.0"}
-                r = requests.get(self.url, headers=header, allow_redirects=True)
-                self.video_path = self.video_folder + "/tmp_video.vid"
-                with open(self.video_path, "wb") as my_f:
-                    my_f.write(r.content)
-                    self.video_path = self.video_folder + "/tmp_video.vid"
+                try:
+                    ydl_opts = {
+                        "format": "bestvideo[ext=mp4]",
+                        "outtmpl": "{}/%(id)s.mp4".format(self.video_folder),
+                        "noplaylist": True
+                    }
+                    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+                        video_info = ydl.extract_info(self.url, download=False)
+                        if video_info["duration"] > 100:
+                            self.error = "[Fail] Video is too long (must be <= 100s)."
+                            log.error(self.error)
+                            return False
+                        else:
+                            ydl.download([self.url])
+                            self.video_path = "{}/{}.mp4".format(self.video_folder, video_info["id"])
+                except Exception as e:
+                    log.error(e)
+                    header = {
+                        "User-Agent":
+                            "Mozilla/5.0 (Windows NT x.y; Win64; x64; rv:9.0) "
+                            "Gecko/20100101 Firefox/10.0"
+                    }
+                    # Check if file has less than max_size
+                    r = requests.head(self.url,
+                                      headers=header,
+                                      allow_redirects=True)
+                    size = r.headers.get('content-length', 0)
+                    size = int(size) / float(1 << 20)
+                    log.info("File size: {:.2f} Mb".format(size))
+                    if size <= max_size:
+                        r = requests.get(self.url,
+                                         headers=header,
+                                         allow_redirects=True)
+                        self.video_path = self.video_folder + "/tmp_video.vid"
+                        with open(str(self.video_path), "wb") as my_f:
+                            my_f.write(r.content)
+                    else:
+                        self.error = "[Fail] {} is too large (>{}Mb).".format(self.url.split("/")[-1], max_size)
+                        log.error(self.error)
+                        return False
             else:
-                self.video_path = "Not a valid video url."
+                self.error = "[Fail] Not a valid video url."
+                log.error(self.error)
                 return False
             return True
         except Exception as e:
+            self.error = "[Fail] Error downloading video."
             log.error(e)
             return False
 
@@ -113,6 +152,8 @@ class VideoActionRecognizer:
                     for i in np.argsort(ps)[::-1][:5]:
                         log.debug("{}\t{:.2f}%".format(labels[i], ps[i] * 100))
                         self.response["Top5Actions"] += "{}\t{:.2f}%\n".format(labels[i], ps[i] * 100)
+            else:
+                self.response["Top5Actions"] = self.error if self.error else "[Fail] Unexpected error!"
 
         except Exception as e:
             log.error(e)
