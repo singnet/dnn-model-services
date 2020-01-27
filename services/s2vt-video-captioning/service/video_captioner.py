@@ -2,7 +2,9 @@ import os
 import shutil
 import datetime
 import logging
+
 import requests
+import youtube_dl
 
 from utils.extract_features import extractor
 from utils.s2vt_captioner import get_captions
@@ -22,6 +24,7 @@ class VideoCaptioner:
         self.stop_time = stop_time
         self.pace = pace
         self.batch_size = batch_size
+        self.error = ""
 
         self.response = dict()
 
@@ -31,7 +34,7 @@ class VideoCaptioner:
     # Caption
     def _create_srt(self, s):
         if self.stop_time == 0:
-            self.stop_time = get_video_length(self.video_path)       
+            self.stop_time = get_video_length(self.video_path)
         start_caption = datetime.datetime.utcfromtimestamp(self.start_time).strftime("%H:%M:%S,%f")
         stop_caption = datetime.datetime.utcfromtimestamp(self.stop_time).strftime("%H:%M:%S,%f")
         if s:
@@ -39,22 +42,57 @@ class VideoCaptioner:
         return "1\n{} --> {}\n{}".format(start_caption, stop_caption, s)
 
     # Downloads the video from URL.
-    def _download_video(self):
+    def _download_video(self, max_size=25):
         try:
             # Link
             if "http://" in self.url or "https://" in self.url:
-                header = {
-                    "User-Agent": "Mozilla/5.0 (Windows NT x.y; Win64; x64; rv:9.0) Gecko/20100101 Firefox/10.0"}
-                r = requests.get(self.url, headers=header, allow_redirects=True)
-                self.video_path = self.video_folder + "/tmp_video.vid"
-                with open(self.video_path, "wb") as my_f:
-                    my_f.write(r.content)
-                    self.video_path = self.video_folder + "/tmp_video.vid"
+                try:
+                    ydl_opts = {
+                        "format": "bestvideo[ext=mp4]",
+                        "outtmpl": "{}/%(id)s.mp4".format(self.video_folder),
+                        "noplaylist": True
+                    }
+                    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+                        video_info = ydl.extract_info(self.url, download=False)
+                        if video_info["duration"] > 100:
+                            self.error = "[Fail] Video is too long (must be <= 100s)."
+                            log.error(self.error)
+                            return False
+                        else:
+                            ydl.download([self.url])
+                            self.video_path = "{}/{}.mp4".format(self.video_folder, video_info["id"])
+                except Exception as e:
+                    log.error(e)
+                    header = {
+                        "User-Agent":
+                            "Mozilla/5.0 (Windows NT x.y; Win64; x64; rv:9.0) "
+                            "Gecko/20100101 Firefox/10.0"
+                    }
+                    # Check if file has less than max_size
+                    r = requests.head(self.url,
+                                      headers=header,
+                                      allow_redirects=True)
+                    size = r.headers.get('content-length', 0)
+                    size = int(size) / float(1 << 20)
+                    log.info("File size: {:.2f} Mb".format(size))
+                    if size <= max_size:
+                        r = requests.get(self.url,
+                                         headers=header,
+                                         allow_redirects=True)
+                        self.video_path = self.video_folder + "/tmp_video.vid"
+                        with open(str(self.video_path), "wb") as my_f:
+                            my_f.write(r.content)
+                    else:
+                        self.error = "[Fail] {} is too large (>{}Mb).".format(self.url.split("/")[-1], max_size)
+                        log.error(self.error)
+                        return False
             else:
-                self.video_path = "Not a valid video url."
+                self.error = "[Fail] Not a valid video url."
+                log.error(self.error)
                 return False
             return True
         except Exception as e:
+            self.error = "[Fail] Error downloading video."
             log.error(e)
             return False
 
@@ -82,21 +120,23 @@ class VideoCaptioner:
                         if self.batch_size > 60:
                             log.error("batch_size is too high! (max: 20s)")
                             self.response["Caption"] = "Fail: batch_size is too high! (max: 20s)"
-
-                    # Extracts features from frames.
-                    features_file = "{}/output_{}.csv".format(self.video_folder, self.uid)
-                    if extractor("./service/utils/data/VGG_ILSVRC_16_layers.caffemodel",
-                                 "./service/utils/data/VGG_ILSVRC_16_layers_deploy.prototxt",
-                                 frames_list,
-                                 features_file,
-                                 self.batch_size):
-                        model_name = "s2vt_vgg_rgb"
-                        output_path = "{}/{}_captions.txt".format(self.video_folder, self.uid)
-                        # Gets caption from frames (featured).
-                        get_captions(model_name, features_file, output_path)
-                        with open(output_path, "r") as f:
-                            result = f.readlines()
-                        self.response["Caption"] = self._create_srt(result)
+                        else:
+                            # Extracts features from frames.
+                            features_file = "{}/output_{}.csv".format(self.video_folder, self.uid)
+                            if extractor("./service/utils/data/VGG_ILSVRC_16_layers.caffemodel",
+                                         "./service/utils/data/VGG_ILSVRC_16_layers_deploy.prototxt",
+                                         frames_list,
+                                         features_file,
+                                         self.batch_size):
+                                model_name = "s2vt_vgg_rgb"
+                                output_path = "{}/{}_captions.txt".format(self.video_folder, self.uid)
+                                # Gets caption from frames (featured).
+                                get_captions(model_name, features_file, output_path)
+                                with open(output_path, "r") as f:
+                                    result = f.readlines()
+                                self.response["Caption"] = self._create_srt(result)
+            else:
+                self.response["Caption"] = self.error if self.error else "[Fail] Unexpected error!"
 
         except Exception as e:
             log.error(e)

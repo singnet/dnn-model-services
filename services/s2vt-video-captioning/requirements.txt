@@ -6,3 +6,4 @@ opencv-python==3.4.3.18
 h5py==2.7.1
 matplotlib==2.2.2
 pathlib==1.0.1
+youtube_dl==2020.1.24
