@@ -155,6 +155,7 @@ commands:
                   $([ "${DOCKER_NVIDIA}" = "true" ] && echo "--runtime=nvidia" || echo "") \
                   --name ${PROD_TAG}${DOCKER_CONTAINER_NAME} \
                   --restart unless-stopped \
+                  -e CIRCLE_BRANCH=${CIRCLE_BRANCH} \
                   -e INFURA_API_KEY=${INFURA_API_KEY} \
                   -e PVT_KEY_FOR_METERING=${PVT_KEY_FOR_METERING} \
                   $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-p ${SNETD_PORT_MAINNET}:${SNETD_PORT_MAINNET}" || echo "") \
@@ -189,7 +190,7 @@ jobs:
       SERVICE_NAME: cntk-image-recon
       SERVICE_DIR: services/cntk-image-recon
       CERTS_DIR: singnet/.certs
-      SERVICE_RUN_COMMAND: bash -c "source '/cntk/activate-cntk';git checkout ${CIRCLE_BRANCH};python3 run_image_recon_service.py --ssl"
+      SERVICE_RUN_COMMAND: bash -c "source '/cntk/activate-cntk';git fetch;git checkout ${CIRCLE_BRANCH};python3 run_image_recon_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 20;source '/cntk/activate-cntk';python3 test_image_recon_service.py auto"
       SNETD_PORT_MAINNET: 7004
       SNETD_PORT_ROPSTEN: 7054
@@ -215,7 +216,7 @@ jobs:
       SERVICE_NAME: deepfakes-faceswap
       SERVICE_DIR: services/deepfakes-faceswap
       CERTS_DIR: singnet/.certs
-      SERVICE_RUN_COMMAND: bash -c "git checkout ${CIRCLE_BRANCH};python3 run_deepfakes_faceswap_service.py --ssl"
+      SERVICE_RUN_COMMAND: bash -c "git fetch;git checkout ${CIRCLE_BRANCH};python3 run_deepfakes_faceswap_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 20;python3 test_deepfakes_faceswap_service.py auto"
       SNETD_PORT_MAINNET: 7060
       SNETD_PORT_ROPSTEN: 7061-7062
@@ -244,7 +245,7 @@ jobs:
       SERVICE_NAME: i3d-video-action-recognition
       SERVICE_DIR: services/i3d-video-action-recognition
       CERTS_DIR: singnet/.certs
-      SERVICE_RUN_COMMAND: bash -c "git checkout ${CIRCLE_BRANCH};python3 run_video_action_recon_service.py --ssl"
+      SERVICE_RUN_COMMAND: bash -c "git fetch;git checkout ${CIRCLE_BRANCH};python3 run_video_action_recon_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 20;python3 test_video_action_recon_service.py auto"
       SNETD_PORT_MAINNET: 7005
       SNETD_PORT_ROPSTEN: 7055
@@ -270,7 +271,7 @@ jobs:
       SERVICE_NAME: places365-scene-recognition
       SERVICE_DIR: services/places365-scene-recognition
       CERTS_DIR: singnet/.certs
-      SERVICE_RUN_COMMAND: bash -c "git checkout ${CIRCLE_BRANCH};python3 run_scene_recognition_service.py --ssl"
+      SERVICE_RUN_COMMAND: bash -c "git fetch;git checkout ${CIRCLE_BRANCH};python3 run_scene_recognition_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 20;python3 test_scene_recognition_service.py auto"
       SNETD_PORT_MAINNET: 7019
       SNETD_PORT_ROPSTEN: 7079
@@ -296,7 +297,7 @@ jobs:
       SERVICE_NAME: pneumonia-diagnosis
       SERVICE_DIR: services/pneumonia-diagnosis
       CERTS_DIR: singnet/.certs
-      SERVICE_RUN_COMMAND: bash -c "git checkout ${CIRCLE_BRANCH};python3 run_pneumonia_diagnosis_service.py --ssl"
+      SERVICE_RUN_COMMAND: bash -c "git fetch;git checkout ${CIRCLE_BRANCH};python3 run_pneumonia_diagnosis_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 20;python3 test_pneumonia_diagnosis_service.py auto"
       SNETD_PORT_MAINNET: 7072
       SNETD_PORT_ROPSTEN: 7062
@@ -322,7 +323,7 @@ jobs:
       SERVICE_NAME: real-time-voice-cloning
       SERVICE_DIR: services/real-time-voice-cloning
       CERTS_DIR: singnet/.certs
-      SERVICE_RUN_COMMAND: bash -c "git checkout ${CIRCLE_BRANCH};python3 run_voice_cloning_service.py --ssl"
+      SERVICE_RUN_COMMAND: bash -c "git fetch;git checkout ${CIRCLE_BRANCH};python3 run_voice_cloning_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 30;python3 test_voice_cloning_service.py auto"
       SNETD_PORT_MAINNET: 7064
       SNETD_PORT_ROPSTEN: 7065
@@ -348,7 +349,7 @@ jobs:
       SERVICE_NAME: s2vt-video-captioning
       SERVICE_DIR: services/s2vt-video-captioning
       CERTS_DIR: singnet/.certs
-      SERVICE_RUN_COMMAND: bash -c "git checkout ${CIRCLE_BRANCH};python run_video_cap_service.py --ssl"
+      SERVICE_RUN_COMMAND: bash -c "git fetch;git checkout ${CIRCLE_BRANCH};python run_video_cap_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 20;python test_video_cap_service.py auto"
       SNETD_PORT_MAINNET: 7006
       SNETD_PORT_ROPSTEN: 7056
@@ -374,7 +375,7 @@ jobs:
       SERVICE_NAME: siggraph-colorization
       SERVICE_DIR: services/siggraph-colorization
       CERTS_DIR: singnet/.certs
-      SERVICE_RUN_COMMAND: bash -c "git checkout ${CIRCLE_BRANCH};python3 run_colorize_service.py --ssl"
+      SERVICE_RUN_COMMAND: bash -c "git fetch;git checkout ${CIRCLE_BRANCH};python3 run_colorize_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 20;python3 test_colorize_service.py auto"
       SNETD_PORT_MAINNET: 7084
       SNETD_PORT_ROPSTEN: 7085
@@ -400,7 +401,7 @@ jobs:
       SERVICE_NAME: sound-spleeter
       SERVICE_DIR: services/sound-spleeter
       CERTS_DIR: singnet/.certs
-      SERVICE_RUN_COMMAND: bash -c "git checkout ${CIRCLE_BRANCH};python3 run_sound_spleeter_service.py --ssl"
+      SERVICE_RUN_COMMAND: bash -c "git fetch;git checkout ${CIRCLE_BRANCH};python3 run_sound_spleeter_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 20;python3 test_sound_spleeter_service.py auto"
       SNETD_PORT_MAINNET: 7066
       SNETD_PORT_ROPSTEN: 7067
@@ -426,7 +427,7 @@ jobs:
       SERVICE_NAME: yolov3-object-detection
       SERVICE_DIR: services/yolov3-object-detection
       CERTS_DIR: singnet/.certs
-      SERVICE_RUN_COMMAND: bash -c "git checkout ${CIRCLE_BRANCH};python3 run_object_detection_service.py --ssl"
+      SERVICE_RUN_COMMAND: bash -c "git fetch;git checkout ${CIRCLE_BRANCH};python3 run_object_detection_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 20;python3 test_object_detection_service.py auto"
       SNETD_PORT_MAINNET: 7007
       SNETD_PORT_ROPSTEN: 7057
@@ -452,7 +453,7 @@ jobs:
       SERVICE_NAME: zeta36-chess-alpha-zero
       SERVICE_DIR: services/zeta36-chess-alpha-zero
       CERTS_DIR: singnet/.certs
-      SERVICE_RUN_COMMAND: bash -c "git checkout ${CIRCLE_BRANCH};python3.6 run_alpha_zero_service.py --ssl"
+      SERVICE_RUN_COMMAND: bash -c "git fetch;git checkout ${CIRCLE_BRANCH};python3.6 run_alpha_zero_service.py --ssl"
       SERVICE_TEST_COMMAND: bash -c "sleep 20;python3.6 test_alpha_zero_service.py auto"
       SNETD_PORT_MAINNET: 7008
       SNETD_PORT_ROPSTEN: 7058
