@@ -151,7 +151,7 @@ class VideoActionRecognizer:
                     log.debug("Top 5 actions:")
                     for i in np.argsort(ps)[::-1][:5]:
                         log.debug("{}\t{:.2f}%".format(labels[i], ps[i] * 100))
-                        self.response["Top5Actions"] += "{}\t{:.2f}%\n".format(labels[i], ps[i] * 100)
+                        self.response["Top5Actions"] += "[{:05.2f}%] {}\n".format(ps[i] * 100, labels[i])
             else:
                 self.response["Top5Actions"] = self.error if self.error else "[Fail] Unexpected error!"
 
