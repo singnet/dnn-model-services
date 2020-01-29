@@ -3,7 +3,7 @@ syntax = "proto3";
 message Input {
     string model = 1;
     string img_path = 2;
-    string confidence = 3;
+    float confidence = 3;
 }
 
 message Boxes {
@@ -18,7 +18,8 @@ message Output {
     repeated Boxes boxes = 2;
     repeated int32 class_ids = 3;
     repeated float confidences = 4;
-    bytes img_base64 = 5;
+    // Not using bytes due to the front-end
+    string img_base64 = 5;
 }
 
 service Detect {

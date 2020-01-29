@@ -33,13 +33,13 @@ if __name__ == "__main__":
         model = "yolov3"
         confidence = input("Confidence (0.7): ") if not test_flag else ""
         if confidence == "":
-            confidence = "0.7"
+            confidence = 0.7
 
         img_path = input("Image (Link): ") if not test_flag else TEST_URL
 
         stub = grpc_bt_grpc.DetectStub(channel)
         request = grpc_bt_pb2.Input(model=model,
-                                    confidence=confidence,
+                                    confidence=float(confidence),
                                     img_path=img_path)
         response = stub.detect(request)
         print(response.class_ids)

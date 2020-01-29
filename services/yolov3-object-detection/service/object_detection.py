@@ -141,7 +141,7 @@ class ObjectDetector:
                     "boxes": ret_boxes,
                     "class_ids": ret_class_ids,
                     "confidences": ret_confidences,
-                    "img_base64": img_base64,
+                    "img_base64": img_base64.decode("utf-8"),
                 }
 
             else:
