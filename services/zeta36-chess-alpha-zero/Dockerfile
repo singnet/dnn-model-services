@@ -1,4 +1,4 @@
-FROM nvidia/cuda:8.0-cudnn6-runtime-ubuntu16.04
+FROM nvidia/cuda:9.0-cudnn7-runtime
 
 ARG git_owner="singnet"
 ARG git_repo="dnn-model-services"
