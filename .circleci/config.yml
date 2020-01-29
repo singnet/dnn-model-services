@@ -163,7 +163,7 @@ commands:
                   $([ "${DOCKER_DEPLOY}" = "true" ] && echo "-v ~/${ETCD_HOST_DIR}:/${ETCD_CONTAINER_DIR}" || echo "") \
                   $([ "${DOCKER_MOUNT_VOLUMES}" = "true" ] && echo "-v ${DOCKER_MOUNT_SRC}:${DOCKER_MOUNT_DEST}" || echo "") \
                   -tdi ${DOCKER_IMAGE_NAME}:${CIRCLE_PROJECT_USERNAME} \
-                  bash -c "git fetch;git checkout ${CIRCLE_BRANCH};git pull;${SERVICE_RUN_COMMAND}"
+                  bash -c "git fetch;git checkout ${CIRCLE_BRANCH};git pull;sh buildproto.sh;${SERVICE_RUN_COMMAND}"
             EOF
 
       - run:
