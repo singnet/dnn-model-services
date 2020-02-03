@@ -3,14 +3,22 @@ syntax = "proto3";
 message Input {
     string model = 1;
     string img_path = 2;
-    string confidence = 3;
+    float confidence = 3;
+}
+
+message Boxes {
+    int32 x = 1;
+    int32 y = 2;
+    int32 w = 3;
+    int32 h = 4;
 }
 
 message Output {
-    string delta_time = 1;
-    string boxes = 2;
-    string class_ids = 3;
-    string confidences = 4;
+    float delta_time = 1;
+    repeated Boxes boxes = 2;
+    repeated int32 class_ids = 3;
+    repeated float confidences = 4;
+    // Not using bytes due to the front-end
     string img_base64 = 5;
 }
 
