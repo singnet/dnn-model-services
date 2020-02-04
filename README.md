@@ -62,3 +62,4 @@ Each service is licensed as followed:
 - YOLOv3_ObjectDetection - [Public domain](https://github.com/pjreddie/darknet/blob/master/LICENSE)
 - I3D_VideoActionRecognition - [Apache License 2.0](https://github.com/deepmind/kinetics-i3d/blob/master/LICENSE)
 - S2VT_VideoCaptioning - [Attribution 4.0 International (CC BY 4.0)](http://creativecommons.org/licenses/by/4.0/)
+
