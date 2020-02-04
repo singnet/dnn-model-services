@@ -98,6 +98,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Each service is licensed as followed:
 
+
 - cntk-image-recon - [MIT License](https://github.com/Microsoft/CNTK/blob/master/LICENSE.md)
 - deepfakes-faceswap - [GPL-3.0](https://github.com/deepfakes/faceswap/blob/master/LICENSE)
 - i3d-video-action-recognition - [Apache License 2.0](https://github.com/deepmind/kinetics-i3d/blob/master/LICENSE)
