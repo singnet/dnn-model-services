@@ -3,6 +3,7 @@ FROM pytorch/pytorch:0.4.1-cuda9-cudnn7-runtime
 ARG git_owner="singnet"
 ARG git_repo="dnn-model-services"
 ARG git_branch="master"
+ARG snetd_version="v2.0.2"
 
 ENV SINGNET_REPOS=/opt/singnet
 ENV DNN_REPO_NAME=${git_repo}
@@ -25,7 +26,8 @@ RUN apt-get update && \
     pip install --upgrade pip
 
 # Installing SNET Daemon
-RUN SNETD_VERSION=`curl -s https://api.github.com/repos/singnet/snet-daemon/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")'` && \
+RUN SNETD_VERSION=`curl -s https://api.github.com/repos/singnet/snet-daemon/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")' || echo ""` && \
+    SNETD_VERSION=${SNETD_VERSION:-"${snetd_version}"} && \
     cd /tmp && \
     wget https://github.com/singnet/snet-daemon/releases/download/${SNETD_VERSION}/snet-daemon-${SNETD_VERSION}-linux-amd64.tar.gz && \
     tar -xvf snet-daemon-${SNETD_VERSION}-linux-amd64.tar.gz && \
