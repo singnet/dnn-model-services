@@ -20,8 +20,8 @@ class VideoCaptioner:
         self.video_path = ""
         self.uid = uid
         self.video_folder = "./service/utils/videos/{}".format(self.uid)
-        self.start_time = start_time
-        self.stop_time = stop_time
+        self.start_time = float(start_time) if start_time else 0
+        self.stop_time = float(stop_time) if stop_time else 0
         self.pace = pace
         self.batch_size = batch_size
         self.error = ""

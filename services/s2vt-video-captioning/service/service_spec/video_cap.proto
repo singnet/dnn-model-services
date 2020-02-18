@@ -2,8 +2,8 @@ syntax = "proto3";
 
 message Input {
     string url = 1;
-    float start_time_sec = 2;
-    float stop_time_sec = 3;
+    string start_time_sec = 2;
+    string stop_time_sec = 3;
 }
 
 message Output {
