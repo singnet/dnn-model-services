@@ -5,6 +5,8 @@ import service.common
 from service.object_detection import ObjectDetector
 from service import map_names
 
+import multiprocessing
+
 import grpc
 import concurrent.futures as futures
 
@@ -17,15 +19,18 @@ logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - "
 log = logging.getLogger("obj_detect_service")
 
 
+def mp_detect(obj, return_dict):
+    return_dict["response"] = obj.detect()
+
+
 class ObjectDetectorServicer(grpc_bt_grpc.DetectServicer):
     def __init__(self):
         self.model = "yolov3"
         self.img_path = ""
         self.confidence = "0.7"
-
         log.debug("ObjectDetectorServicer created")
 
-    def detect(self, request, context):
+    def detect(self, request, _):
         self.img_path = request.img_path
         self.model = request.model
         self.confidence = request.confidence
@@ -34,10 +39,19 @@ class ObjectDetectorServicer(grpc_bt_grpc.DetectServicer):
                               self.confidence,
                               map_names,
                               self.img_path)
-        json_result = objd.detect()
+        
+        manager = multiprocessing.Manager()
+        return_dict = manager.dict()
 
-        log.debug("detect({},{})".format(self.model, self.img_path))
+        p = multiprocessing.Process(target=mp_detect, args=(objd, return_dict))
+        p.start()
+        p.join()
 
+        json_result = return_dict.get("response", None)
+        if not json_result:
+            return Output()
+
+        log.debug("detect({},{})".format(self.model, self.img_path[:50]))
         return Output(delta_time=json_result["delta_time"],
                       boxes=json_result["boxes"],
                       class_ids=json_result["class_ids"],
