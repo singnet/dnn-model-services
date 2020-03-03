@@ -20,7 +20,7 @@ RUN apt-get update && \
     curl
 
 # OpenCV dependencies
-RUN apt-get install -y libsm6 libxext6 libxrender-dev
+RUN apt-get install -y libglib2.0-0 libsm6 libxext6 libxrender-dev
 
 RUN apt-get install -y python3 python3-pip
 
