@@ -128,8 +128,8 @@ class VideoActionRecognizer:
                     labels = [line.strip() for line in f.readlines()]
                 log.debug("Found %d labels." % len(labels))
 
-                # Get a sample cricket video.
-                sample_video = self._load_video(self.video_path)
+                # Load video as a np array (max frames 20s * 30fps = 600).
+                sample_video = self._load_video(self.video_path, max_frames=600)
 
                 # Run the i3d model on the video and print the top 5 actions.
                 # First add an empty dimension to the sample video as the model takes as input
@@ -144,8 +144,7 @@ class VideoActionRecognizer:
                         logits = i3d(input_placeholder)
                         probabilities = tf.nn.softmax(logits)
                         with tf.train.MonitoredSession() as session:
-                            [ps] = session.run(probabilities,
-                                               feed_dict={input_placeholder: model_input})
+                            [ps] = session.run(probabilities, feed_dict={input_placeholder: model_input})
 
                     self.response["Top5Actions"] = ""
                     log.debug("Top 5 actions:")

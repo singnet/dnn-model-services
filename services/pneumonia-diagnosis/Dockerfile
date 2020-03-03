@@ -3,7 +3,7 @@ FROM ubuntu:18.04
 ARG git_owner="singnet"
 ARG git_repo="dnn-model-services"
 ARG git_branch="master"
-ARG snetd_version="v2.0.2"
+ARG snetd_version
 
 ENV SINGNET_REPOS=/opt/singnet
 ENV DNN_REPO_NAME=${git_repo}
@@ -24,8 +24,9 @@ RUN apt-get install -y libsm6 libxext6 libxrender-dev
 
 RUN apt-get install -y python3 python3-pip
 
-RUN SNETD_VERSION=`curl -s https://api.github.com/repos/singnet/snet-daemon/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")' || echo ""` && \
-    SNETD_VERSION=${SNETD_VERSION:-"${snetd_version}"} && \
+# Installing SNET Daemon
+RUN SNETD_GIT_VERSION=`curl -s https://api.github.com/repos/singnet/snet-daemon/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")' || echo "v2.0.2"` && \
+    SNETD_VERSION=${snetd_version:-${SNETD_GIT_VERSION}} && \
     cd /tmp && \
     wget https://github.com/singnet/snet-daemon/releases/download/${SNETD_VERSION}/snet-daemon-${SNETD_VERSION}-linux-amd64.tar.gz && \
     tar -xvf snet-daemon-${SNETD_VERSION}-linux-amd64.tar.gz && \

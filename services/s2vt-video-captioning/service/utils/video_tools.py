@@ -4,12 +4,14 @@ import cv2
 logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s")
 log = logging.getLogger("video_tools")
 
+
 # Get the length of 'video_path' in seconds
 def get_video_length(video_path):
     cap = cv2.VideoCapture(video_path)
     fps = cap.get(cv2.CAP_PROP_FPS)
     frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     return int(frame_count / fps)
+
 
 # Gets a video and returns a list of frames extracted within start and stop interval.
 def get_video_frames(video_path, frames_path, start_time_ms, stop_time_ms, pace):
@@ -46,5 +48,6 @@ def get_video_frames(video_path, frames_path, start_time_ms, stop_time_ms, pace)
         cap.release()
         cv2.destroyAllWindows()
         return True, frames_list
-    except Exception:
+    except Exception as e:
+        log.error(e)
         return False, []

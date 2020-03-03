@@ -3,6 +3,8 @@ import logging
 import datetime
 import hashlib
 
+import multiprocessing
+
 import grpc
 import concurrent.futures as futures
 
@@ -17,6 +19,10 @@ logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s 
 log = logging.getLogger("video_action_recon_service")
 
 
+def mp_video_action_recon(obj, return_dict):
+    return_dict["response"] = obj.video_action_recon()
+
+
 # Create a class to be added to the gRPC server
 # derived from the protobuf codes.
 class VideoActionRecognitionServicer(grpc_bt_grpc.VideoActionRecognitionServicer):
@@ -24,30 +30,32 @@ class VideoActionRecognitionServicer(grpc_bt_grpc.VideoActionRecognitionServicer
         self.uid = ""
         self.model = "600"
         self.url = ""
-
-        self.response = "Fail"
-
         # Just for debugging purpose.
         log.debug("VideoActionRecognitionServicer created")
 
     # The method that will be exposed to the snet-cli call command.
     # request: incoming data
     # context: object that provides RPC-specific information (timeout, etc).
-    def video_action_recon(self, request, context):
+    def video_action_recon(self, request, _):
         self.uid = generate_uid()
         self.model = request.model
         self.url = request.url
 
-        # To respond we need to create a Output() object (from .proto file)
-        self.response = Output()
+        obj = VideoActionRecognizer(self.uid, self.model, self.url)
 
-        video_recon_instance = VideoActionRecognizer(self.uid, self.model, self.url)
-        tmp_response = video_recon_instance.video_action_recon()
-        self.response.value = tmp_response["Top5Actions"].encode("utf-8")
+        manager = multiprocessing.Manager()
+        return_dict = manager.dict()
 
-        log.debug("video_action_recon({},{})={}".format(self.model, self.url, self.response.value))
+        p = multiprocessing.Process(target=mp_video_action_recon, args=(obj, return_dict))
+        p.start()
+        p.join()
 
-        return self.response
+        response = return_dict.get("response", None)
+        if not response:
+            return Output(value="Fail")
+
+        log.debug("video_action_recon({},{})=OK".format(self.model, self.url))
+        return Output(value=response["Top5Actions"])
 
 
 def generate_uid():

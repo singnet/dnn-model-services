@@ -1,6 +1,8 @@
 import sys
 import logging
 
+import multiprocessing
+
 import grpc
 import concurrent.futures as futures
 
@@ -16,51 +18,61 @@ logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s 
 log = logging.getLogger("image_recon_service")
 
 
+def mp_image_recognition(method, request, map_names, image_dims, return_dict):
+    return_dict["response"] = img_recon.image_recognition(method,
+                                                          request.model,
+                                                          map_names,
+                                                          request.img_path,
+                                                          image_dims)
+
+
 # Create a class to be added to the gRPC server
 # derived from the protobuf codes.
 class RecognizerServicer(grpc_bt_grpc.RecognizerServicer):
     def __init__(self):
         self.model = "ResNet152"
         self.img_path = ""
-
-        self.response = "Fail"
-
         # Just for debugging purpose.
         log.debug("RecognizerServicer created")
 
     # The method that will be exposed to the snet-cli call command.
     # request: incoming data
     # context: object that provides RPC-specific information (timeout, etc).
-    def flowers(self, request, context):
-        self.img_path = request.img_path
-        self.model = request.model
+    def flowers(self, request, _):
+        manager = multiprocessing.Manager()
+        return_dict = manager.dict()
+        p = multiprocessing.Process(target=mp_image_recognition, args=("flowers",
+                                                                       request,
+                                                                       flowers_map_names,
+                                                                       (3, 224, 224),
+                                                                       return_dict))
+        p.start()
+        p.join()
 
-        map_names = flowers_map_names
-        image_dims = (3, 224, 224)
-        json_result = img_recon.image_recognition("flowers", self.model, map_names, self.img_path, image_dims)
+        response = return_dict.get("response", None)
+        if not response:
+            return Output(delta_time="Fail", top_5="Fail")
 
-        # To respond we need to create a Output() object (from .proto file)
-        self.response = Output()
-        self.response.top_5 = str(json_result["top_5"]).encode("utf-8")
-        self.response.delta_time = str(json_result["delta_time"]).encode("utf-8")
-        log.debug("flowers({},{})={}".format(self.model, self.img_path, self.response.top_5))
-        return self.response
+        log.debug("flowers({},{})=OK".format(self.model, self.img_path))
+        return Output(delta_time=response["delta_time"], top_5=str(response["top_5"]))
 
-    def dogs(self, request, context):
+    def dogs(self, request, _):
+        manager = multiprocessing.Manager()
+        return_dict = manager.dict()
+        p = multiprocessing.Process(target=mp_image_recognition, args=("dogs",
+                                                                       request,
+                                                                       dogs_map_names,
+                                                                       (3, 224, 224),
+                                                                       return_dict))
+        p.start()
+        p.join()
 
-        self.img_path = request.img_path
-        self.model = request.model
+        response = return_dict.get("response", None)
+        if not response:
+            return Output(delta_time="Fail", top_5="Fail")
 
-        map_names = dogs_map_names
-        image_dims = (3, 224, 224)
-        json_result = img_recon.image_recognition("dogs", self.model, map_names, self.img_path, image_dims)
-
-        # To respond we need to create a Output() object (from .proto file)
-        self.response = Output()
-        self.response.top_5 = str(json_result["top_5"]).encode("utf-8")
-        self.response.delta_time = str(json_result["delta_time"]).encode("utf-8")
-        log.debug("dogs({},{})={}".format(self.model, self.img_path, self.response.top_5))
-        return self.response
+        log.debug("flowers({},{})=OK".format(self.model, self.img_path))
+        return Output(delta_time=response["delta_time"], top_5=str(response["top_5"]))
 
 
 # The gRPC serve function.
