@@ -1,6 +1,6 @@
 grpcio>=1.14.2
 grpcio-tools>=1.14.1
-tensorflow==1.15.2
+tensorflow-gpu==1.15.2
 keras==2.1.4
 profilehooks
 numpy

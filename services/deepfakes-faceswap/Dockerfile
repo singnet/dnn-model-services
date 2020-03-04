@@ -1,4 +1,4 @@
-FROM nvidia/cuda:9.0-cudnn7-runtime
+FROM tensorflow/tensorflow:1.15.2-gpu-py3
 
 ARG git_owner="singnet"
 ARG git_repo="dnn-model-services"
