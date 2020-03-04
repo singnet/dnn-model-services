@@ -1,7 +1,7 @@
 grpcio>=1.14.2
 grpcio-tools>=1.14.1
-tensorflow-gpu==1.12
-tensorflow-hub==0.1.1
+tensorflow==2.0.1
+tensorflow-hub
 requests==2.20.0
 opencv-python==3.4.3.18
 youtube_dl==2020.1.24

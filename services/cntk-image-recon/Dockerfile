@@ -1,4 +1,4 @@
-FROM microsoft/cntk:2.5-gpu-python3.5-cuda9.0-cudnn7.0
+FROM microsoft/cntk:2.7-gpu-python3.5-cuda10.0-cudnn7.3
 
 ARG git_owner="singnet"
 ARG git_repo="dnn-model-services"
