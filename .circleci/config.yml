@@ -294,7 +294,7 @@ jobs:
         - ssh-deployment/test:
               ssh-host: ${SSH_HOST_CHESS_ALPHA_ZERO}
               ssh-user: ${SSH_USER_CHESS_ALPHA_ZERO}
-              test-command: "sleep 60;python3.6 test_alpha_zero_service.py auto"
+              test-command: "sleep 10;python3.6 test_alpha_zero_service.py auto"
               docker-container: "CHESS_ALPHA_ZERO"
 
 workflows:
