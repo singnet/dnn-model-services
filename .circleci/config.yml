@@ -16,7 +16,7 @@ jobs:
           mainnet-port: "7004"
           testnet-port: "7054"
           run-command: "source '/cntk/activate-cntk';python3 run_image_recon_service.py --ssl"
-          test-command: "sleep 20;source '/cntk/activate-cntk';python3 test_image_recon_service.py auto"
+          test-command: "sleep 60;source '/cntk/activate-cntk';python3 test_image_recon_service.py auto"
           docker-test-files: "Dockerfile, requirements.txt"
           docker-file-path: "services/cntk-image-recon/Dockerfile"
           docker-no-cache: true
@@ -39,7 +39,7 @@ jobs:
           mainnet-port: "7060"
           testnet-port: "7061-7062"
           run-command: "python3 run_deepfakes_faceswap_service.py --ssl"
-          test-command: "sleep 20;python3 test_deepfakes_faceswap_service.py auto"
+          test-command: "sleep 60;python3 test_deepfakes_faceswap_service.py auto"
           docker-test-files: "Dockerfile, requirements.txt"
           docker-file-path: "services/deepfakes-faceswap/Dockerfile"
           docker-no-cache: true
@@ -62,7 +62,7 @@ jobs:
           mainnet-port: "7005"
           testnet-port: "7055"
           run-command: "python3 run_video_action_recon_service.py --ssl"
-          test-command: "sleep 20;python3 test_video_action_recon_service.py auto"
+          test-command: "sleep 60;python3 test_video_action_recon_service.py auto"
           docker-test-files: "Dockerfile, requirements.txt"
           docker-file-path: "services/i3d-video-action-recognition/Dockerfile"
           docker-no-cache: true
@@ -85,7 +85,7 @@ jobs:
           mainnet-port: "7019"
           testnet-port: "7079"
           run-command: "python3 run_scene_recognition_service.py --ssl"
-          test-command: "sleep 20;python3 test_scene_recognition_service.py auto"
+          test-command: "sleep 60;python3 test_scene_recognition_service.py auto"
           docker-test-files: "Dockerfile, requirements.txt"
           docker-file-path: "services/places365-scene-recognition/Dockerfile"
           docker-no-cache: true
@@ -108,7 +108,7 @@ jobs:
           mainnet-port: "7072"
           testnet-port: "7062"
           run-command: "python3 run_pneumonia_diagnosis_service.py --ssl"
-          test-command: "sleep 20;python3 test_pneumonia_diagnosis_service.py auto"
+          test-command: "sleep 60;python3 test_pneumonia_diagnosis_service.py auto"
           docker-test-files: "Dockerfile, requirements.txt"
           docker-file-path: "services/pneumonia-diagnosis/Dockerfile"
           docker-no-cache: true
@@ -131,7 +131,7 @@ jobs:
           mainnet-port: "7064"
           testnet-port: "7065"
           run-command: "python3 run_voice_cloning_service.py --ssl"
-          test-command: "sleep 30;python3 test_voice_cloning_service.py auto"
+          test-command: "sleep 60;python3 test_voice_cloning_service.py auto"
           docker-test-files: "Dockerfile, requirements.txt"
           docker-file-path: "services/real-time-voice-cloning/Dockerfile"
           docker-no-cache: true
@@ -154,7 +154,7 @@ jobs:
           mainnet-port: "7006"
           testnet-port: "7056"
           run-command: "python run_video_cap_service.py --ssl"
-          test-command: "sleep 20;python test_video_cap_service.py auto"
+          test-command: "sleep 60;python test_video_cap_service.py auto"
           docker-test-files: "Dockerfile, requirements.txt"
           docker-file-path: "services/s2vt-video-captioning/Dockerfile"
           docker-no-cache: true
@@ -177,7 +177,7 @@ jobs:
           mainnet-port: "7084"
           testnet-port: "7085"
           run-command: "python3 run_colorize_service.py --ssl"
-          test-command: "sleep 20;python3 test_colorize_service.py auto"
+          test-command: "sleep 60;python3 test_colorize_service.py auto"
           docker-test-files: "Dockerfile, requirements.txt"
           docker-file-path: "services/siggraph-colorization/Dockerfile"
           docker-no-cache: true
@@ -200,7 +200,7 @@ jobs:
           mainnet-port: "7066"
           testnet-port: "7067"
           run-command: "python3 run_sound_spleeter_service.py --ssl"
-          test-command: "sleep 20;python3 test_sound_spleeter_service.py auto"
+          test-command: "sleep 60;python3 test_sound_spleeter_service.py auto"
           docker-test-files: "Dockerfile, requirements.txt"
           docker-file-path: "services/sound-spleeter/Dockerfile"
           docker-no-cache: true
@@ -223,7 +223,7 @@ jobs:
           mainnet-port: "7007"
           testnet-port: "7057"
           run-command: "python3 run_object_detection_service.py --ssl"
-          test-command: "sleep 20;python3 test_object_detection_service.py auto"
+          test-command: "sleep 60;python3 test_object_detection_service.py auto"
           docker-test-files: "Dockerfile, requirements.txt"
           docker-file-path: "services/yolov3-object-detection/Dockerfile"
           docker-no-cache: true
@@ -246,7 +246,7 @@ jobs:
           mainnet-port: "7008"
           testnet-port: "7058"
           run-command: "python3.6 run_alpha_zero_service.py --ssl"
-          test-command: "sleep 20;python3.6 test_alpha_zero_service.py auto"
+          test-command: "sleep 60;python3.6 test_alpha_zero_service.py auto"
           docker-test-files: "Dockerfile, requirements.txt"
           docker-file-path: "services/zeta36-chess-alpha-zero/Dockerfile"
           docker-no-cache: true
