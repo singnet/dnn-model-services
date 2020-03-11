@@ -9,7 +9,8 @@ from service import registry
 import json
 from service.serviceUtils import base64_to_jpg
 
-TEST_URL = "https://cdn.the961.com/wp-content/uploads/2017/06/beach-in-lebanon-1.png"
+
+TEST_URL = "https://raw.githubusercontent.com/singnet/dnn-model-services/master/docs/assets/users_guide/places365_beach.png"
 
 if __name__ == "__main__":
 
