@@ -35,7 +35,7 @@ RUN SNETD_GIT_VERSION=`curl -s https://api.github.com/repos/singnet/snet-daemon/
 
 # Cloning service repository, downloading models
 RUN cd ${SINGNET_REPOS} && \
-    git clone -b ${git_branch} --single-branch https://github.com/${git_owner}/${DNN_REPO_NAME}.git &&\
+    git clone -b ${git_branch} https://github.com/${git_owner}/${DNN_REPO_NAME}.git && \
     cd ${DNN_REPO_NAME}/utils && \
     ./get_places365_models.sh
 
