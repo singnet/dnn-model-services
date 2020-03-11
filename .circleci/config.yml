@@ -265,7 +265,7 @@ workflows:
 #      - deepfakes-faceswap
       - i3d-video-action-recognition
       - places365-scene-recognition
-      - pneumonia-diagnosis
+#      - pneumonia-diagnosis
       - real-time-voice-cloning
       - s2vt-video-captioning
 #      - siggraph-colorization
