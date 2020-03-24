@@ -5,7 +5,11 @@ import traceback
 import grpc
 import concurrent.futures as futures
 
-import multiprocessing
+from torch.multiprocessing import Manager, Process, set_start_method
+try:
+     set_start_method('spawn')
+except RuntimeError:
+    pass
 
 import service.common
 from service.colorization import Colorization
@@ -26,7 +30,6 @@ def mp_colorize(obj, return_dict):
 # derived from the protobuf codes.
 class ColorizationServicer(grpc_bt_grpc.ColorizationServicer):
     def __init__(self):
-        self.response = Output()
         log.debug("ColorizationServicer created")
 
     # The method that will be exposed to the snet-cli call command.
@@ -36,9 +39,9 @@ class ColorizationServicer(grpc_bt_grpc.ColorizationServicer):
         try:
             obj = Colorization(request.img_input, request.render_factor)
 
-            manager = multiprocessing.Manager()
+            manager = Manager()
             return_dict = manager.dict()
-            p = multiprocessing.Process(target=mp_colorize, args=(obj, return_dict))
+            p = Process(target=mp_colorize, args=(obj, return_dict))
             p.start()
             p.join()
 
@@ -52,8 +55,7 @@ class ColorizationServicer(grpc_bt_grpc.ColorizationServicer):
         except Exception as e:
             traceback.print_exc()
             log.error(e)
-            self.response.img_colorized = "Fail"
-            return self.response
+            return Output()
 
 
 # The gRPC serve function.

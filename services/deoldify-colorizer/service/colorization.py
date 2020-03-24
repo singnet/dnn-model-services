@@ -5,11 +5,12 @@ import hashlib
 import datetime
 import base64
 from pathlib import Path
+from shutil import copyfile
 import logging
 import traceback
 
-SERVICE_FOLDER = Path(__file__).absolute().parent.parent.joinpath("DeOldify")
-sys.path.insert(0, str(SERVICE_FOLDER))
+SERVICE_FOLDER = Path(__file__).absolute().parent.parent
+sys.path.insert(0, str(SERVICE_FOLDER.joinpath("DeOldify")))
 from deoldify.visualize import get_artistic_image_colorizer
 
 
@@ -20,7 +21,7 @@ log = logging.getLogger("colorization")
 class Colorization:
     def __init__(self, img_input, render_factor=35):
         self.img_input = img_input
-        self.render_factor = render_factor
+        self.render_factor = render_factor if render_factor else 35
         self.response = dict()
     
     @staticmethod
@@ -36,7 +37,7 @@ class Colorization:
     def colorize(self):
         try:
             uid = self._generate_uid()
-            input_file = uid + "_input.png"
+            input_file = "/tmp/" + uid + "_input.png"
 
             # Link
             if "http://" in self.img_input or "https://" in self.img_input:
@@ -54,17 +55,23 @@ class Colorization:
                     fd.write(base64.b64decode(self.img_input))
                 log.info("Done!")
 
-            # from DeOldify
-            if not os.path.exists("test_images"):
-                os.makedirs("test_images")
+            resources_root = SERVICE_FOLDER.parent.parent.joinpath("utils", "Resources", "Models", "DeOldify")
 
-            resources_root = Path().absolute().parent.parent.joinpath("utils", "Resources", "Models", "DeOldify")
+            # from DeOldify
+            if not os.path.exists(SERVICE_FOLDER.joinpath("test_images")):
+                os.makedirs(SERVICE_FOLDER.joinpath("test_images"))
+            if not os.path.exists(SERVICE_FOLDER.joinpath("resource_images")):
+                os.makedirs(SERVICE_FOLDER.joinpath("resource_images"))
+            if not os.path.exists(SERVICE_FOLDER.joinpath("resource_images/watermark.png")):
+                copyfile(resources_root.joinpath("models/watermark.png"),
+                         SERVICE_FOLDER.joinpath("resource_images/watermark.png"))
+
             colorizer = get_artistic_image_colorizer(root_folder=resources_root,
                                                      weights_name="ColorizeArtistic_gen",
                                                      results_dir="/tmp/")
             output_img = colorizer.plot_transformed_image(path=input_file,
                                                           render_factor=self.render_factor,
-                                                          watermarked=resources_root.joinpath("watermark.png"))
+                                                          watermarked=True)
 
             self.response["img_colorized"] = "Fail"
             with open(output_img, "rb") as base64_file:
