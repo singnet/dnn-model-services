@@ -37,7 +37,7 @@ RUN cd ${SINGNET_REPOS} && \
     ./get_colorize_model.sh
 
 # DeOldify Repository
-RUN cd ${SINGNET_DIR}/${SERVICE_NAME} && \
+RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \
     git submodule update --init -- DeOldify && \
     cd DeOldify && \
     pip install -r requirements.txt
