@@ -1,0 +1,3 @@
+[submodule "services/deoldify-colorizer/DeOldify"]
+	path = services/deoldify-colorizer/DeOldify
+	url = https://github.com/jantic/DeOldify

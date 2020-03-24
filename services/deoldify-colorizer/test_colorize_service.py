@@ -7,7 +7,7 @@ import service.service_spec.colorization_pb2 as grpc_bt_pb2
 
 from service import registry
 
-TEST_URL = "https://snet-models.s3.amazonaws.com/bh/Colorize/jucelino.jpg"
+TEST_URL = "https://snet-models.s3.amazonaws.com/bh/Colorize/carnaval.jpg"
 
 if __name__ == "__main__":
 
@@ -17,9 +17,9 @@ if __name__ == "__main__":
             if sys.argv[1] == "auto":
                 test_flag = True
 
-        endpoint = input("Endpoint (localhost:{}): ".format(registry["siggraph_colorization_service"]["grpc"])) if not test_flag else ""
+        endpoint = input("Endpoint (localhost:{}): ".format(registry["colorization_service"]["grpc"])) if not test_flag else ""
         if endpoint == "":
-            endpoint = "localhost:{}".format(registry["siggraph_colorization_service"]["grpc"])
+            endpoint = "localhost:{}".format(registry["colorization_service"]["grpc"])
 
         # open a gRPC channel
         channel = grpc.insecure_channel("{}".format(endpoint))
@@ -35,10 +35,11 @@ if __name__ == "__main__":
 
         if grpc_method == "colorize":
             response = stub.colorize(grpc_input)
-            print(response.img_colorized)
-
             if response.img_colorized == "Fail":
+                print(response.img_colorized)
                 exit(1)
+            else:
+                print(len(response.img_colorized))
         else:
             print("Invalid method!")
             exit(1)

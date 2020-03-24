@@ -12,7 +12,7 @@ import argparse
 from service import registry
 
 logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s")
-log = logging.getLogger("run_siggraph_colorization_service")
+log = logging.getLogger("run_colorization_service")
 
 
 def main():
@@ -23,7 +23,7 @@ def main():
     root_path = pathlib.Path(__file__).absolute().parent
     
     # All services modules go here
-    service_modules = ["service.siggraph_colorization_service"]
+    service_modules = ["service.colorization_service"]
     
     # Call for all the services listed in service_modules
     all_p = start_all_services(root_path, service_modules, args.run_daemon, args.run_ssl)

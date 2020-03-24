@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM pytorch/pytorch:1.4-cuda10.1-cudnn7-runtime
 
 ARG git_owner="singnet"
 ARG git_repo="dnn-model-services"
@@ -8,7 +8,7 @@ ARG snetd_version
 ENV SINGNET_REPOS=/opt/singnet
 ENV DNN_REPO_NAME=${git_repo}
 ENV SERVICES_FOLDER=${SINGNET_REPOS}/${DNN_REPO_NAME}/services
-ENV SERVICE_NAME=sound-spleeter
+ENV SERVICE_NAME=deoldify-colorizer
 
 RUN mkdir -p ${SINGNET_REPOS}
 
@@ -19,12 +19,8 @@ RUN apt-get update && \
     nano \
     curl
 
-RUN apt-get install -y python3 python3-pip
-
-RUN apt-get clean && \
-    apt-get update && \
-    apt-get install -y ffmpeg libportaudio2 && \
-    apt-get -y autoremove
+# OpenCV dependencies
+RUN apt-get install -y libglib2.0-0 libsm6 libxext6 libxrender-dev
 
 # Installing SNET Daemon
 RUN SNETD_GIT_VERSION=`curl -s https://api.github.com/repos/singnet/snet-daemon/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")' || echo "v3.1.3"` && \
@@ -35,12 +31,22 @@ RUN SNETD_GIT_VERSION=`curl -s https://api.github.com/repos/singnet/snet-daemon/
     mv snet-daemon-${SNETD_VERSION}-linux-amd64/snetd /usr/bin/snetd && \
     rm -rf snet-daemon-*
 
+# Cloning service repository, downloading models
 RUN cd ${SINGNET_REPOS} && \
-    git clone -b ${git_branch} https://github.com/${git_owner}/${DNN_REPO_NAME}.git
+    git clone -b ${git_branch} https://github.com/${git_owner}/${DNN_REPO_NAME}.git && \
+    cd ${DNN_REPO_NAME}/utils && \
+    ./get_colorize_model.sh
 
+# DeOldify Repository
 RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \
-    python3 -m pip install -U pip && \
-    python3 -m pip install -r requirements.txt && \
+    git submodule update --init -- DeOldify && \
+    cd DeOldify && \
+    pip install -r requirements.txt
+
+# Building protobuf messages
+RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \
+    pip install -U pip && \
+    pip install -r requirements.txt && \
     sh buildproto.sh
 
 WORKDIR ${SERVICES_FOLDER}/${SERVICE_NAME}

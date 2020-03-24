@@ -1,34 +1,28 @@
 import os
+import sys
 import requests
 import hashlib
 import datetime
-import subprocess
 import base64
+from pathlib import Path
+from shutil import copyfile
 import logging
 import traceback
 
+SERVICE_FOLDER = Path(__file__).absolute().parent.parent
+sys.path.insert(0, str(SERVICE_FOLDER.joinpath("DeOldify")))
+from deoldify.visualize import get_artistic_image_colorizer
+
+
 logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s")
-log = logging.getLogger("siggraph_colorization")
+log = logging.getLogger("colorization")
 
 
 class Colorization:
-    def __init__(self, img_input):
+    def __init__(self, img_input, render_factor=35):
         self.img_input = img_input
+        self.render_factor = render_factor if render_factor else 35
         self.response = dict()
-
-    @staticmethod
-    def _is_base64(sb):
-        try:
-            if type(sb) == str:
-                sb_bytes = bytes(sb, 'ascii')
-            elif type(sb) == bytes:
-                sb_bytes = sb
-            else:
-                raise ValueError("Argument must be string or bytes")
-            return base64.b64encode(base64.b64decode(sb_bytes)) == sb_bytes
-        except Exception as e:
-            log.error("Not Base64: " + str(e))
-            return False
     
     @staticmethod
     def _generate_uid():
@@ -41,12 +35,10 @@ class Colorization:
         return m[:10] + m[-10:]
 
     def colorize(self):
-
         try:
             uid = self._generate_uid()
-            input_file = uid + "_input.png"
-            output_img = uid + ".png"
-            
+            input_file = "/tmp/" + uid + "_input.png"
+
             # Link
             if "http://" in self.img_input or "https://" in self.img_input:
                 log.info("Got an URL, downloading...")
@@ -55,7 +47,7 @@ class Colorization:
                 with open(input_file, "wb") as fd:
                     fd.write(r.content)
                 log.info("Done!")
-                
+
             # Base64
             elif len(self.img_input) > 1000:
                 log.info("Got a base64 image data, saving...")
@@ -63,14 +55,23 @@ class Colorization:
                     fd.write(base64.b64decode(self.img_input))
                 log.info("Done!")
 
-            resources_root = os.path.join("..", "..", "utils", "Resources")
-            colorize_model = os.path.join(resources_root, "Models", "colornet.t7")
-            p = subprocess.Popen(["th",
-                                  "colorize.lua",
-                                  input_file,
-                                  output_img,
-                                  colorize_model])
-            p.wait()
+            resources_root = SERVICE_FOLDER.parent.parent.joinpath("utils", "Resources", "Models", "DeOldify")
+
+            # from DeOldify
+            if not os.path.exists(SERVICE_FOLDER.joinpath("test_images")):
+                os.makedirs(SERVICE_FOLDER.joinpath("test_images"))
+            if not os.path.exists(SERVICE_FOLDER.joinpath("resource_images")):
+                os.makedirs(SERVICE_FOLDER.joinpath("resource_images"))
+            if not os.path.exists(SERVICE_FOLDER.joinpath("resource_images/watermark.png")):
+                copyfile(resources_root.joinpath("models/watermark.png"),
+                         SERVICE_FOLDER.joinpath("resource_images/watermark.png"))
+
+            colorizer = get_artistic_image_colorizer(root_folder=resources_root,
+                                                     weights_name="ColorizeArtistic_gen",
+                                                     results_dir="/tmp/")
+            output_img = colorizer.plot_transformed_image(path=input_file,
+                                                          render_factor=self.render_factor,
+                                                          watermarked=True)
 
             self.response["img_colorized"] = "Fail"
             with open(output_img, "rb") as base64_file:
