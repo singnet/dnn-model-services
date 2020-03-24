@@ -3,10 +3,9 @@
 
 ![singnetlogo](../../docs/assets/singnet-logo.jpg 'SingularityNET')
 
-# Let there be Color!
+# DeOldify
 
-This service uses [siggraph2016_colorization](http://iizuka.cs.tsukuba.ac.jp/projects/colorization/en/) to perform 
-automatic image colorization with simultaneous classification.
+This service uses [DeOldify](https://github.com/jantic/DeOldify) to perform automatic image colorization.
 
 It is part of our third party [DNN Model Services](https://github.com/singnet/dnn-model-services).
 
@@ -16,7 +15,7 @@ It is part of our third party [DNN Model Services](https://github.com/singnet/dn
 
 - [Python 3.6.5](https://www.python.org/downloads/release/python-365/)
 - [SNET CLI](https://github.com/singnet/snet-cli)
-- Pre-trained model (`colornet.t7`)
+- Pre-trained model (`ColorizeArtistic_gen.pth`)
 
 ### Development
 
@@ -27,11 +26,12 @@ $ git clone https://github.com/singnet/dnn-model-services.git
 $ cd dnn-model-services/utils
 $ ./get_colorize_model.sh
 $ ls -la Resources/Models
-total 678421
-drwxrwxr-x 2 user user      4096 Apr 25 08:49 .
-drwxrwxr-x 3 user user      4096 Apr 25 08:49 ..
--rw-r--r-- 1 root root 694703608 Apr 22  2016 colornet.t7
-$ cd ../services/cntk-image-recon
+total 249188
+drwxrwxr-x 2 ci ci      4096 Mar 24 13:30 ./
+drwxrwxr-x 5 ci ci      4096 Mar 24 13:29 ../
+-rw-rw-r-- 1 ci ci 255144681 Mar 24 13:30 ColorizeArtistic_gen.pth
+-rw-rw-r-- 1 ci ci      9210 Mar 24 13:30 watermark.png
+$ cd ../services/deoldify-colorizer
 ```
 
 ### Running the service:
@@ -63,13 +63,13 @@ For example (using the Ropsten testnet):
 ```
 $ cat snetd.config.json
 {
-   "DAEMON_END_POINT": "0.0.0.0:7054",
+   "DAEMON_END_POINT": "0.0.0.0:7085",
    "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
    "BLOCKCHAIN_NETWORK_SELECTED": "ropsten",
    "PASSTHROUGH_ENABLED": true,
    "PASSTHROUGH_ENDPOINT": "http://localhost:7003",
    "ORGANIZATION_ID": "snet",
-   "SERVICE_ID": "siggraph-colorization",
+   "SERVICE_ID": "deoldify-colorizer",
    "LOG": {
        "LEVEL": "debug",
        "OUTPUT": {
@@ -115,7 +115,7 @@ Through SingularityNET (follow this [link](https://dev.singularitynet.io/tutoria
 Assuming that you have an open channel to this service:
 
 ```
-$ snet client call snet siggraph-colorization default_group colorize '{"img_input": "https://snet-models.s3.amazonaws.com/bh/Colorize/carnaval.jpg"}'
+$ snet client call snet deoldify-colorizer default_group colorize '{"img_input": "https://snet-models.s3.amazonaws.com/bh/Colorize/carnaval.jpg"}'
 
 [Base64 Image]
 

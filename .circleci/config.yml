@@ -48,6 +48,28 @@ jobs:
           infura-api-key: ${INFURA_API_KEY}
           daemon-version: ${CI_SNETD_VERSION}
           daemon-pk: ${PK_DEEPFAKES_FACESWAP}
+  deoldify-colorizer:
+    docker:
+      - image: circleci/python:3.6.6-node
+    steps:
+      - checkout
+      - ssh-deployment/deploy:
+          ssh-host: ${SSH_HOST_DEOLDIFY_COLORIZER}
+          ssh-user: ${SSH_USER_DEOLDIFY_COLORIZER}
+          service-dir: "services/deoldify-colorizer"
+          mainnet-port: "7084"
+          testnet-port: "7085"
+          run-command: "python3 run_colorize_service.py --ssl"
+          docker-test-files: "Dockerfile, requirements.txt"
+          docker-file-path: "services/deoldify-colorizer/Dockerfile"
+          docker-no-cache: true
+          docker-image: "deoldify_colorizer"
+          docker-container: "DEOLDIFY_COLORIZER"
+          docker-nvidia: true
+          docker-volumes: "-v ~/singnet/.certs:/opt/singnet/.certs"
+          infura-api-key: ${INFURA_API_KEY}
+          daemon-version: ${CI_SNETD_VERSION}
+          daemon-pk: ${PK_DEOLDIFY_COLORIZER}
   i3d-video-action-recognition:
     docker:
       - image: circleci/python:3.6.6-node
@@ -158,28 +180,6 @@ jobs:
           infura-api-key: ${INFURA_API_KEY}
           daemon-version: ${CI_SNETD_VERSION}
           daemon-pk: ${PK_S2VT_VIDEO_CAPTIONING}
-  siggraph-colorization:
-    docker:
-      - image: circleci/python:3.6.6-node
-    steps:
-      - checkout
-      - ssh-deployment/deploy:
-          ssh-host: ${SSH_HOST_SIGGRAPH_COLORIZATION}
-          ssh-user: ${SSH_USER_SIGGRAPH_COLORIZATION}
-          service-dir: "services/siggraph-colorization"
-          mainnet-port: "7084"
-          testnet-port: "7085"
-          run-command: "python3 run_colorize_service.py --ssl"
-          docker-test-files: "Dockerfile, requirements.txt"
-          docker-file-path: "services/siggraph-colorization/Dockerfile"
-          docker-no-cache: true
-          docker-image: "siggraph_colorization"
-          docker-container: "SIGGRAPH_COLORIZATION"
-          docker-nvidia: true
-          docker-volumes: "-v ~/singnet/.certs:/opt/singnet/.certs"
-          infura-api-key: ${INFURA_API_KEY}
-          daemon-version: ${CI_SNETD_VERSION}
-          daemon-pk: ${PK_SIGGRAPH_COLORIZATION}
   sound-spleeter:
     docker:
       - image: circleci/python:3.6.6-node
@@ -257,6 +257,11 @@ jobs:
               test-command: "sleep 10;source '/cntk/activate-cntk';python3 test_image_recon_service.py auto"
               docker-container: "CNTK_IMAGE_RECON"
         - ssh-deployment/test:
+              ssh-host: ${SSH_HOST_DEOLDIFY_COLORIZER}
+              ssh-user: ${SSH_USER_DEOLDIFY_COLORIZER}
+              test-command: "sleep 10;python3 test_colorize_service.py auto"
+              docker-container: "DEOLDIFY_COLORIZER"
+        - ssh-deployment/test:
               ssh-host: ${SSH_HOST_I3D_VIDEO_ACTION_RECON}
               ssh-user: ${SSH_USER_I3D_VIDEO_ACTION_RECON}
               test-command: "sleep 10;python3 test_video_action_recon_service.py auto"
@@ -302,18 +307,19 @@ workflows:
     jobs:
       - cntk-image-recon
 #      - deepfakes-faceswap
+      - deoldify-colorizer
       - i3d-video-action-recognition
       - places365-scene-recognition
       - pneumonia-diagnosis
       - real-time-voice-cloning
       - s2vt-video-captioning
-#      - siggraph-colorization
       - sound-spleeter
       - yolov3-object-detection
       - zeta36-chess-alpha-zero
       - testing:
             requires:
               - cntk-image-recon
+              - deoldify-colorizer
               - i3d-video-action-recognition
               - places365-scene-recognition
               - pneumonia-diagnosis
