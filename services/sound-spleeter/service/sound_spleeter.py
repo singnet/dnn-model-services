@@ -6,6 +6,7 @@ import shutil
 import requests
 import traceback
 
+from pydub import AudioSegment
 from spleeter.separator import Separator
 
 import logging
@@ -59,10 +60,12 @@ def spleeter(response, audio_url=None, audio=None):
         # Getting the output files content
         out_dir = tmp_dir + audio_path.replace(".audio", "") + "/"
         output_vocals = out_dir + "vocals.wav"
-        with open(output_vocals, "rb") as fv:
+        AudioSegment.from_wav(output_vocals).export(out_dir + "vocals.mp3", format="mp3")
+        with open(out_dir + "vocals.mp3", "rb") as fv:
             vocals = fv.read()
         output_accomp = out_dir + "accompaniment.wav"
-        with open(output_accomp, "rb") as fa:
+        AudioSegment.from_wav(output_accomp).export(out_dir + "accompaniment.mp3", format="mp3")
+        with open(out_dir + "accompaniment.mp3", "rb") as fa:
             accomp = fa.read()
 
         # Deleting the files output directory
