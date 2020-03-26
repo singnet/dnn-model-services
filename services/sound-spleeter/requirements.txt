@@ -2,3 +2,4 @@ grpcio>=1.14.2
 grpcio-tools>=1.14.1
 requests==2.20.0
 spleeter
+pydub==0.23.1
