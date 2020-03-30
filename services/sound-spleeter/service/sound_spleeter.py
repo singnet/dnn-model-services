@@ -30,8 +30,8 @@ def spleeter(response, audio_url=None, audio=None):
                 size = r.headers.get('content-length', 0)
                 size = int(size) / float(1 << 20)
                 log.info("File size: {:.2f} Mb".format(size))
-                if size > 5:
-                    response["vocals"] = b"Input audio file is too large! (max 5Mb)"
+                if size > 10:
+                    response["vocals"] = b"Input audio file is too large! (max 10Mb)"
                     response["accomp"] = b"Fail"
                     return
                 r = requests.get(audio_url, headers=header, allow_redirects=True)
