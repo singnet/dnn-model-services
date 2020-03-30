@@ -60,7 +60,9 @@ def generate_uid():
 # Add all your classes to the server here.
 # (from generated .py files by protobuf compiler)
 def serve(max_workers=10, port=7777):
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=max_workers))
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=max_workers), options=[
+        ('grpc.max_send_message_length', 25 * 1024 * 1024),
+        ('grpc.max_receive_message_length', 25 * 1024 * 1024)])
     grpc_bt_grpc.add_SoundSpleeterServicer_to_server(SoundSpleeterServicer(), server)
     server.add_insecure_port("[::]:{}".format(port))
     return server
