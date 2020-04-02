@@ -5,8 +5,14 @@ import requests
 import cv2
 import numpy as np
 
-# TensorFlow and TF-Hub modules.
+# TensorFlow.
 import tensorflow as tf
+# Using session to consume less GPU memory
+tf_session_config = tf.ConfigProto()
+tf_session_config.gpu_options.allow_growth = True
+sess = tf.Session(config=tf_session_config)
+
+# TF-Hub modules
 import tensorflow_hub as hub
 
 import youtube_dl
