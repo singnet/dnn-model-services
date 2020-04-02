@@ -9,7 +9,6 @@ import concurrent.futures as futures
 import multiprocessing
 
 from . import common
-from video_captioner import VideoCaptioner
 
 # Importing the generated codes from buildproto.sh
 from service_spec import video_cap_pb2_grpc as grpc_bt_grpc
@@ -58,7 +57,10 @@ class VideoCaptioningServicer(grpc_bt_grpc.VideoCaptioningServicer):
         if not response:
             return Output(value="Fail")
         
-        log.debug("video_cap({},{},{})={}".format(self.url, self.start_time_sec, self.stop_time_sec, self.response.value))
+        log.debug("video_cap({},{},{})={}".format(self.url,
+                                                  self.start_time_sec,
+                                                  self.stop_time_sec,
+                                                  response["Caption"]))
         return Output(value=response["Caption"])
 
 
