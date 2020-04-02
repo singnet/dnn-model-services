@@ -37,7 +37,7 @@ class RealTimeVoiceCloningServicer(grpc_bt_grpc.RealTimeVoiceCloningServicer):
         return_dict = manager.dict()
         worker = multiprocessing.Process(
             target=mp_clone,
-            args=(request.audio_url, request.audio, request.sentence return_dict))
+            args=(request.audio_url, request.audio, request.sentence, return_dict))
         worker.start()
         worker.join()
     
