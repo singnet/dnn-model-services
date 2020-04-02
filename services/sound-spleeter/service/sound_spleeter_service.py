@@ -2,13 +2,13 @@ import sys
 import logging
 import datetime
 import hashlib
+
 import multiprocessing
 
 import grpc
 import concurrent.futures as futures
 
 import service.common
-import service.sound_spleeter as ss
 
 # Importing the generated codes from buildproto.sh
 import service.service_spec.sound_spleeter_pb2_grpc as grpc_bt_grpc
@@ -16,6 +16,11 @@ from service.service_spec.sound_spleeter_pb2 import Output
 
 logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s")
 log = logging.getLogger("sound_spleeter_service")
+
+
+def mp_spleeter(audio_url, audio, return_dict):
+    import service.sound_spleeter as ss
+    return_dict["response"] = ss.spleeter(audio_url, audio)
 
 
 # Create a class to be added to the gRPC server
@@ -28,12 +33,14 @@ class SoundSpleeterServicer(grpc_bt_grpc.SoundSpleeterServicer):
     @staticmethod
     def spleeter(request, _):
         manager = multiprocessing.Manager()
-        response = manager.dict()
+        return_dict = manager.dict()
         worker = multiprocessing.Process(
-            target=ss.spleeter,
-            args=(response, request.audio_url, request.audio))
+            target=mp_spleeter,
+            args=(request.audio_url, request.audio, return_dict))
         worker.start()
         worker.join()
+
+        response = return_dict.get("response", None)
         log.debug("clone({},{})={},{}".format(request.audio_url[:10],
                                               len(request.audio),
                                               len(response["vocals"]),

@@ -7,7 +7,6 @@ import grpc
 import concurrent.futures as futures
 
 import service.common
-import service.image_recon as img_recon
 from service import flowers_map_names, dogs_map_names
 
 # Importing the generated codes from buildproto.sh
@@ -19,6 +18,7 @@ log = logging.getLogger("image_recon_service")
 
 
 def mp_image_recognition(method, request, map_names, image_dims, return_dict):
+    import service.image_recon as img_recon
     return_dict["response"] = img_recon.image_recognition(method,
                                                           request.model,
                                                           map_names,

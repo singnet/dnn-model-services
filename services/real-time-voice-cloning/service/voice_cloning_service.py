@@ -1,11 +1,12 @@
 import sys
 import logging
 
+import multiprocessing
+
 import grpc
 import concurrent.futures as futures
 
 import service.common
-import service.voice_cloning as vc
 
 # Importing the generated codes from buildproto.sh
 import service.service_spec.voice_cloning_pb2_grpc as grpc_bt_grpc
@@ -13,6 +14,11 @@ from service.service_spec.voice_cloning_pb2 import Output
 
 logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s")
 log = logging.getLogger("voice_cloning_service")
+
+
+def mp_clone(audio_url, audio, sentence, return_dict):
+    import service.voice_cloning as vc
+    return_dict["response"] = vc.clone(audio, audio_url, sentence)
 
 
 # Create a class to be added to the gRPC server
@@ -27,7 +33,15 @@ class RealTimeVoiceCloningServicer(grpc_bt_grpc.RealTimeVoiceCloningServicer):
     # context: object that provides RPC-specific information (timeout, etc).
     @staticmethod
     def clone(request, _):
-        response = vc.clone(request.audio, request.audio_url, request.sentence)
+        manager = multiprocessing.Manager()
+        return_dict = manager.dict()
+        worker = multiprocessing.Process(
+            target=mp_clone,
+            args=(request.audio_url, request.audio, request.sentence return_dict))
+        worker.start()
+        worker.join()
+    
+        response = return_dict.get("response", None)
         log.debug("clone({},{})={}".format(request.audio_url[:10],
                                            request.sentence[:10],
                                            len(response["audio"])))
@@ -42,9 +56,12 @@ class RealTimeVoiceCloningServicer(grpc_bt_grpc.RealTimeVoiceCloningServicer):
 #
 # Add all your classes to the server here.
 def serve(max_workers=10, port=7777):
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=max_workers))
-    grpc_bt_grpc.add_RealTimeVoiceCloningServicer_to_server(RealTimeVoiceCloningServicer(),
-                                                            server)
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=max_workers), options=[
+        ('grpc.max_send_message_length', 10 * 1024 * 1024),
+        ('grpc.max_receive_message_length', 10 * 1024 * 1024)])
+    grpc_bt_grpc.add_RealTimeVoiceCloningServicer_to_server(
+        RealTimeVoiceCloningServicer(),
+        server)
     server.add_insecure_port("[::]:{}".format(port))
     return server
 
