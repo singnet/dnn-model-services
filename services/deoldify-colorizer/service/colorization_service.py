@@ -12,7 +12,6 @@ except RuntimeError:
     pass
 
 import service.common
-from service.colorization import Colorization
 
 # Importing the generated codes from buildproto.sh
 import service.service_spec.colorization_pb2_grpc as grpc_bt_grpc
@@ -22,7 +21,9 @@ logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s 
 log = logging.getLogger("colorization_service")
 
 
-def mp_colorize(obj, return_dict):
+def mp_colorize(img_input, render_factor, return_dict):
+    from service.colorization import Colorization
+    obj = Colorization(img_input, render_factor)
     return_dict["response"] = obj.colorize()
 
 
@@ -37,11 +38,11 @@ class ColorizationServicer(grpc_bt_grpc.ColorizationServicer):
     # context: object that provides RPC-specific information (timeout, etc).
     def colorize(self, request, _):
         try:
-            obj = Colorization(request.img_input, request.render_factor)
-
             manager = Manager()
             return_dict = manager.dict()
-            p = Process(target=mp_colorize, args=(obj, return_dict))
+            p = Process(target=mp_colorize, args=(request.img_input,
+                                                  request.render_factor,
+                                                  return_dict))
             p.start()
             p.join()
 
