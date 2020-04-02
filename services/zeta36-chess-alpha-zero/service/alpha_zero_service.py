@@ -10,23 +10,10 @@ import multiprocessing
 import grpc
 import concurrent.futures as futures
 
-# Using session to consume less GPU memory
-import tensorflow as tf
-
-tf_session_config = tf.ConfigProto()
-tf_session_config.gpu_options.allow_growth = True
-sess = tf.Session(config=tf_session_config)
+import service.common
 
 sys.path.append(os.path.join(os.getcwd(), 'chess-alpha-zero', 'src'))
-
-from chess_zero.config import Config, PlayWithHumanConfig
 from chess_zero.env.chess_env import ChessEnv
-from chess_zero.agent.player_chess import ChessPlayer
-from chess_zero.agent.model_chess import ChessModel
-from chess_zero.lib.model_helper import load_best_model_weight
-
-import service.common
-from service.alpha_zero import AlphaZeroClass
 
 # Importing the generated codes from buildproto.sh
 import service.service_spec.alpha_zero_pb2_grpc as grpc_bt_grpc
@@ -35,12 +22,13 @@ from service.service_spec.alpha_zero_pb2 import Output
 logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s")
 log = logging.getLogger("alpha_zero_service")
 
-ALPHA_ZERO_PLAYER = None
 CHESS_ENV_DICT = dict()
 
 
-def mp_play(obj, return_dict):
-    return_dict["response"] = obj.play()
+def mp_play(move, cmd, chess_env, return_dict):
+    from service.alpha_zero import AlphaZeroClass
+    msc = AlphaZeroClass(move, cmd, chess_env)
+    return_dict["response"] = msc.play()
 
 
 # Create a class to be added to the gRPC server
@@ -85,12 +73,14 @@ class AlphaZeroServicer(grpc_bt_grpc.AlphaZeroServicer):
                 log.debug("CMD [restart]: {}".format(self.uid))
             
             self.move = request.move
-            msc = AlphaZeroClass(self.move, self.cmd, ALPHA_ZERO_PLAYER, chess_env)
 
             manager = multiprocessing.Manager()
             return_dict = manager.dict()
 
-            p = multiprocessing.Process(target=mp_play, args=(msc, return_dict))
+            p = multiprocessing.Process(target=mp_play, args=(self.move,
+                                                              self.cmd,
+                                                              chess_env,
+                                                              return_dict))
             p.start()
             p.join()
 
@@ -123,19 +113,6 @@ class AlphaZeroServicer(grpc_bt_grpc.AlphaZeroServicer):
             return Output(status="Fail")
 
 
-def get_player_from_model(config):
-    try:
-        model = ChessModel(config)
-        if not load_best_model_weight(model):
-            raise RuntimeError("Best model not found!")
-        return ChessPlayer(config, model.get_pipes(config.play.search_threads))
-    
-    except Exception as e:
-        traceback.print_exc()
-        log.error(e)
-        return None
-
-
 def generate_uid():
     # Setting a hash accordingly to the timestamp
     seed = "{}".format(datetime.datetime.now())
@@ -165,12 +142,6 @@ if __name__ == "__main__":
     """
     Runs the gRPC server to communicate with the Snet Daemon.
     """
-    
-    # Initial Alpha Zero setup
-    default_config = Config()
-    PlayWithHumanConfig().update_play_config(default_config.play)
-    ALPHA_ZERO_PLAYER = get_player_from_model(default_config)
-    
     parser = service.common.common_parser(__file__)
     args = parser.parse_args(sys.argv[1:])
     service.common.main_loop(serve, args)

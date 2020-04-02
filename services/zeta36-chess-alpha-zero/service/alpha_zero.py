@@ -1,6 +1,18 @@
+import logging
 import traceback
 
-import logging
+# Using session to consume less GPU memory
+import tensorflow as tf
+
+tf_session_config = tf.ConfigProto()
+tf_session_config.gpu_options.allow_growth = True
+sess = tf.Session(config=tf_session_config)
+
+from chess_zero.config import Config, PlayWithHumanConfig
+from chess_zero.agent.player_chess import ChessPlayer
+from chess_zero.agent.model_chess import ChessModel
+from chess_zero.lib.model_helper import load_best_model_weight
+
 
 logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s")
 log = logging.getLogger("alpha_zero")
@@ -8,16 +20,37 @@ log = logging.getLogger("alpha_zero")
 
 class AlphaZeroClass:
 
-	def __init__(self, move, cmd, alpha_player, chess_env):
+	def __init__(self, move, cmd, chess_env):
 		self.move = move
 		self.cmd = cmd
 		self.chess_env = chess_env
-		self.alpha_player = alpha_player
-
+		self.alpha_player = None
 		self.response = dict()
+
+	def create(self):
+		# Initial Alpha Zero setup
+		default_config = Config()
+		PlayWithHumanConfig().update_play_config(default_config.play)
+		return self.get_player_from_model(default_config)
+
+	@staticmethod
+	def get_player_from_model(config):
+		try:
+			model = ChessModel(config)
+			if not load_best_model_weight(model):
+				raise RuntimeError("Best model not found!")
+			return ChessPlayer(config, model.get_pipes(config.play.search_threads))
+		except Exception as e:
+			traceback.print_exc()
+			log.error(e)
+			return None
 
 	def play(self):
 		try:
+			self.alpha_player = self.create()
+			if not self.alpha_player:
+				return None, None
+
 			# User move
 			self.chess_env.step(self.move)
 			log.debug("User move: {}".format(self.move))
