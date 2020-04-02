@@ -9,12 +9,24 @@ import concurrent.futures as futures
 import sys
 import os
 from urllib.error import HTTPError
-from service.scene_recognition import SceneRecognitionModel
+
+from torch.multiprocessing import Manager, Process, set_start_method
+try:
+     set_start_method('spawn')
+except RuntimeError:
+    pass
+
 
 logging.basicConfig(
     level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s"
 )
 log = logging.getLogger("scene_recognition_service")
+
+
+def mp_recognize(image_path, predict, output_image_path, return_dict):
+    from service.scene_recognition import SceneRecognitionModel
+    sr_model = SceneRecognitionModel()
+    return_dict["response"] = sr_model.recognize(image_path, predict, output_image_path)
 
 
 class SceneRecognitionServicer(grpc_bt_grpc.SceneRecognitionServicer):
@@ -29,8 +41,6 @@ class SceneRecognitionServicer(grpc_bt_grpc.SceneRecognitionServicer):
         self.input_dir = "./service/temp/input"
         self.output_dir = "./service/temp/output"
         service.serviceUtils.initialize_diretories([self.input_dir, self.output_dir])
-
-        self.sr_model = SceneRecognitionModel()
 
         self.prediction_list = ["io", "categories", "attributes", "cam"]
 
@@ -80,7 +90,7 @@ class SceneRecognitionServicer(grpc_bt_grpc.SceneRecognitionServicer):
 
         return image_path, predict, file_index_str
 
-    def recognize_scene(self, request, context):
+    def recognize_scene(self, request, _):
         """Wraps the scene recognition model to make sure inputs and outputs match the service requirements."""
 
         # Store the names of the images to delete them afterwards
@@ -110,12 +120,23 @@ class SceneRecognitionServicer(grpc_bt_grpc.SceneRecognitionServicer):
         log.debug("Output image path (cam_path): {}".format(output_image_path))
         created_images.append(output_image_path)
 
-        result_dict = self.sr_model.recognize(image_path, predict, output_image_path)
+        manager = Manager()
+        return_dict = manager.dict()
+        p = Process(target=mp_recognize, args=(image_path,
+                                               predict,
+                                               output_image_path,
+                                               return_dict))
+        p.start()
+        p.join()
+
+        response = return_dict.get("response", None)
+        if not response:
+            return SceneRecognitionResult()
 
         # Prepare gRPC output message
         self.result = SceneRecognitionResult()
         log.debug("Got result.")
-        self.result.data = json.dumps(result_dict)
+        self.result.data = json.dumps(response)
         log.debug("Output generated. Service successfully completed.")
 
         for image in created_images:

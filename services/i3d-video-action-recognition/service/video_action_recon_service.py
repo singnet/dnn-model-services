@@ -9,7 +9,6 @@ import grpc
 import concurrent.futures as futures
 
 from . import common
-from .video_action_recon import VideoActionRecognizer
 
 # Importing the generated codes from buildproto.sh
 import service.service_spec.video_action_recon_pb2_grpc as grpc_bt_grpc
@@ -19,7 +18,9 @@ logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s 
 log = logging.getLogger("video_action_recon_service")
 
 
-def mp_video_action_recon(obj, return_dict):
+def mp_video_action_recon(uid, model, url, return_dict):
+    from .video_action_recon import VideoActionRecognizer
+    obj = VideoActionRecognizer(uid, model, url)
     return_dict["response"] = obj.video_action_recon()
 
 
@@ -41,12 +42,13 @@ class VideoActionRecognitionServicer(grpc_bt_grpc.VideoActionRecognitionServicer
         self.model = request.model
         self.url = request.url
 
-        obj = VideoActionRecognizer(self.uid, self.model, self.url)
-
         manager = multiprocessing.Manager()
         return_dict = manager.dict()
 
-        p = multiprocessing.Process(target=mp_video_action_recon, args=(obj, return_dict))
+        p = multiprocessing.Process(target=mp_video_action_recon, args=(self.uid,
+                                                                        self.model,
+                                                                        self.url,
+                                                                        return_dict))
         p.start()
         p.join()
 

@@ -2,7 +2,6 @@ import sys
 import logging
 
 import service.common
-from service.object_detection import ObjectDetector
 from service import map_names
 
 import multiprocessing
@@ -19,7 +18,9 @@ logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - "
 log = logging.getLogger("obj_detect_service")
 
 
-def mp_detect(obj, return_dict):
+def mp_detect(model, confidence, img_path, return_dict):
+    from service.object_detection import ObjectDetector
+    obj = ObjectDetector(model, confidence, map_names, img_path)
     return_dict["response"] = obj.detect()
 
 
@@ -34,16 +35,13 @@ class ObjectDetectorServicer(grpc_bt_grpc.DetectServicer):
         self.img_path = request.img_path
         self.model = request.model
         self.confidence = request.confidence
-
-        objd = ObjectDetector(self.model,
-                              self.confidence,
-                              map_names,
-                              self.img_path)
         
         manager = multiprocessing.Manager()
         return_dict = manager.dict()
 
-        p = multiprocessing.Process(target=mp_detect, args=(objd, return_dict))
+        p = multiprocessing.Process(
+            target=mp_detect,
+            args=(self.model, self.confidence, self.img_path, return_dict))
         p.start()
         p.join()
 

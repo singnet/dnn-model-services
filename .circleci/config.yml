@@ -272,11 +272,6 @@ jobs:
               test-command: "sleep 10;python3 test_scene_recognition_service.py auto"
               docker-container: "PLACES365_SCENE_RECOGNITION"
         - ssh-deployment/test:
-              ssh-host: ${SSH_HOST_PNEUMONIA_DIAGNOSIS}
-              ssh-user: ${SSH_USER_PNEUMONIA_DIAGNOSIS}
-              test-command: "sleep 10;python3 test_pneumonia_diagnosis_service.py auto"
-              docker-container: "PNEUMONIA_DIAGNOSIS"
-        - ssh-deployment/test:
               ssh-host: ${SSH_HOST_VOICE_CLONING}
               ssh-user: ${SSH_USER_VOICE_CLONING}
               test-command: "sleep 10;python3 test_voice_cloning_service.py auto"
@@ -310,7 +305,7 @@ workflows:
       - deoldify-colorizer
       - i3d-video-action-recognition
       - places365-scene-recognition
-      - pneumonia-diagnosis
+#      - pneumonia-diagnosis
       - real-time-voice-cloning
       - s2vt-video-captioning
       - sound-spleeter
@@ -322,7 +317,6 @@ workflows:
               - deoldify-colorizer
               - i3d-video-action-recognition
               - places365-scene-recognition
-              - pneumonia-diagnosis
               - real-time-voice-cloning
               - s2vt-video-captioning
               - sound-spleeter

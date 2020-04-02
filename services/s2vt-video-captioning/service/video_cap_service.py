@@ -6,8 +6,9 @@ import hashlib
 import grpc
 import concurrent.futures as futures
 
+import multiprocessing
+
 from . import common
-from video_captioner import VideoCaptioner
 
 # Importing the generated codes from buildproto.sh
 from service_spec import video_cap_pb2_grpc as grpc_bt_grpc
@@ -15,6 +16,12 @@ from service_spec.video_cap_pb2 import Output
 
 logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s")
 log = logging.getLogger("video_cap")
+
+
+def mp_captions(url, uid, start_time_sec, stop_time_sec, return_dict):
+    from video_captioner import VideoCaptioner
+    vc = VideoCaptioner(url, uid, start_time_sec, stop_time_sec, 0, 0)
+    return_dict["response"] = vc.get_video_captions()
 
 
 # Create a class to be added to the gRPC server
@@ -26,30 +33,35 @@ class VideoCaptioningServicer(grpc_bt_grpc.VideoCaptioningServicer):
         self.stop_time_sec = 0
         self.uid = ""
 
-        self.response = "Fail"
-
         # Just for debugging purpose.
         log.debug("VideoCaptioningServicer created")
 
     # The method that will be exposed to the snet-cli call command.
     # request: incoming data
     # context: object that provides RPC-specific information (timeout, etc).
-    def video_cap(self, request, context):
+    def video_cap(self, request, _):
         self.url = request.url
         self.start_time_sec = request.start_time_sec
         self.stop_time_sec = request.stop_time_sec
         self.uid = generate_uid()
 
-        # To respond we need to create a Output() object (from .proto file)
-        self.response = Output()
+        manager = multiprocessing.Manager()
+        return_dict = manager.dict()
+        worker = multiprocessing.Process(
+            target=mp_captions,
+            args=(self.url, self.uid, self.start_time_sec, self.stop_time_sec, return_dict))
+        worker.start()
+        worker.join()
 
-        video_cap_instance = VideoCaptioner(self.url, self.uid, self.start_time_sec, self.stop_time_sec, 0, 0)
-        tmp_response = video_cap_instance.get_video_captions()
-        self.response.value = tmp_response["Caption"].encode("utf-8")
-
-        log.debug("video_cap({},{},{})={}".format(self.url, self.start_time_sec, self.stop_time_sec, self.response.value))
-
-        return self.response
+        response = return_dict.get("response", None)
+        if not response:
+            return Output(value="Fail")
+        
+        log.debug("video_cap({},{},{})={}".format(self.url,
+                                                  self.start_time_sec,
+                                                  self.stop_time_sec,
+                                                  response["Caption"]))
+        return Output(value=response["Caption"])
 
 
 def generate_uid():

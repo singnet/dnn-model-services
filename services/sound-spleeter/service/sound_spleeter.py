@@ -15,10 +15,12 @@ logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s 
 log = logging.getLogger("sound_spleeter")
 
 
-def spleeter(response, audio_url=None, audio=None):
+def spleeter(audio_url=None, audio=None):
     try:
-        response["vocals"] = b"Fail"
-        response["accomp"] = b"Fail"
+        response = {
+            "vocals": b"Fail",
+            "accomp": b"Fail"
+        }
 
         audio_data = audio
         if audio_url:
@@ -33,7 +35,7 @@ def spleeter(response, audio_url=None, audio=None):
                 if size > 10:
                     response["vocals"] = b"Input audio file is too large! (max 10Mb)"
                     response["accomp"] = b"Fail"
-                    return
+                    return response
                 r = requests.get(audio_url, headers=header, allow_redirects=True)
                 audio_data = r.content
             # Base64
@@ -73,12 +75,12 @@ def spleeter(response, audio_url=None, audio=None):
 
         response["vocals"] = vocals
         response["accomp"] = accomp
-        return
+        return response
 
     except Exception as e:
         log.error(e)
         traceback.print_exc()
-        return
+        return response
 
 
 def generate_uid():

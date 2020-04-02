@@ -32,8 +32,8 @@ def clone(audio=None, audio_url=None, sentence=""):
                 size = r.headers.get('content-length', 0)
                 size = int(size) / float(1 << 20)
                 log.info("File size: {:.2f} Mb".format(size))
-                if size > 5:
-                    return {"audio": b"Input audio file is too large! (max 5Mb)"}
+                if size > 10:
+                    return {"audio": b"Input audio file is too large! (max 10Mb)"}
                 r = requests.get(audio_url, headers=header, allow_redirects=True)
                 audio_data = r.content
             # Base64
