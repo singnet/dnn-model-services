@@ -32,7 +32,7 @@ class RealTimeVoiceCloningServicer(grpc_bt_grpc.RealTimeVoiceCloningServicer):
     # request: incoming data
     # context: object that provides RPC-specific information (timeout, etc).
     @staticmethod
-    def clone(request, _):
+    def clone(request, context):
         manager = multiprocessing.Manager()
         return_dict = manager.dict()
         worker = multiprocessing.Process(
@@ -42,6 +42,13 @@ class RealTimeVoiceCloningServicer(grpc_bt_grpc.RealTimeVoiceCloningServicer):
         worker.join()
     
         response = return_dict.get("response", None)
+        if not response or "error" in response:
+            error_msg = response.get("error", None) if response else None
+            log.error(error_msg)
+            context.set_details(error_msg)
+            context.set_code(grpc.StatusCode.INTERNAL)
+            return Output()
+
         log.debug("clone({},{})={}".format(request.audio_url[:10],
                                            request.sentence[:10],
                                            len(response["audio"])))

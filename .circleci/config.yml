@@ -15,7 +15,7 @@ jobs:
           service-dir: "services/cntk-image-recon"
           mainnet-port: "7004"
           testnet-port: "7054"
-          run-command: "source '/cntk/activate-cntk';python3 run_image_recon_service.py --ssl"
+          run-command: "source '/cntk/activate-cntk';python3 run_service.py --ssl"
           docker-test-files: "Dockerfile, requirements.txt"
           docker-file-path: "services/cntk-image-recon/Dockerfile"
           docker-no-cache: true
@@ -37,7 +37,7 @@ jobs:
           service-dir: "services/deepfakes-faceswap"
           mainnet-port: "7060"
           testnet-port: "7061-7062"
-          run-command: "python3 run_deepfakes_faceswap_service.py --ssl"
+          run-command: "python3 run_service.py --ssl"
           docker-test-files: "Dockerfile, requirements.txt"
           docker-file-path: "services/deepfakes-faceswap/Dockerfile"
           docker-no-cache: true
@@ -59,7 +59,7 @@ jobs:
           service-dir: "services/deoldify-colorizer"
           mainnet-port: "7084"
           testnet-port: "7085"
-          run-command: "python3 run_colorize_service.py --ssl"
+          run-command: "python3 run_service.py --ssl"
           docker-test-files: "Dockerfile, requirements.txt"
           docker-file-path: "services/deoldify-colorizer/Dockerfile"
           docker-no-cache: true
@@ -81,7 +81,7 @@ jobs:
           service-dir: "services/i3d-video-action-recognition"
           mainnet-port: "7005"
           testnet-port: "7055"
-          run-command: "python3 run_video_action_recon_service.py --ssl"
+          run-command: "python3 run_service.py --ssl"
           docker-test-files: "Dockerfile, requirements.txt"
           docker-file-path: "services/i3d-video-action-recognition/Dockerfile"
           docker-no-cache: true
@@ -103,7 +103,7 @@ jobs:
           service-dir: "services/places365-scene-recognition"
           mainnet-port: "7019"
           testnet-port: "7079"
-          run-command: "python3 run_scene_recognition_service.py --ssl"
+          run-command: "python3 run_service.py --ssl"
           docker-test-files: "Dockerfile, requirements.txt"
           docker-file-path: "services/places365-scene-recognition/Dockerfile"
           docker-no-cache: true
@@ -125,7 +125,7 @@ jobs:
           service-dir: "services/pneumonia-diagnosis"
           mainnet-port: "7072"
           testnet-port: "7062"
-          run-command: "python3 run_pneumonia_diagnosis_service.py --ssl"
+          run-command: "python3 run_service.py --ssl"
           docker-test-files: "Dockerfile, requirements.txt"
           docker-file-path: "services/pneumonia-diagnosis/Dockerfile"
           docker-no-cache: true
@@ -147,7 +147,7 @@ jobs:
           service-dir: "services/real-time-voice-cloning"
           mainnet-port: "7064"
           testnet-port: "7065"
-          run-command: "python3 run_voice_cloning_service.py --ssl"
+          run-command: "python3 run_service.py --ssl"
           docker-test-files: "Dockerfile, requirements.txt"
           docker-file-path: "services/real-time-voice-cloning/Dockerfile"
           docker-no-cache: true
@@ -169,7 +169,7 @@ jobs:
           service-dir: "services/s2vt-video-captioning"
           mainnet-port: "7006"
           testnet-port: "7056"
-          run-command: "python run_video_cap_service.py --ssl"
+          run-command: "python run_service.py --ssl"
           docker-test-files: "Dockerfile, requirements.txt"
           docker-file-path: "services/s2vt-video-captioning/Dockerfile"
           docker-no-cache: true
@@ -191,7 +191,7 @@ jobs:
           service-dir: "services/sound-spleeter"
           mainnet-port: "7066"
           testnet-port: "7067"
-          run-command: "python3 run_sound_spleeter_service.py --ssl"
+          run-command: "python3 run_service.py --ssl"
           docker-test-files: "Dockerfile, requirements.txt"
           docker-file-path: "services/sound-spleeter/Dockerfile"
           docker-no-cache: true
@@ -213,7 +213,7 @@ jobs:
           service-dir: "services/yolov3-object-detection"
           mainnet-port: "7007"
           testnet-port: "7057"
-          run-command: "python3 run_object_detection_service.py --ssl"
+          run-command: "python3 run_service.py --ssl"
           docker-test-files: "Dockerfile, requirements.txt"
           docker-file-path: "services/yolov3-object-detection/Dockerfile"
           docker-no-cache: true
@@ -235,7 +235,7 @@ jobs:
           service-dir: "services/zeta36-chess-alpha-zero"
           mainnet-port: "7008"
           testnet-port: "7058"
-          run-command: "python3.6 run_alpha_zero_service.py --ssl"
+          run-command: "python3.6 run_service.py --ssl"
           docker-test-files: "Dockerfile, requirements.txt"
           docker-file-path: "services/zeta36-chess-alpha-zero/Dockerfile"
           docker-no-cache: true
@@ -254,7 +254,7 @@ jobs:
         - ssh-deployment/test:
               ssh-host: ${SSH_HOST_CNTK_IMAGE_RECON}
               ssh-user: ${SSH_USER_CNTK_IMAGE_RECON}
-              test-command: "sleep 10;source '/cntk/activate-cntk';python3 test_image_recon_service.py auto"
+              test-command: "sleep 10;source '/cntk/activate-cntk';python3 test_service.py auto"
               docker-container: "CNTK_IMAGE_RECON"
         - ssh-deployment/test:
               ssh-host: ${SSH_HOST_DEOLDIFY_COLORIZER}
@@ -264,37 +264,37 @@ jobs:
         - ssh-deployment/test:
               ssh-host: ${SSH_HOST_I3D_VIDEO_ACTION_RECON}
               ssh-user: ${SSH_USER_I3D_VIDEO_ACTION_RECON}
-              test-command: "sleep 10;python3 test_video_action_recon_service.py auto"
+              test-command: "sleep 10;python3 test_service.py auto"
               docker-container: "I3D_VIDEO_ACTION_RECON"
         - ssh-deployment/test:
               ssh-host: ${SSH_HOST_PLACES365_SCENE_RECOGNITION}
               ssh-user: ${SSH_USER_PLACES365_SCENE_RECOGNITION}
-              test-command: "sleep 10;python3 test_scene_recognition_service.py auto"
+              test-command: "sleep 10;python3 test_service.py auto"
               docker-container: "PLACES365_SCENE_RECOGNITION"
         - ssh-deployment/test:
               ssh-host: ${SSH_HOST_VOICE_CLONING}
               ssh-user: ${SSH_USER_VOICE_CLONING}
-              test-command: "sleep 10;python3 test_voice_cloning_service.py auto"
+              test-command: "sleep 10;python3 test_service.py auto"
               docker-container: "VOICE_CLONING"
         - ssh-deployment/test:
               ssh-host: ${SSH_HOST_S2VT_VIDEO_CAPTIONING}
               ssh-user: ${SSH_USER_S2VT_VIDEO_CAPTIONING}
-              test-command: "sleep 10;python test_video_cap_service.py auto"
+              test-command: "sleep 10;python test_service.py auto"
               docker-container: "S2VT_VIDEO_CAPTIONING"
         - ssh-deployment/test:
               ssh-host: ${SSH_HOST_SOUND_SPLEETER}
               ssh-user: ${SSH_USER_SOUND_SPLEETER}
-              test-command: "sleep 10;python3 test_sound_spleeter_service.py auto"
+              test-command: "sleep 10;python3 test_service.py auto"
               docker-container: "SOUND_SPLEETER"
         - ssh-deployment/test:
               ssh-host: ${SSH_HOST_YOLOv3_OBJECT_DETECTION}
               ssh-user: ${SSH_USER_YOLOv3_OBJECT_DETECTION}
-              test-command: "sleep 10;python3 test_object_detection_service.py auto"
+              test-command: "sleep 10;python3 test_service.py auto"
               docker-container: "YOLOv3_OBJECT_DETECTION"
         - ssh-deployment/test:
               ssh-host: ${SSH_HOST_CHESS_ALPHA_ZERO}
               ssh-user: ${SSH_USER_CHESS_ALPHA_ZERO}
-              test-command: "sleep 10;python3.6 test_alpha_zero_service.py auto"
+              test-command: "sleep 10;python3.6 test_service.py auto"
               docker-container: "CHESS_ALPHA_ZERO"
 
 workflows:

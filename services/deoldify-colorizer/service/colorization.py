@@ -87,5 +87,5 @@ class Colorization:
         except Exception as e:
             log.error(e)
             traceback.print_exc()
-            self.response["img_colorized"] = "Fail"
+            self.response = {"img_colorized": "Fail", "error": str(e)}
             return self.response

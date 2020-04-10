@@ -31,7 +31,7 @@ class ObjectDetectorServicer(grpc_bt_grpc.DetectServicer):
         self.confidence = "0.7"
         log.debug("ObjectDetectorServicer created")
 
-    def detect(self, request, _):
+    def detect(self, request, context):
         self.img_path = request.img_path
         self.model = request.model
         self.confidence = request.confidence
@@ -45,16 +45,20 @@ class ObjectDetectorServicer(grpc_bt_grpc.DetectServicer):
         p.start()
         p.join()
 
-        json_result = return_dict.get("response", None)
-        if not json_result:
+        response = return_dict.get("response", None)
+        if not response or "error" in response:
+            error_msg = response.get("error", None) if response else None
+            log.error(error_msg)
+            context.set_details(error_msg)
+            context.set_code(grpc.StatusCode.INTERNAL)
             return Output()
 
         log.debug("detect({},{})".format(self.model, self.img_path[:50]))
-        return Output(delta_time=json_result["delta_time"],
-                      boxes=json_result["boxes"],
-                      class_ids=json_result["class_ids"],
-                      confidences=json_result["confidences"],
-                      img_base64=json_result["img_base64"])
+        return Output(delta_time=response["delta_time"],
+                      boxes=response["boxes"],
+                      class_ids=response["class_ids"],
+                      confidences=response["confidences"],
+                      img_base64=response["img_base64"])
 
 
 # The gRPC serve function.

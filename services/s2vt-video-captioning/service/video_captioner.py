@@ -136,11 +136,11 @@ class VideoCaptioner:
                                     result = f.readlines()
                                 self.response["Caption"] = self._create_srt(result)
             else:
-                self.response["Caption"] = self.error if self.error else "[Fail] Unexpected error!"
+                self.response["error"] = self.error if self.error else "[Fail] Unexpected error!"
 
         except Exception as e:
             log.error(e)
-            self.response["Caption"] = "Fail"
+            self.response["error"] = str(e)
 
         # Deletes video folder.
         if os.path.exists(self.video_folder):

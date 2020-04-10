@@ -13,7 +13,6 @@ import cv2
 from PIL import Image
 import logging
 import service
-from service.serviceUtils import jpg_to_base64
 from service import wideresnet as wideresnet
 
 logging.basicConfig(
@@ -149,57 +148,61 @@ class SceneRecognitionModel:
         """ Performs scene recognition: predicts scene attributes, category, indoor/outdoor and class activation
         mappings. """
         log.debug("Input image path : {}".format(input_image_path))
-        result = {}
-
-        # load the test image
-        img = Image.open(input_image_path)
-        input_img = V(self.tf(img).unsqueeze(0))
-
-        # forward pass
-        logit = self.model.forward(input_img)
-        h_x = F.softmax(logit, 1).data.squeeze()
-        probs, idx = h_x.sort(0, True)
-        probs = probs.numpy()
-        idx = idx.numpy()
-
-        log.debug('RESULT ON ' + input_image_path)
-
-        # Output the IO prediction
-        if "io" in predict:
-            io_image = np.mean(self.labels_io[idx[:10]])  # vote for the indoor or outdoor
-            if io_image < 0.5:
-                result["io"] = "indoor"
-                log.debug('--TYPE OF ENVIRONMENT: indoor')
-            else:
-                result["io"] = "outdoor"
-                log.debug('--TYPE OF ENVIRONMENT: outdoor')
-
-        # Output the prediction of scene category
-        if "categories" in predict:
-            result["categories"] = ""
-            log.debug('--SCENE CATEGORIES:')
-            for i in range(0, 5):
-                category = ' {:.3f} -> {},'.format(probs[i], self.classes[idx[i]])
-                result["categories"] += category
-                log.debug(category)
-
-        # output the scene attributes
-        if "attributes" in predict:
-            responses_attribute = self.w_attribute.dot(self.features_blobs[1])
-            idx_a = np.argsort(responses_attribute)
-            log.debug('--SCENE ATTRIBUTES:')
-            attributes = ', '.join([self.labels_attribute[idx_a[i]] for i in range(-1, -10, -1)])
-            result["attributes"] = attributes
-            log.debug(attributes)
-
-        # generate class activation mapping
-        if "cam" in predict:
-            cams = self.return_cam(self.features_blobs[0], self.weight_softmax, [idx[0]])
-            img = cv2.imread(input_image_path)
-            height, width, _ = img.shape
-            heatmap = cv2.applyColorMap(cv2.resize(cams[0], (width, height)), cv2.COLORMAP_JET)
-            cam_result = heatmap * 0.4 + img * 0.5
-            cv2.imwrite(cam_path, cam_result)
-            log.debug('Class activation mapping is saved at {}'.format(cam_path))
-            result["cam"] = service.serviceUtils.jpg_to_base64(cam_path, open_file=True).decode("utf-8")
-        return result
+        result = dict()
+        try:
+            # load the test image
+            img = Image.open(input_image_path)
+            input_img = V(self.tf(img).unsqueeze(0))
+    
+            # forward pass
+            logit = self.model.forward(input_img)
+            h_x = F.softmax(logit, 1).data.squeeze()
+            probs, idx = h_x.sort(0, True)
+            probs = probs.numpy()
+            idx = idx.numpy()
+    
+            log.debug('RESULT ON ' + input_image_path)
+    
+            # Output the IO prediction
+            if "io" in predict:
+                io_image = np.mean(self.labels_io[idx[:10]])  # vote for the indoor or outdoor
+                if io_image < 0.5:
+                    result["io"] = "indoor"
+                    log.debug('--TYPE OF ENVIRONMENT: indoor')
+                else:
+                    result["io"] = "outdoor"
+                    log.debug('--TYPE OF ENVIRONMENT: outdoor')
+    
+            # Output the prediction of scene category
+            if "categories" in predict:
+                result["categories"] = ""
+                log.debug('--SCENE CATEGORIES:')
+                for i in range(0, 5):
+                    category = ' {:.3f} -> {},'.format(probs[i], self.classes[idx[i]])
+                    result["categories"] += category
+                    log.debug(category)
+    
+            # output the scene attributes
+            if "attributes" in predict:
+                responses_attribute = self.w_attribute.dot(self.features_blobs[1])
+                idx_a = np.argsort(responses_attribute)
+                log.debug('--SCENE ATTRIBUTES:')
+                attributes = ', '.join([self.labels_attribute[idx_a[i]] for i in range(-1, -10, -1)])
+                result["attributes"] = attributes
+                log.debug(attributes)
+    
+            # generate class activation mapping
+            if "cam" in predict:
+                cams = self.return_cam(self.features_blobs[0], self.weight_softmax, [idx[0]])
+                img = cv2.imread(input_image_path)
+                height, width, _ = img.shape
+                heatmap = cv2.applyColorMap(cv2.resize(cams[0], (width, height)), cv2.COLORMAP_JET)
+                cam_result = heatmap * 0.4 + img * 0.5
+                cv2.imwrite(cam_path, cam_result)
+                log.debug('Class activation mapping is saved at {}'.format(cam_path))
+                result["cam"] = service.serviceUtils.jpg_to_base64(cam_path, open_file=True).decode("utf-8")
+            return result
+        except Exception as e:
+            log.error(e)
+            result["error"] = str(e)
+            return result

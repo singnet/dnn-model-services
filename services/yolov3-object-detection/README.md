@@ -44,7 +44,6 @@ Create the `SNET Daemon`'s config JSON file (`snetd.config.json`).
    "DAEMON_END_POINT": "DAEMON_HOST:DAEMON_PORT",
    "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
    "BLOCKCHAIN_NETWORK_SELECTED": "BLOCKCHAIN_NETWORK",
-   "PASSTHROUGH_ENABLED": true,
    "PASSTHROUGH_ENDPOINT": "http://SERVICE_GRPC_HOST:SERVICE_GRPC_PORT",  
    "ORGANIZATION_ID": "ORGANIZATION_ID",
    "SERVICE_ID": "SERVICE_ID",
@@ -65,7 +64,6 @@ $ cat snetd.config.json
    "DAEMON_END_POINT": "0.0.0.0:7057",
    "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
    "BLOCKCHAIN_NETWORK_SELECTED": "ropsten",
-   "PASSTHROUGH_ENABLED": true,
    "PASSTHROUGH_ENDPOINT": "http://localhost:7003",
    "ORGANIZATION_ID": "snet",
    "SERVICE_ID": "yolov3-object-detection",
@@ -90,7 +88,7 @@ $ sh buildproto.sh
 ```
 Start the service and `SNET Daemon`:
 ```
-$ python3 run_object_detection_service.py
+$ python3 run_service.py
 ```
 
 ### Calling the service:
@@ -103,7 +101,7 @@ Inputs:
 Local (testing purpose):
 
 ```
-$ python3 test_object_detection_service.py 
+$ python3 test_service.py 
 Endpoint (localhost:7003): 
 Confidence (0.7): 
 Image (Link): http://www.reidsitaly.com/images/planning/sightseeing/calcio.jpg

@@ -38,7 +38,7 @@ class RecognizerServicer(grpc_bt_grpc.RecognizerServicer):
     # The method that will be exposed to the snet-cli call command.
     # request: incoming data
     # context: object that provides RPC-specific information (timeout, etc).
-    def flowers(self, request, _):
+    def flowers(self, request, context):
         manager = multiprocessing.Manager()
         return_dict = manager.dict()
         p = multiprocessing.Process(target=mp_image_recognition, args=("flowers",
@@ -50,13 +50,17 @@ class RecognizerServicer(grpc_bt_grpc.RecognizerServicer):
         p.join()
 
         response = return_dict.get("response", None)
-        if not response:
-            return Output(delta_time="Fail", top_5="Fail")
+        if not response or "error" in response:
+            error_msg = response.get("error", None) if response else None
+            log.error(error_msg)
+            context.set_details(error_msg)
+            context.set_code(grpc.StatusCode.INTERNAL)
+            return Output()
 
         log.debug("flowers({},{})=OK".format(self.model, self.img_path))
         return Output(delta_time=response["delta_time"], top_5=str(response["top_5"]))
 
-    def dogs(self, request, _):
+    def dogs(self, request, context):
         manager = multiprocessing.Manager()
         return_dict = manager.dict()
         p = multiprocessing.Process(target=mp_image_recognition, args=("dogs",
@@ -68,7 +72,11 @@ class RecognizerServicer(grpc_bt_grpc.RecognizerServicer):
         p.join()
 
         response = return_dict.get("response", None)
-        if not response:
+        if not response or "error" in response:
+            error_msg = response.get("error", "None") if response else "None"
+            log.error(error_msg)
+            context.set_details(error_msg)
+            context.set_code(grpc.StatusCode.INTERNAL)
             return Output(delta_time="Fail", top_5="Fail")
 
         log.debug("flowers({},{})=OK".format(self.model, self.img_path))

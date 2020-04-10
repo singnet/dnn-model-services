@@ -49,7 +49,7 @@ class AlphaZeroClass:
 		try:
 			self.alpha_player = self.create()
 			if not self.alpha_player:
-				return None, None
+				return None, {"error": "Error while creating player."}
 
 			# User move
 			self.chess_env.step(self.move)
@@ -75,6 +75,7 @@ class AlphaZeroClass:
 		except Exception as e:
 			self.response["status"] = "move_error"
 			self.response["board"] = pprint_board(self.chess_env.board)
+			self.response["error"] = str(e)
 			log.error("move_error: {}".format(e))
 			traceback.print_exc()
 			return self.chess_env, self.response

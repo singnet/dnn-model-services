@@ -67,7 +67,6 @@ Create the `SNET Daemon`'s config JSON file (`snetd.config.json`).
    "DAEMON_END_POINT": "DAEMON_HOST:DAEMON_PORT",
    "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
    "BLOCKCHAIN_NETWORK_SELECTED": "BLOCKCHAIN_NETWORK",
-   "PASSTHROUGH_ENABLED": true,
    "PASSTHROUGH_ENDPOINT": "http://SERVICE_GRPC_HOST:SERVICE_GRPC_PORT",  
    "ORGANIZATION_ID": "ORGANIZATION_ID",
    "SERVICE_ID": "SERVICE_ID",
@@ -88,7 +87,6 @@ $ cat snetd.config.json
    "DAEMON_END_POINT": "0.0.0.0:7056",
    "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
    "BLOCKCHAIN_NETWORK_SELECTED": "ropsten",
-   "PASSTHROUGH_ENABLED": true,
    "PASSTHROUGH_ENDPOINT": "http://localhost:7003",
    "ORGANIZATION_ID": "snet",
    "SERVICE_ID": "s2vt-video-captioning",
@@ -113,7 +111,7 @@ $ sh buildproto.sh
 ```
 Start the service and `SNET Daemon`:
 ```
-$ python2 run_video_cap_service.py
+$ python2 run_service.py
 ```
 
 ### Calling the service:
@@ -127,7 +125,7 @@ Inputs:
 Local (testing purpose):
 
 ```
-$ python2 test_call_video_cap_service.py 
+$ python2 test_service.py 
 Endpoint (localhost:7003): 
 Method (video_cap): 
 Url: http://crcv.ucf.edu/THUMOS14/UCF101/UCF101/v_PlayingGuitar_g05_c01.avi

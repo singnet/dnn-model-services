@@ -39,7 +39,7 @@ class VideoCaptioningServicer(grpc_bt_grpc.VideoCaptioningServicer):
     # The method that will be exposed to the snet-cli call command.
     # request: incoming data
     # context: object that provides RPC-specific information (timeout, etc).
-    def video_cap(self, request, _):
+    def video_cap(self, request, context):
         self.url = request.url
         self.start_time_sec = request.start_time_sec
         self.stop_time_sec = request.stop_time_sec
@@ -54,8 +54,12 @@ class VideoCaptioningServicer(grpc_bt_grpc.VideoCaptioningServicer):
         worker.join()
 
         response = return_dict.get("response", None)
-        if not response:
-            return Output(value="Fail")
+        if not response or "error" in response:
+            error_msg = response.get("error", None) if response else None
+            log.error(error_msg)
+            context.set_details(error_msg)
+            context.set_code(grpc.StatusCode.INTERNAL)
+            return Output()
         
         log.debug("video_cap({},{},{})={}".format(self.url,
                                                   self.start_time_sec,

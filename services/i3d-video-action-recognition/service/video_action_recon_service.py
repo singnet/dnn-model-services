@@ -37,7 +37,7 @@ class VideoActionRecognitionServicer(grpc_bt_grpc.VideoActionRecognitionServicer
     # The method that will be exposed to the snet-cli call command.
     # request: incoming data
     # context: object that provides RPC-specific information (timeout, etc).
-    def video_action_recon(self, request, _):
+    def video_action_recon(self, request, context):
         self.uid = generate_uid()
         self.model = request.model
         self.url = request.url
@@ -53,8 +53,12 @@ class VideoActionRecognitionServicer(grpc_bt_grpc.VideoActionRecognitionServicer
         p.join()
 
         response = return_dict.get("response", None)
-        if not response:
-            return Output(value="Fail")
+        if not response or "error" in response:
+            error_msg = response.get("error", None) if response else None
+            log.error(error_msg)
+            context.set_details(error_msg)
+            context.set_code(grpc.StatusCode.INTERNAL)
+            return Output()
 
         log.debug("video_action_recon({},{})=OK".format(self.model, self.url))
         return Output(value=response["Top5Actions"])

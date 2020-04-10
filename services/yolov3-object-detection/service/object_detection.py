@@ -153,6 +153,7 @@ class ObjectDetector:
                     "class_ids": [],
                     "confidences": [],
                     "img_base64": b"Fail",
+                    "error": "Fail"
                 }
 
         except Exception as e:
@@ -166,6 +167,7 @@ class ObjectDetector:
                 "class_ids": [],
                 "confidences": [],
                 "img_base64": b"Fail",
+                "error": str(e)
             }
 
 
