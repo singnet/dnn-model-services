@@ -39,7 +39,6 @@ Create the `SNET Daemon`'s config JSON file (`snetd.config.json`).
    "DAEMON_END_POINT": "DAEMON_HOST:DAEMON_PORT",
    "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
    "BLOCKCHAIN_NETWORK_SELECTED": "BLOCKCHAIN_NETWORK",
-   "PASSTHROUGH_ENABLED": true,
    "PASSTHROUGH_ENDPOINT": "http://SERVICE_GRPC_HOST:SERVICE_GRPC_PORT",  
    "ORGANIZATION_ID": "ORGANIZATION_ID",
    "SERVICE_ID": "SERVICE_ID",
@@ -60,7 +59,6 @@ $ cat snetd.config.json
    "DAEMON_END_POINT": "0.0.0.0:7065",
    "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
    "BLOCKCHAIN_NETWORK_SELECTED": "ropsten",
-   "PASSTHROUGH_ENABLED": true,
    "PASSTHROUGH_ENDPOINT": "http://localhost:7003",
    "ORGANIZATION_ID": "snet",
    "SERVICE_ID": "real-time-voice-cloning",
@@ -85,7 +83,7 @@ $ sh buildproto.sh
 ```
 Start the service and `SNET Daemon`:
 ```
-$ python3 run_voice_cloning_service.py
+$ python3 run_service.py
 ```
 
 ### Calling the service:
@@ -97,7 +95,7 @@ Inputs:
 Local (testing purpose):
 
 ```
-$ python3 test_voice_cloning_service.py 
+$ python3 test_service.py 
 Endpoint (localhost:7003): 
 Audio (link): https://raw.githubusercontent.com/singnet/dnn-model-services/master/docs/assets/users_guide/ben_websumit19.mp3
 Sentence (~20 words): I am an artificial intelligence researcher and I would like to make the world a better place!

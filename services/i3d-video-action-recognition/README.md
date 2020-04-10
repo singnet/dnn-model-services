@@ -36,7 +36,6 @@ Create the `SNET Daemon`'s config JSON file (`snetd.config.json`).
    "DAEMON_END_POINT": "DAEMON_HOST:DAEMON_PORT",
    "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
    "BLOCKCHAIN_NETWORK_SELECTED": "BLOCKCHAIN_NETWORK",
-   "PASSTHROUGH_ENABLED": true,
    "PASSTHROUGH_ENDPOINT": "http://SERVICE_GRPC_HOST:SERVICE_GRPC_PORT",  
    "ORGANIZATION_ID": "ORGANIZATION_ID",
    "SERVICE_ID": "SERVICE_ID",
@@ -57,7 +56,6 @@ $ cat snetd.config.json
    "DAEMON_END_POINT": "0.0.0.0:7055",
    "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
    "BLOCKCHAIN_NETWORK_SELECTED": "ropsten",
-   "PASSTHROUGH_ENABLED": true,
    "PASSTHROUGH_ENDPOINT": "http://localhost:7003",
    "ORGANIZATION_ID": "snet",
    "SERVICE_ID": "i3d-video-action-recognition",
@@ -82,7 +80,7 @@ $ sh buildproto.sh
 ```
 Start the service and `SNET Daemon`:
 ```
-$ python3 run_video_action_recon_service.py
+$ python3 run_service.py
 ```
 
 ### Calling the service:
@@ -94,14 +92,14 @@ Inputs:
 Local (testing purpose):
 
 ```
-$ python3 test_call_video_action_recon_service.py
+$ python3 test_service.py
 Endpoint (localhost:7003):
 Method (video_action_recon): 
 Model: 400
 Url: http://crcv.ucf.edu/THUMOS14/UCF101/UCF101/v_MoppingFloor_g25_c01.avi
 {'Action': 'mopping floor\t56.66%\ncleaning floor\t31.83%\nsweeping floor\t11.39%\nsanding floor\t0.02%\nshoveling snow\t0.01%\n'}
 
-$ python3 test_call_video_action_recon_service.py 
+$ python3 test_service.py 
 Endpoint (localhost:7003): <ENTER>
 Method (video_action_recon): <ENTER>
 Model: 600

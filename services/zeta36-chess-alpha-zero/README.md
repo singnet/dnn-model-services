@@ -37,7 +37,6 @@ Create the `SNET Daemon`'s config JSON file (`snetd.config.json`).
    "DAEMON_END_POINT": "DAEMON_HOST:DAEMON_PORT",
    "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
    "BLOCKCHAIN_NETWORK_SELECTED": "BLOCKCHAIN_NETWORK",
-   "PASSTHROUGH_ENABLED": true,
    "PASSTHROUGH_ENDPOINT": "http://SERVICE_GRPC_HOST:SERVICE_GRPC_PORT",  
    "ORGANIZATION_ID": "ORGANIZATION_ID",
    "SERVICE_ID": "SERVICE_ID",
@@ -58,7 +57,6 @@ $ cat snetd.config.json
    "DAEMON_END_POINT": "0.0.0.0:7058",
    "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
    "BLOCKCHAIN_NETWORK_SELECTED": "ropsten",
-   "PASSTHROUGH_ENABLED": true,
    "PASSTHROUGH_ENDPOINT": "http://localhost:7003",
    "ORGANIZATION_ID": "snet",
    "SERVICE_ID": "zeta36-chess-alpha-zero",
@@ -90,7 +88,7 @@ $ git clone https://github.com/Zeta36/chess-alpha-zero.git
 
 Start the service and `SNET Daemon`:
 ```
-$ python3.6 run_alpha_zero_service.py
+$ python3.6 run_service.py
 ```
 
 ### Calling the service:
@@ -137,7 +135,7 @@ Inputs:
 Local (testing purpose):
 
 ```
-$ python3.6 test_alpha_zero_service.py 
+$ python3.6 test_service.py 
 Endpoint (localhost:7003): 
 Method (play): 
 UID (empty): human_player

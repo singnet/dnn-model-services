@@ -1,7 +1,6 @@
 {
   "daemon_end_point": "0.0.0.0:7064",
   "ipfs_end_point": "http://ipfs.singularitynet.io:80",
-  "passthrough_enabled": true,
   "passthrough_endpoint": "http://localhost:7003",
   "blockchain_network_selected": "main",
   "organization_id": "snet",

@@ -158,11 +158,11 @@ class VideoActionRecognizer:
                         log.debug("{}\t{:.2f}%".format(labels[i], ps[i] * 100))
                         self.response["Top5Actions"] += "[{:05.2f}%] {}\n".format(ps[i] * 100, labels[i])
             else:
-                self.response["Top5Actions"] = self.error if self.error else "[Fail] Unexpected error!"
+                self.response["error"] = self.error if self.error else "[Fail] Unexpected error!"
 
         except Exception as e:
             log.error(e)
-            self.response["Top5Actions"] = "Fail"
+            self.response = {"Top5Actions": "Fail", "error": str(e)}
 
         # Deletes video folder.
         if os.path.exists(self.video_folder):

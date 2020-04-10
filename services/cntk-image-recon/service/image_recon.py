@@ -87,7 +87,7 @@ def image_recognition(method, model, map_names, img_path, image_dims):
     except Exception as e:
         log.error(e)
         traceback.print_exc()
-        return {"delta_time": "Fail", "top_5": "Fail"}
+        return {"delta_time": "Fail", "top_5": "Fail", "error": str(e)}
 
 
 def generate_uid():

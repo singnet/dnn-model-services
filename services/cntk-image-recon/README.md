@@ -45,7 +45,6 @@ Create the `SNET Daemon`'s config JSON file (`snetd.config.json`).
    "DAEMON_END_POINT": "DAEMON_HOST:DAEMON_PORT",
    "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
    "BLOCKCHAIN_NETWORK_SELECTED": "BLOCKCHAIN_NETWORK",
-   "PASSTHROUGH_ENABLED": true,
    "PASSTHROUGH_ENDPOINT": "http://SERVICE_GRPC_HOST:SERVICE_GRPC_PORT",  
    "ORGANIZATION_ID": "ORGANIZATION_ID",
    "SERVICE_ID": "SERVICE_ID",
@@ -66,7 +65,6 @@ $ cat snetd.config.json
    "DAEMON_END_POINT": "0.0.0.0:7054",
    "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
    "BLOCKCHAIN_NETWORK_SELECTED": "ropsten",
-   "PASSTHROUGH_ENABLED": true,
    "PASSTHROUGH_ENDPOINT": "http://localhost:7003",
    "ORGANIZATION_ID": "snet",
    "SERVICE_ID": "cntk-image-recon",
@@ -91,7 +89,7 @@ $ sh buildproto.sh
 ```
 Start the service and `SNET Daemon`:
 ```
-$ python3 run_image_recon_service.py
+$ python3 run_service.py
 ```
 
 ### Calling the service:
@@ -104,7 +102,7 @@ Inputs:
 Local (testing purpose):
 
 ```
-$ python3 test_image_recon_service.py 
+$ python3 test_service.py 
 Endpoint (localhost:7003): 
 Method (flowers|dogs): flowers
 Model (ResNet152): <ENTER>
@@ -112,7 +110,7 @@ Image (Link): https://www.fiftyflowers.com/site_files/FiftyFlowers/Image/Product
 1.8751
 {1: '98.93%: sunflower', 2: '00.64%: black-eyed susan', 3: '00.16%: barbeton daisy', 4: '00.14%: oxeye daisy', 5: '00.03%: daffodil'}
 
-$ python3 test_image_recon_service.py 
+$ python3 test_service.py 
 Endpoint (localhost:7003): 
 Method (flowers|dogs): dogs
 Model (ResNet152): <ENTER>

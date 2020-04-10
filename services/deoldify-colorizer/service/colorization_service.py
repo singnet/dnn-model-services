@@ -36,7 +36,8 @@ class ColorizationServicer(grpc_bt_grpc.ColorizationServicer):
     # The method that will be exposed to the snet-cli call command.
     # request: incoming data
     # context: object that provides RPC-specific information (timeout, etc).
-    def colorize(self, request, _):
+    @staticmethod
+    def colorize(request, context):
         try:
             manager = Manager()
             return_dict = manager.dict()
@@ -47,7 +48,11 @@ class ColorizationServicer(grpc_bt_grpc.ColorizationServicer):
             p.join()
 
             response = return_dict.get("response", None)
-            if not response:
+            if not response or "error" in response:
+                error_msg = response.get("error", None) if response else None
+                log.error(error_msg)
+                context.set_details(error_msg)
+                context.set_code(grpc.StatusCode.INTERNAL)
                 return Output()
 
             log.debug("colorize({})={}".format(request.img_input[:50], response["img_colorized"][:50]))

@@ -36,7 +36,6 @@ Create `SNET Daemon`'s config JSON file (`snetd.config.json`).
    "DAEMON_END_POINT": "DAEMON_HOST:DAEMON_PORT",
    "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
    "BLOCKCHAIN_NETWORK_SELECTED": "BLOCKCHAIN_NETWORK",
-   "PASSTHROUGH_ENABLED": true,
    "PASSTHROUGH_ENDPOINT": "SERVICE_GRPC_HOST:SERVICE_GRPC_PORT",  
    "ORGANIZATION_NAME": "ORGANIZATION_NAME",
    "SERVICE_NAME": "SERVICE_NAME",
@@ -65,7 +64,6 @@ $ cat snetd.config.json
    "DAEMON_END_POINT": "http://54.203.198.53:7019",
    "IPFS_END_POINT": "http://ipfs.singularitynet.io:80",
    "BLOCKCHAIN_NETWORK_SELECTED": "ropsten",
-   "PASSTHROUGH_ENABLED": true,
    "PASSTHROUGH_ENDPOINT": "http://localhost:7018",
    "ORGANIZATION_NAME": "snet",
    "SERVICE_NAME": "places365-scene-recognition",
@@ -87,7 +85,7 @@ $ sh buildproto.sh
 ```
 Start the service and its respective instance of `SNET Daemon` at the ports specified above:
 ```
-$ python3 run_object_detection_service.py
+$ python3 run_service.py
 ```
 
 ### Calling the service:
@@ -105,7 +103,7 @@ $ python3 run_object_detection_service.py
 
 Run the test script provided. You can input the gRPC request fields manually or use the flag `auto` to automatically fill them in using default values.
 ```
-$ python3 test_scene_recognition_service.py auto
+$ python3 test_service.py auto
 ...
 TEST RESULT: 
 io: outdoor

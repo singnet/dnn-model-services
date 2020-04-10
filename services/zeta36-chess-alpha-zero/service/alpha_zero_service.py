@@ -39,12 +39,12 @@ class AlphaZeroServicer(grpc_bt_grpc.AlphaZeroServicer):
         self.move = ""
         self.cmd = ""
         log.debug("AlphaZeroServicer created")
-    
+
     # The method that will be exposed to the snet-cli call command.
     # request: incoming data
     # context: object that provides RPC-specific information (timeout, etc).
-    def play(self, request, _):
-        
+    def play(self, request, context):
+
         try:
             # In our case, request is a Input() object (from .proto file)
             self.uid = request.uid
@@ -71,7 +71,7 @@ class AlphaZeroServicer(grpc_bt_grpc.AlphaZeroServicer):
             elif self.cmd == "restart":
                 chess_env = ChessEnv().reset()
                 log.debug("CMD [restart]: {}".format(self.uid))
-            
+
             self.move = request.move
 
             manager = multiprocessing.Manager()
@@ -85,9 +85,13 @@ class AlphaZeroServicer(grpc_bt_grpc.AlphaZeroServicer):
             p.join()
 
             chess_env, response = return_dict.get("response", (None, None))
-            if not response:
-                return Output(status="Fail")
-            
+            if not response or "error" in response:
+                error_msg = response.get("error", None) if response else None
+                log.error(error_msg)
+                context.set_details(error_msg)
+                context.set_code(grpc.StatusCode.INTERNAL)
+                return Output()
+
             # Game over
             if chess_env is None:
                 del CHESS_ENV_DICT[self.uid]
@@ -98,7 +102,7 @@ class AlphaZeroServicer(grpc_bt_grpc.AlphaZeroServicer):
             board = ""
             for idx, line in enumerate(response["board"]):
                 board += "{}\n".format(line)
-            
+
             log.debug("play({},{}):\n{}\n{}\n{}".format(
                 self.move,
                 self.cmd,
@@ -106,7 +110,7 @@ class AlphaZeroServicer(grpc_bt_grpc.AlphaZeroServicer):
                 board,
                 response["status"]))
             return Output(uid=self.uid, board=board, status=response["status"])
-        
+
         except Exception as e:
             traceback.print_exc()
             log.error(e)

@@ -21,7 +21,7 @@ log = logging.getLogger("voice_cloning")
 def clone(audio=None, audio_url=None, sentence=""):
     try:
         if not 10 <= len(sentence.split(" ")) <= 30:
-            return {"audio": b"Sentence is invalid! (length must be 10 to 30 words)"}
+            return {"error": "Sentence is invalid! (length must be 10 to 30 words)"}
         audio_data = audio
         if audio_url:
             # Link
@@ -33,7 +33,7 @@ def clone(audio=None, audio_url=None, sentence=""):
                 size = int(size) / float(1 << 20)
                 log.info("File size: {:.2f} Mb".format(size))
                 if size > 10:
-                    return {"audio": b"Input audio file is too large! (max 10Mb)"}
+                    return {"error": "Input audio file is too large! (max 10Mb)"}
                 r = requests.get(audio_url, headers=header, allow_redirects=True)
                 audio_data = r.content
             # Base64
@@ -85,7 +85,7 @@ def clone(audio=None, audio_url=None, sentence=""):
     except Exception as e:
         log.error(e)
         traceback.print_exc()
-        return {"audio": b"Fail"}
+        return {"error": "Fail"}
 
 
 def generate_uid():

@@ -90,7 +90,7 @@ class SceneRecognitionServicer(grpc_bt_grpc.SceneRecognitionServicer):
 
         return image_path, predict, file_index_str
 
-    def recognize_scene(self, request, _):
+    def recognize_scene(self, request, context):
         """Wraps the scene recognition model to make sure inputs and outputs match the service requirements."""
 
         # Store the names of the images to delete them afterwards
@@ -104,13 +104,17 @@ class SceneRecognitionServicer(grpc_bt_grpc.SceneRecognitionServicer):
         try:
             image_path, predict, file_index_str = self.treat_inputs(request, arguments, created_images)
         except HTTPError as e:
-            error_message = "Error downloading the input image \n" + e.read()
+            error_message = "Error downloading the input image \n" + str(e)
             log.error(error_message)
             self.result.data = error_message
+            context.set_details(error_message)
+            context.set_code(grpc.StatusCode.INTERNAL)
             return self.result
         except Exception as e:
             log.error(e)
             self.result.data = e
+            context.set_details(str(e))
+            context.set_code(grpc.StatusCode.INTERNAL)
             return self.result
 
         # Get cam (color activation mappings) file path
@@ -130,7 +134,11 @@ class SceneRecognitionServicer(grpc_bt_grpc.SceneRecognitionServicer):
         p.join()
 
         response = return_dict.get("response", None)
-        if not response:
+        if not response or "error" in response:
+            error_msg = response.get("error", None) if response else None
+            log.error(error_msg)
+            context.set_details(error_msg)
+            context.set_code(grpc.StatusCode.INTERNAL)
             return SceneRecognitionResult()
 
         # Prepare gRPC output message

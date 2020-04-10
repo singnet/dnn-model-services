@@ -31,7 +31,7 @@ class SoundSpleeterServicer(grpc_bt_grpc.SoundSpleeterServicer):
         log.debug("SoundSpleeterServicer created")
 
     @staticmethod
-    def spleeter(request, _):
+    def spleeter(request, context):
         manager = multiprocessing.Manager()
         return_dict = manager.dict()
         worker = multiprocessing.Process(
@@ -41,6 +41,13 @@ class SoundSpleeterServicer(grpc_bt_grpc.SoundSpleeterServicer):
         worker.join()
 
         response = return_dict.get("response", None)
+        if not response or "error" in response:
+            error_msg = response.get("error", None) if response else None
+            log.error(error_msg)
+            context.set_details(error_msg)
+            context.set_code(grpc.StatusCode.INTERNAL)
+            return Output()
+
         log.debug("clone({},{})={},{}".format(request.audio_url[:10],
                                               len(request.audio),
                                               len(response["vocals"]),
