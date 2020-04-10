@@ -259,7 +259,7 @@ jobs:
         - ssh-deployment/test:
               ssh-host: ${SSH_HOST_DEOLDIFY_COLORIZER}
               ssh-user: ${SSH_USER_DEOLDIFY_COLORIZER}
-              test-command: "sleep 10;python3 test_colorize_service.py auto"
+              test-command: "sleep 10;python3 test_service.py auto"
               docker-container: "DEOLDIFY_COLORIZER"
         - ssh-deployment/test:
               ssh-host: ${SSH_HOST_I3D_VIDEO_ACTION_RECON}
