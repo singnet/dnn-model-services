@@ -93,7 +93,7 @@ Local (testing purpose):
 ```
 $ python3 test_service.py
 Endpoint (localhost:7003):
-Audio (URL): http://54.203.198.53:7000/Resources/audio_example.mp3
+Audio (URL): https://bh.singularitynet.io:7000/Resources/audio_example.mp3
 {'vocals': '...', 'accomp': '...'}
 ```
 
@@ -102,7 +102,7 @@ Through SingularityNET (follow this [link](https://dev.singularitynet.io/tutoria
 Assuming that you have an open channel to this service:
 
 ```
-$ snet client call snet sound-spleeter default_group spleeter '{"audio_url": "http://54.203.198.53:7000/Resources/audio_example.mp3"}'
+$ snet client call snet sound-spleeter default_group spleeter '{"audio_url": "https://bh.singularitynet.io:7000/Resources/audio_example.mp3"}'
 ...
 Read call params from cmdline...
 

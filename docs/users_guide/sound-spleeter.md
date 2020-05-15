@@ -33,7 +33,7 @@ You can also call the service from SingularityNET CLI (`snet`).
 Assuming that you have an open channel to this service:
 
 ```
-$ snet client call --save-field vocals vocals.wav snet sound-spleeter default_group spleeter '{"audio_url": "http://54.203.198.53:7000/Resources/audio_example.mp3"}'
+$ snet client call --save-field vocals vocals.wav snet sound-spleeter default_group spleeter '{"audio_url": "https://bh.singularitynet:7000/Resources/audio_example.mp3"}'
 Price for this call will be 0.00000001 AGI (use -y to remove this warning). Proceed? (y/n): y
 ```
 
@@ -43,9 +43,9 @@ The WAV audio file will be saved in `vocals.wav`!
 
 Inputs:
 
-- `audio`: [Slow Motion Dream by Steven M Bryant](http://54.203.198.53:7000/Resources/audio_example.mp3)
+- `audio`: [Slow Motion Dream by Steven M Bryant](https://bh.singularitynet.io:7000/Resources/audio_example.mp3)
 
 Response:
 
-- `audio bytes array`: [Vocals](http://54.203.198.53:7000/Resources/vocals.wav)
-- `audio bytes array`: [Accompaniment](http://54.203.198.53:7000/Resources/accompaniment.wav)
+- `audio bytes array`: [Vocals](https://bh.singularitynet.io:7000/Resources/vocals.wav)
+- `audio bytes array`: [Accompaniment](https://bh.singularitynet.io:7000/Resources/accompaniment.wav)

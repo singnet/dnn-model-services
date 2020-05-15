@@ -7,7 +7,7 @@ import service.service_spec.sound_spleeter_pb2 as grpc_bt_pb2
 
 from service import registry
 
-TEST_URL = "http://54.203.198.53:7000/Resources/audio_example.mp3"
+TEST_URL = "https://bh.singularitynet.io:7000/Resources/audio_example.mp3"
 
 if __name__ == "__main__":
 
