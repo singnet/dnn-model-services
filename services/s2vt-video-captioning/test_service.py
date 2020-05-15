@@ -7,7 +7,7 @@ import service.service_spec.video_cap_pb2 as grpc_bt_pb2
 
 from service import registry
 
-TEST_URL = "http://54.203.198.53:7000/Resources/v_PlayingGuitar_g03_c01.avi"
+TEST_URL = "https://bh.singularitynet.io:7000/Resources/v_PlayingGuitar_g03_c01.avi"
 
 if __name__ == "__main__":
 

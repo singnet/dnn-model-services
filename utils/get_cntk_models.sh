@@ -18,7 +18,7 @@ if [ -f "${FILE}" ]
 then
 	echo "${FILE} found, skipping.."
 else
-	wget --no-check-certificate http://54.203.198.53:7000/PreTrainedDNNModels/Image/cntk-image-recon/${DOGS_RESNET152}
+	wget --no-check-certificate https://bh.singularitynet.io:7000/PreTrainedDNNModels/Image/cntk-image-recon/${DOGS_RESNET152}
 fi
 
 FILE="${FLOWERS_RESNET152}"
@@ -26,5 +26,5 @@ if [ -f "${FILE}" ]
 then
 	echo "${FILE} found, skipping.."
 else
-	wget --no-check-certificate http://54.203.198.53:7000/PreTrainedDNNModels/Image/cntk-image-recon/${FLOWERS_RESNET152}
+	wget --no-check-certificate https://bh.singularitynet.io:7000/PreTrainedDNNModels/Image/cntk-image-recon/${FLOWERS_RESNET152}
 fi
