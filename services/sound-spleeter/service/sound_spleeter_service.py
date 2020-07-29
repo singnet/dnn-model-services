@@ -73,7 +73,7 @@ def generate_uid():
 #
 # Add all your classes to the server here.
 # (from generated .py files by protobuf compiler)
-def serve(max_workers=10, port=7777):
+def serve(max_workers=1, port=7777):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=max_workers), options=[
         ('grpc.max_send_message_length', 25 * 1024 * 1024),
         ('grpc.max_receive_message_length', 25 * 1024 * 1024)])
