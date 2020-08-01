@@ -15,4 +15,3 @@ sounddevice
 Unidecode
 inflect
 multiprocess
-numba
