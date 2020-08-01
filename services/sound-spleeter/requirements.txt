@@ -1,5 +1,5 @@
-grpcio
-grpcio-tools
+grpcio==1.27.2
+grpcio-tools==1.27.2
 requests==2.20.0
 spleeter-gpu==1.5.1
 pydub==0.23.1

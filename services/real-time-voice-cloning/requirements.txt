@@ -1,5 +1,5 @@
-grpcio>=1.14.2
-grpcio-tools>=1.14.1
+grpcio==1.27.2
+grpcio-tools==1.27.2
 requests==2.20.0
 tensorflow-gpu==1.15.2
 umap-learn
