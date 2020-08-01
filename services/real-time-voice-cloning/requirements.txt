@@ -5,7 +5,8 @@ tensorflow-gpu==1.15.2
 umap-learn
 visdom
 webrtcvad
-librosa>=0.5.1
+librosa==0.7.2
+numba==0.48.0
 matplotlib>=2.0.2
 numpy>=1.14.0
 scipy>=1.0.0
