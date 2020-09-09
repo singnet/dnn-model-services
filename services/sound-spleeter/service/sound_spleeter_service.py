@@ -1,7 +1,5 @@
 import sys
 import logging
-import datetime
-import hashlib
 
 import multiprocessing
 
@@ -20,6 +18,7 @@ log = logging.getLogger("sound_spleeter_service")
 
 def mp_spleeter(audio_url, audio, return_dict):
     import service.sound_spleeter as ss
+    log.info("mp_spleeter:", audio_url)
     return_dict["response"] = ss.spleeter(audio_url, audio)
 
 
@@ -55,16 +54,6 @@ class SoundSpleeterServicer(grpc_bt_grpc.SoundSpleeterServicer):
         return Output(vocals=response["vocals"], accomp=response["accomp"])
 
 
-def generate_uid():
-    # Setting a hash accordingly to the timestamp
-    seed = "{}".format(datetime.datetime.now())
-    m = hashlib.sha256()
-    m.update(seed.encode("utf-8"))
-    m = m.hexdigest()
-    # Returns only the first and the last 10 hex
-    return m[:10] + m[-10:]
-
-
 # The gRPC serve function.
 #
 # Params:
@@ -73,7 +62,7 @@ def generate_uid():
 #
 # Add all your classes to the server here.
 # (from generated .py files by protobuf compiler)
-def serve(max_workers=1, port=7777):
+def serve(max_workers=4, port=7777):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=max_workers), options=[
         ('grpc.max_send_message_length', 25 * 1024 * 1024),
         ('grpc.max_receive_message_length', 25 * 1024 * 1024)])
