@@ -12,6 +12,13 @@ from service.service_spec.sound_spleeter_pb2 import Output
 
 import service.sound_spleeter as ss
 
+# TensorFlow.
+import tensorflow as tf
+# Using session to consume less GPU memory
+tf_session_config = tf.ConfigProto()
+tf_session_config.gpu_options.allow_growth = True
+sess = tf.Session(config=tf_session_config)
+
 from spleeter.separator import Separator
 separator = Separator("spleeter:2stems")
 separator._get_predictor()  # Hacky!
