@@ -1,8 +1,6 @@
 import sys
 import logging
 
-import multiprocessing
-
 import grpc
 import concurrent.futures as futures
 
@@ -12,14 +10,15 @@ import service.common
 import service.service_spec.sound_spleeter_pb2_grpc as grpc_bt_grpc
 from service.service_spec.sound_spleeter_pb2 import Output
 
+import service.sound_spleeter as ss
+
+from spleeter.separator import Separator
+separator = Separator("spleeter:2stems")
+separator._get_predictor()  # Hacky!
+
+
 logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s - %(message)s")
 log = logging.getLogger("sound_spleeter_service")
-
-
-def mp_spleeter(audio_url, audio, return_dict):
-    import service.sound_spleeter as ss
-    log.info("mp_spleeter:", audio_url)
-    return_dict["response"] = ss.spleeter(audio_url, audio)
 
 
 # Create a class to be added to the gRPC server
@@ -31,17 +30,9 @@ class SoundSpleeterServicer(grpc_bt_grpc.SoundSpleeterServicer):
 
     @staticmethod
     def spleeter(request, context):
-        manager = multiprocessing.Manager()
-        return_dict = manager.dict()
-        worker = multiprocessing.Process(
-            target=mp_spleeter,
-            args=(request.audio_url, request.audio, return_dict))
-        worker.start()
-        worker.join()
-
-        response = return_dict.get("response", None)
+        response = ss.spleeter(separator, request.audio_url, request.audio)
         if not response or "error" in response:
-            error_msg = response.get("error", None) if response else None
+            error_msg = response.get("error", "") if response else ""
             log.error(error_msg)
             context.set_details(error_msg)
             context.set_code(grpc.StatusCode.INTERNAL)
