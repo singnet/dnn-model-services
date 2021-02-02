@@ -7,7 +7,6 @@ import requests
 import traceback
 
 from pydub import AudioSegment
-from spleeter.separator import Separator
 
 import logging
 
@@ -15,7 +14,7 @@ logging.basicConfig(level=10, format="%(asctime)s - [%(levelname)8s] - %(name)s 
 log = logging.getLogger("sound_spleeter")
 
 
-def spleeter(audio_url=None, audio=None):
+def spleeter(separator, audio_url=None, audio=None):
     try:
         audio_data = audio
         if audio_url:
@@ -46,7 +45,6 @@ def spleeter(audio_url=None, audio=None):
 
         log.info("Preparing Spleeter...")
         # Using embedded configuration.
-        separator = Separator("spleeter:2stems")
         separator.separate_to_file(tmp_dir + audio_path, tmp_dir)
 
         if os.path.exists(tmp_dir + audio_path):
