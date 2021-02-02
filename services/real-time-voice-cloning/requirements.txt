@@ -1,7 +1,7 @@
 grpcio==1.27.2
 grpcio-tools==1.27.2
 requests==2.20.0
-tensorflow-gpu==1.15.4
+tensorflow-gpu==2.4.0
 umap-learn
 visdom
 webrtcvad
