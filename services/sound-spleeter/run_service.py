@@ -82,7 +82,7 @@ def start_service(cwd, service_module, run_daemon, run_ssl):
                 snetd_configs["metering_enabled"] = True
                 snetd_configs["metering_end_point"] = "https://{}-marketplace.singularitynet.io".format(_network)
                 snetd_configs["pvt_key_for_metering"] = pk_metering
-            snetd_configs["max_message_size_in_mb"] = os.environ.get("MAX_MESSAGE_SIZE", 25)
+            snetd_configs["max_message_size_in_mb"] = os.environ.get("MAX_MESSAGE_SIZE", 128)
         with open(conf, "w") as f:
             json.dump(snetd_configs, f, sort_keys=True, indent=4)
     
