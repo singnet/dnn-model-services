@@ -13,7 +13,7 @@ jobs:
           ssh-host: ${SSH_HOST_CNTK_IMAGE_RECON}
           ssh-user: ${SSH_USER_CNTK_IMAGE_RECON}
           service-dir: "services/cntk-image-recon"
-          mainnet-port: "7004"
+          mainnet-port: "7015"
           testnet-port: "7054"
           run-command: "source '/cntk/activate-cntk';python3 run_service.py --ssl"
           docker-test-files: "Dockerfile, requirements.txt"
@@ -35,7 +35,7 @@ jobs:
           ssh-host: ${SSH_HOST_DEEPFAKES_FACESWAP}
           ssh-user: ${SSH_USER_DEEPFAKES_FACESWAP}
           service-dir: "services/deepfakes-faceswap"
-          mainnet-port: "7060"
+          mainnet-port: "7021"
           testnet-port: "7061-7062"
           run-command: "python3 run_service.py --ssl"
           docker-test-files: "Dockerfile, requirements.txt"
@@ -57,7 +57,7 @@ jobs:
           ssh-host: ${SSH_HOST_DEOLDIFY_COLORIZER}
           ssh-user: ${SSH_USER_DEOLDIFY_COLORIZER}
           service-dir: "services/deoldify-colorizer"
-          mainnet-port: "7084"
+          mainnet-port: "7037"
           testnet-port: "7085"
           run-command: "python3 run_service.py --ssl"
           docker-test-files: "Dockerfile, requirements.txt"
@@ -79,7 +79,7 @@ jobs:
           ssh-host: ${SSH_HOST_I3D_VIDEO_ACTION_RECON}
           ssh-user: ${SSH_USER_I3D_VIDEO_ACTION_RECON}
           service-dir: "services/i3d-video-action-recognition"
-          mainnet-port: "7005"
+          mainnet-port: "7023"
           testnet-port: "7055"
           run-command: "python3 run_service.py --ssl"
           docker-test-files: "Dockerfile, requirements.txt"
@@ -101,7 +101,7 @@ jobs:
           ssh-host: ${SSH_HOST_PLACES365_SCENE_RECOGNITION}
           ssh-user: ${SSH_USER_PLACES365_SCENE_RECOGNITION}
           service-dir: "services/places365-scene-recognition"
-          mainnet-port: "7019"
+          mainnet-port: "7027"
           testnet-port: "7079"
           run-command: "python3 run_service.py --ssl"
           docker-test-files: "Dockerfile, requirements.txt"
@@ -123,7 +123,7 @@ jobs:
           ssh-host: ${SSH_HOST_PNEUMONIA_DIAGNOSIS}
           ssh-user: ${SSH_USER_PNEUMONIA_DIAGNOSIS}
           service-dir: "services/pneumonia-diagnosis"
-          mainnet-port: "7072"
+          mainnet-port: "7028"
           testnet-port: "7062"
           run-command: "python3 run_service.py --ssl"
           docker-test-files: "Dockerfile, requirements.txt"
@@ -145,7 +145,7 @@ jobs:
           ssh-host: ${SSH_HOST_VOICE_CLONING}
           ssh-user: ${SSH_USER_VOICE_CLONING}
           service-dir: "services/real-time-voice-cloning"
-          mainnet-port: "7064"
+          mainnet-port: "7036"
           testnet-port: "7065"
           run-command: "python3 run_service.py --ssl"
           docker-test-files: "Dockerfile, requirements.txt"
@@ -167,7 +167,7 @@ jobs:
           ssh-host: ${SSH_HOST_S2VT_VIDEO_CAPTIONING}
           ssh-user: ${SSH_USER_S2VT_VIDEO_CAPTIONING}
           service-dir: "services/s2vt-video-captioning"
-          mainnet-port: "7006"
+          mainnet-port: "7029"
           testnet-port: "7056"
           run-command: "python run_service.py --ssl"
           docker-test-files: "Dockerfile, requirements.txt"
@@ -189,7 +189,7 @@ jobs:
           ssh-host: ${SSH_HOST_SOUND_SPLEETER}
           ssh-user: ${SSH_USER_SOUND_SPLEETER}
           service-dir: "services/sound-spleeter"
-          mainnet-port: "7066"
+          mainnet-port: "7068"
           testnet-port: "7067"
           run-command: "python3 run_service.py --ssl"
           docker-test-files: "Dockerfile, requirements.txt"
@@ -211,7 +211,7 @@ jobs:
           ssh-host: ${SSH_HOST_YOLOv3_OBJECT_DETECTION}
           ssh-user: ${SSH_USER_YOLOv3_OBJECT_DETECTION}
           service-dir: "services/yolov3-object-detection"
-          mainnet-port: "7007"
+          mainnet-port: "7034"
           testnet-port: "7057"
           run-command: "python3 run_service.py --ssl"
           docker-test-files: "Dockerfile, requirements.txt"
@@ -233,7 +233,7 @@ jobs:
           ssh-host: ${SSH_HOST_CHESS_ALPHA_ZERO}
           ssh-user: ${SSH_USER_CHESS_ALPHA_ZERO}
           service-dir: "services/zeta36-chess-alpha-zero"
-          mainnet-port: "7008"
+          mainnet-port: "7035"
           testnet-port: "7058"
           run-command: "python3.6 run_service.py --ssl"
           docker-test-files: "Dockerfile, requirements.txt"
