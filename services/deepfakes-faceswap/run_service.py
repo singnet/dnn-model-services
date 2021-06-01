@@ -92,7 +92,7 @@ def start_service(cwd, service_module, run_daemon, run_ssl):
             pk_metering = os.environ.get("PVT_KEY_FOR_METERING", "")
             if pk_metering:
                 snetd_configs["metering_enabled"] = True
-                snetd_configs["metering_end_point"] = "https://{}-marketplace.singularitynet.io".format(_network)
+                snetd_configs["metering_end_point"] = "https://marketplace-mt-v2.singularitynet.io"
                 snetd_configs["pvt_key_for_metering"] = pk_metering
         with open(conf, "w") as f:
             json.dump(snetd_configs, f, sort_keys=True, indent=4)

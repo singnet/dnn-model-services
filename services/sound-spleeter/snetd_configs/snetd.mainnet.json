@@ -1,5 +1,5 @@
 {
-  "daemon_end_point": "0.0.0.0:7066",
+  "daemon_end_point": "0.0.0.0:7068",
   "ipfs_end_point": "http://ipfs.singularitynet.io:80",
   "passthrough_endpoint": "http://localhost:7003",
   "blockchain_network_selected": "main",

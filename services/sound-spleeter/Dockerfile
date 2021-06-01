@@ -25,7 +25,7 @@ RUN apt-get clean && \
     apt-get -y autoremove
 
 # Installing SNET Daemon
-RUN SNETD_GIT_VERSION=`curl -s https://api.github.com/repos/singnet/snet-daemon/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")' || echo "v3.1.7"` && \
+RUN SNETD_GIT_VERSION=`curl -s https://api.github.com/repos/singnet/snet-daemon/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")' || echo "v5.0.1"` && \
     SNETD_VERSION=${snetd_version:-${SNETD_GIT_VERSION}} && \
     cd /tmp && \
     wget https://github.com/singnet/snet-daemon/releases/download/${SNETD_VERSION}/snet-daemon-${SNETD_VERSION}-linux-amd64.tar.gz && \
@@ -37,7 +37,7 @@ RUN cd ${SINGNET_REPOS} && \
     git clone -b ${git_branch} https://github.com/${git_owner}/${DNN_REPO_NAME}.git
 
 RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \
-    python3 -m pip install -U pip && \
+    python3 -m pip install -U pip==20.2.4 && \
     python3 -m pip install -r requirements.txt && \
     sh buildproto.sh
 

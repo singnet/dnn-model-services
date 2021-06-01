@@ -24,7 +24,7 @@ RUN apt-get update && \
 RUN apt-get install -y libsm6 libxext6 libxrender-dev
 
 # Installing SNET Daemon
-RUN SNETD_GIT_VERSION=`curl -s https://api.github.com/repos/singnet/snet-daemon/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")' || echo "v3.1.6"` && \
+RUN SNETD_GIT_VERSION=`curl -s https://api.github.com/repos/singnet/snet-daemon/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")' || echo "v5.0.1"` && \
     SNETD_VERSION=${snetd_version:-${SNETD_GIT_VERSION}} && \
     cd /tmp && \
     wget https://github.com/singnet/snet-daemon/releases/download/${SNETD_VERSION}/snet-daemon-${SNETD_VERSION}-linux-amd64.tar.gz && \
@@ -39,7 +39,7 @@ RUN cd ${SINGNET_REPOS} && \
     ./get_s2vt.sh
 
 RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \
-    pip install -U pip && \
+    pip install -U pip==20.2.4 && \
     pip install -r requirements.txt && \
     sh buildproto.sh
 

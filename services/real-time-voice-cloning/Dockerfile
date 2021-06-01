@@ -26,7 +26,7 @@ RUN apt-get clean && \
     apt-get -y autoremove
 
 # Installing SNET Daemon
-RUN SNETD_GIT_VERSION=`curl -s https://api.github.com/repos/singnet/snet-daemon/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")' || echo "v3.1.6"` && \
+RUN SNETD_GIT_VERSION=`curl -s https://api.github.com/repos/singnet/snet-daemon/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")' || echo "v5.0.1"` && \
     SNETD_VERSION=${snetd_version:-${SNETD_GIT_VERSION}} && \
     cd /tmp && \
     wget https://github.com/singnet/snet-daemon/releases/download/${SNETD_VERSION}/snet-daemon-${SNETD_VERSION}-linux-amd64.tar.gz && \
@@ -40,7 +40,9 @@ RUN cd ${SINGNET_REPOS} && \
 
 # Git cloning Real-Time-Voice-Cloning repository to rtvc/
 RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \
-    git clone https://github.com/CorentinJ/Real-Time-Voice-Cloning.git rtvc/
+    git clone https://github.com/CorentinJ/Real-Time-Voice-Cloning.git rtvc/ && \
+    cd rtvc/ && \
+    git checkout 5425557efe30863267f805851f918124191e0be0
 
 # Putting it in PYTHONPATH
 ENV PYTHONPATH "${PYTHONPATH}:${SERVICES_FOLDER}/${SERVICE_NAME}/rtvc"
@@ -51,7 +53,7 @@ RUN cd ${SINGNET_REPOS}/${DNN_REPO_NAME} && \
 
 # Installing all the dependencies of the service
 RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \
-    pip install -U pip && \
+    pip install -U pip==21.0.1 && \
     pip install -r requirements.txt && \
     sh buildproto.sh
 
