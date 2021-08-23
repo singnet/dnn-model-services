@@ -20,7 +20,7 @@ RUN apt-get update && \
     curl
 
 # OpenCV dependencies
-RUN apt-get install -y libglib2.0-0 libsm6 libxext6 libxrender-dev
+RUN apt-get install -y libglib2.0-0 libsm6 libxext6 libxrender-dev libgl1-mesa-glx
 
 # Installing SNET Daemon
 RUN SNETD_GIT_VERSION=`curl -s https://api.github.com/repos/singnet/snet-daemon/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")' || echo "v5.0.1"` && \

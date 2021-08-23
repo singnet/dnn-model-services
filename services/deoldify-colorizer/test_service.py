@@ -35,7 +35,7 @@ if __name__ == "__main__":
 
         if grpc_method == "colorize":
             response = stub.colorize(grpc_input)
-            if response.img_colorized == "Fail":
+            if response.img_colorized == "Fail" or len(response.img_colorized) == 0:
                 print(response.img_colorized)
                 exit(1)
             else:
