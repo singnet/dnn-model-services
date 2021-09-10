@@ -20,7 +20,7 @@ RUN apt-get update && \
     curl
 
 # OpenCV dependencies
-RUN apt-get install -y libglib2.0-0 libsm6 libxext6 libxrender-dev
+RUN apt-get install -y libglib2.0-0 libsm6 libxext6 libxrender-dev libgl1-mesa-glx
 
 # Installing SNET Daemon
 RUN SNETD_GIT_VERSION=`curl -s https://api.github.com/repos/singnet/snet-daemon/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")' || echo "v5.0.1"` && \
@@ -37,16 +37,16 @@ RUN cd ${SINGNET_REPOS} && \
     cd ${DNN_REPO_NAME}/utils && \
     ./get_colorize_model.sh
 
+# Installing deps and building protobuf messages
+RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \
+    pip install -U pip==20.2.4 && \
+    pip install -r requirements.txt && \
+    sh buildproto.sh
+
 # DeOldify Repository
 RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \
     git submodule update --init -- DeOldify && \
     cd DeOldify && \
-    pip install -U pip==20.2.4 && \
     pip install -r requirements.txt
-
-# Building protobuf messages
-RUN cd ${SERVICES_FOLDER}/${SERVICE_NAME} && \
-    pip install -r requirements.txt && \
-    sh buildproto.sh
 
 WORKDIR ${SERVICES_FOLDER}/${SERVICE_NAME}
