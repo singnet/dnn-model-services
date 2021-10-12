@@ -3,5 +3,5 @@ grpcio-tools==1.27.2
 tensorflow-gpu==1.15.4
 tensorflow-hub
 requests==2.20.0
-opencv-python==3.4.3.18
+opencv-python==4.2.0.32
 youtube_dl==2021.6.6
