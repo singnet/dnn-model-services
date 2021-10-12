@@ -2,7 +2,7 @@ grpcio==1.14.2
 grpcio-tools==1.14.1
 numpy==1.15.4
 requests==2.20.0
-opencv-python==3.4.3.18
+opencv-python==3.4.7.28
 h5py==2.7.1
 matplotlib==2.2.2
 pathlib==1.0.1
