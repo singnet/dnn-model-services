@@ -1,6 +1,6 @@
 grpcio==1.27.2
 grpcio-tools==1.27.2
-tensorflow-gpu==1.15.4
+tensorflow-gpu==2.6.4
 requests==2.20.0
 tqdm
 psutil
