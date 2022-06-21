@@ -8,7 +8,7 @@ webrtcvad==2.0.10
 librosa==0.7.2
 numba==0.48.0
 matplotlib==3.3.4
-numpy==1.17.4
+numpy==1.22.0
 scipy==1.6.0
 tqdm==4.36.1
 sounddevice==0.4.1
