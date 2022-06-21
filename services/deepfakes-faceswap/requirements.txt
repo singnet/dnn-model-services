@@ -5,7 +5,7 @@ requests==2.20.0
 tqdm
 psutil
 pathlib
-numpy==1.16.2
+numpy==1.22.0
 opencv-python
 scikit-image
 Pillow
