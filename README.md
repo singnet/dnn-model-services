@@ -84,7 +84,7 @@ Please read our [guidelines](https://dev.singularitynet.io/docs/contribute/contr
 
 ## Licenses
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details.
 
 Each service is licensed as followed:
 
