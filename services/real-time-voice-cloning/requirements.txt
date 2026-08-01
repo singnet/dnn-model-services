@@ -1,6 +1,6 @@
 grpcio==1.27.2
 grpcio-tools==1.27.2
-requests==2.20.0
+requests==2.31.0
 tensorflow-gpu==1.15.4
 umap-learn==0.4.6
 visdom==0.1.8.9
