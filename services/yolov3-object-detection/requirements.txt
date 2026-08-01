@@ -1,4 +1,4 @@
 grpcio==1.27.2
 grpcio-tools==1.27.2
-opencv-python==3.4.3.18
+opencv-python==4.2.0.32
 requests==2.20.0
