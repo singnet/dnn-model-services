@@ -1,4 +1,4 @@
 cntk==2.6
-opencv-python==3.4.3.18
+opencv-python==4.2.0.32
 Pillow==7.1.0
 requests==2.20.0
